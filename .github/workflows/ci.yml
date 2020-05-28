@@ -1,0 +1,77 @@
+---
+
+name: CI
+
+on: [pull_request, push]
+
+jobs:
+  Format:
+    name: Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Compile
+        run: docker-compose build
+
+      - name: Format
+        run: docker-compose run neon format
+
+  Lint_Credo:
+    name: Lint (Credo)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Compile
+        run: docker-compose build
+
+      - name: Lint
+        run: docker-compose run neon credo --all
+
+  Lint_Dialyzer:
+    name: Lint (Dialyzer)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache
+        uses: actions/cache@v1
+        with:
+          path: priv/plts
+          key: dialyzer
+
+      - name: Compile
+        run: docker-compose build
+
+      - name: Lint
+        run: docker-compose run neon dialyzer
+
+  Test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Compile
+        run: docker-compose build
+
+      - name: Test
+        run: docker-compose run neon test
+
+  Build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: docker build -f Dockerfile-production .

@@ -1,0 +1,15 @@
+<main role="main" class="container">
+  <%= if get_flash(@conn, :info) != nil do %>
+    <div class="alert alert--info" role="alert">
+      <span><%= get_flash(@conn, :info) %></span>
+    </div>
+  <% end %>
+
+  <%= if get_flash(@conn, :error) != nil do %>
+    <div class="alert alert--error" role="alert">
+      <span><%= get_flash(@conn, :error) %></span>
+    </div>
+  <% end %>
+
+  <%= @inner_content %>
+</main>
