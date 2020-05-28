@@ -14,10 +14,12 @@ defmodule Neon.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Neon.PubSub},
       # Start the Endpoint (http/https)
-      NeonWeb.Endpoint
+      NeonWeb.Endpoint,
       # Start a worker by calling: Neon.Worker.start_link(arg)
-      # {Neon.Worker, arg}
+      # Neon.Importer
     ]
+
+    Neon.Importer.start_link()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

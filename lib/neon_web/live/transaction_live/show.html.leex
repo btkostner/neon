@@ -1,0 +1,32 @@
+<h1>Show Transaction</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, NeonWeb.TransactionLive.FormComponent,
+    id: @transaction.id,
+    title: @page_title,
+    action: @live_action,
+    transaction: @transaction,
+    return_to: Routes.transaction_show_path(@socket, :show, @transaction) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Symbol:</strong>
+    <%= @transaction.symbol %>
+  </li>
+
+  <li>
+    <strong>Amount:</strong>
+    <%= @transaction.amount %>
+  </li>
+
+  <li>
+    <strong>Price:</strong>
+    <%= @transaction.price %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.transaction_show_path(@socket, :edit, @transaction), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.transaction_index_path(@socket, :index) %></span>

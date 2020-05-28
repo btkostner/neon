@@ -12,6 +12,13 @@ defmodule NeonWeb.Router do
 
   scope "/", NeonWeb do
     pipe_through :browser
+
+    live "/transactions", TransactionLive.Index, :index
+    live "/transactions/new", TransactionLive.Index, :new
+    live "/transactions/:id/edit", TransactionLive.Index, :edit
+
+    live "/transactions/:id", TransactionLive.Show, :show
+    live "/transactions/:id/show/edit", TransactionLive.Show, :edit
   end
 
   # Enables LiveDashboard only for development
