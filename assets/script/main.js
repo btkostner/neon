@@ -8,8 +8,15 @@ import { Socket } from "phoenix"
 import NProgress from "nprogress"
 import { LiveSocket } from "phoenix_live_view"
 
+import LineChartComponent from './hooks/line_chart_component'
+
+const hooks = {
+  LineChartComponent: LineChartComponent
+}
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
+  hooks,
   params: { _csrf_token: csrfToken }
 })
 

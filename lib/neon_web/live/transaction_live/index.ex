@@ -1,8 +1,8 @@
 defmodule NeonWeb.TransactionLive.Index do
   use NeonWeb, :live_view
 
-  alias Neon.Trades
-  alias Neon.Trades.Transaction
+  alias Neon.Stocks
+  alias Neon.Stocks.Transaction
 
   @impl true
   def mount(_params, _session, socket) do
@@ -17,7 +17,7 @@ defmodule NeonWeb.TransactionLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Transaction")
-    |> assign(:transaction, Trades.get_transaction!(id))
+    |> assign(:transaction, Stocks.get_transaction!(id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -34,13 +34,13 @@ defmodule NeonWeb.TransactionLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    transaction = Trades.get_transaction!(id)
-    {:ok, _} = Trades.delete_transaction(transaction)
+    transaction = Stocks.get_transaction!(id)
+    {:ok, _} = Stocks.delete_transaction(transaction)
 
     {:noreply, assign(socket, :transactions, list_transactions())}
   end
 
   defp list_transactions do
-    Trades.list_transactions()
+    Stocks.list_transactions()
   end
 end

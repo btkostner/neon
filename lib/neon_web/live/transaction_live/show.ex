@@ -1,7 +1,7 @@
 defmodule NeonWeb.TransactionLive.Show do
   use NeonWeb, :live_view
 
-  alias Neon.Trades
+  alias Neon.Stocks
 
   @impl true
   def mount(_params, _session, socket) do
@@ -13,7 +13,7 @@ defmodule NeonWeb.TransactionLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:transaction, Trades.get_transaction!(id))}
+     |> assign(:transaction, Stocks.get_transaction!(id))}
   end
 
   defp page_title(:show), do: "Show Transaction"

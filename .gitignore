@@ -37,3 +37,6 @@ npm-debug.log
 # easier and faster CI running, but we don't want
 # to include them in git.
 /priv/plts/
+
+# We also ignore the docker-compose persistent storage folder.
+/priv/persistent

@@ -2,7 +2,7 @@ defmodule Neon.Repo.Migrations.CreateTransactions do
   use Ecto.Migration
 
   def up do
-    create table(:transactions, primary_key: false) do
+    create table(:stocks_transactions, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :symbol, :string
       add :amount, :float
@@ -14,12 +14,12 @@ defmodule Neon.Repo.Migrations.CreateTransactions do
       )
     end
 
-    execute("SELECT create_hypertable('transactions', 'inserted_at')")
+    execute("SELECT create_hypertable('stocks_transactions', 'inserted_at')")
 
-    create index(:transactions, [:symbol, :inserted_at])
+    create index(:stocks_transactions, [:symbol, :inserted_at])
   end
 
   def down do
-    drop table(:transactions)
+    drop table(:stocks_transactions)
   end
 end

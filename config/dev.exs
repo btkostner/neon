@@ -74,3 +74,7 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :neon, :alpaca,
+  key_id: "PKX3WI7D60LEIFZ5U4GI",
+  secret_key: "B8DWKhN2qMF4hdkfaR07AxpZflxnT88e7lyI9IeG"

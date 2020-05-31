@@ -20,3 +20,7 @@ config :neon, NeonWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :neon, :alpaca,
+  key_id: "PKX3WI7D60LEIFZ5U4GI",
+  secret_key: "B8DWKhN2qMF4hdkfaR07AxpZflxnT88e7lyI9IeG"

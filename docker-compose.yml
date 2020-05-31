@@ -24,6 +24,8 @@ services:
 
   postgres:
     image: timescale/timescaledb:latest-pg11
+    volumes:
+      - ./priv/persistent/database:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USERNAME: postgres

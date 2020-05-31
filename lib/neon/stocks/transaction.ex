@@ -1,6 +1,6 @@
-defmodule Neon.Trades.Transaction do
+defmodule Neon.Stocks.Transaction do
   @moduledoc """
-  A huge database storage of all the transactions we have ever recorded.
+  A huge database storage of all the stock transactions we have ever recorded.
   """
 
   use Ecto.Schema
@@ -8,8 +8,9 @@ defmodule Neon.Trades.Transaction do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+  @timestamps_opts [type: :utc_datetime]
 
-  schema "transactions" do
+  schema "stocks_transactions" do
     field :amount, :float
     field :price, :decimal
     field :symbol, :string

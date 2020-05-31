@@ -15,11 +15,9 @@ defmodule Neon.Application do
       {Phoenix.PubSub, name: Neon.PubSub},
       # Start the Endpoint (http/https)
       NeonWeb.Endpoint,
-      # Start a worker by calling: Neon.Worker.start_link(arg)
-      # Neon.Importer
+      # Start websocket intake streams
+      Neon.Streams.Alpaca
     ]
-
-    Neon.Importer.start_link()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

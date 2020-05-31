@@ -39,6 +39,7 @@ defmodule Neon.MixProject do
     [
       {:ecto_sql, "~> 3.4"},
       {:gettext, "~> 0.11"},
+      {:hackney, "~> 1.15.2"},
       {:jason, "~> 1.0"},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_html, "~> 2.11"},
@@ -47,10 +48,11 @@ defmodule Neon.MixProject do
       {:phoenix, "~> 1.5.1"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
-      {:socket, "~> 0.3"},
       {:stripity_stripe, "~> 2.8"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
+      {:tesla, "~> 1.3.0"},
+      {:websockex, "~> 0.4.2"},
 
       {:credo, "~> 1.4", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},

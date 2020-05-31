@@ -29,3 +29,21 @@ config :neon, NeonWeb.Endpoint,
     transport_options: [socket_opts: [:inet6]]
   ],
   secret_key_base: secret_key_base
+
+alpaca_key_id =
+  System.get_env("ALPACA_KEY_ID") ||
+    raise """
+    environment variable ALPACA_KEY_ID is missing.
+    You can generate one at https://app.alpaca.markets/
+    """
+
+alpaca_secret_key =
+  System.get_env("ALPACA_SECRET_KEY") ||
+    raise """
+    environment variable ALPACA_SECRET_KEY is missing.
+    You can generate one at https://app.alpaca.markets/
+    """
+
+config :neon, :alpaca,
+  key_id: alpaca_key_id,
+  secret_key: alpaca_secret_key

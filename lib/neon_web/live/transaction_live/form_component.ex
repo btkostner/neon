@@ -1,11 +1,11 @@
 defmodule NeonWeb.TransactionLive.FormComponent do
   use NeonWeb, :live_component
 
-  alias Neon.Trades
+  alias Neon.Stocks
 
   @impl true
   def update(%{transaction: transaction} = assigns, socket) do
-    changeset = Trades.change_transaction(transaction)
+    changeset = Stocks.change_transaction(transaction)
 
     {:ok,
      socket
@@ -17,7 +17,7 @@ defmodule NeonWeb.TransactionLive.FormComponent do
   def handle_event("validate", %{"transaction" => transaction_params}, socket) do
     changeset =
       socket.assigns.transaction
-      |> Trades.change_transaction(transaction_params)
+      |> Stocks.change_transaction(transaction_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :changeset, changeset)}
@@ -28,7 +28,7 @@ defmodule NeonWeb.TransactionLive.FormComponent do
   end
 
   defp save_transaction(socket, :edit, transaction_params) do
-    case Trades.update_transaction(socket.assigns.transaction, transaction_params) do
+    case Stocks.update_transaction(socket.assigns.transaction, transaction_params) do
       {:ok, _transaction} ->
         {:noreply,
          socket
@@ -41,7 +41,7 @@ defmodule NeonWeb.TransactionLive.FormComponent do
   end
 
   defp save_transaction(socket, :new, transaction_params) do
-    case Trades.create_transaction(transaction_params) do
+    case Stocks.create_transaction(transaction_params) do
       {:ok, _transaction} ->
         {:noreply,
          socket
