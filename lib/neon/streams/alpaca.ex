@@ -3,14 +3,14 @@ defmodule Neon.Streams.Alpaca do
   Socket interface for streaming Alpaca stock data.
   """
   use WebSockex
+
+  import Ecto.Query
+
   require Logger
 
-  @url "wss://data.alpaca.markets/stream"
+  alias Neon.{Stocks, Repo}
 
-  @subscriptions [
-    "T.SPY",
-    "AM.SPY"
-  ]
+  @url "wss://data.alpaca.markets/stream"
 
   def start_link(_opts \\ []) do
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, :no_state)
@@ -44,10 +44,17 @@ defmodule Neon.Streams.Alpaca do
   end
 
   def subscribe(pid) do
+    symbols =
+      Stocks.Aggregate
+      |> select([a], a.symbol)
+      |> distinct(true)
+      |> Repo.all()
+      |> Enum.map(fn s -> "AM.#{s}" end)
+
     WebSockex.send_frame(pid, {:text, Jason.encode!(%{
       action: "listen",
       data: %{
-        streams: @subscriptions
+        streams: symbols
       }
     })})
   end

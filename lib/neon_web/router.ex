@@ -14,6 +14,7 @@ defmodule NeonWeb.Router do
     pipe_through :browser
 
     live "/dashboard", DashboardLive.Index, :index
+    live "/dashboard/:symbol", DashboardLive.Index, :index
 
     live "/transactions", TransactionLive.Index, :index
     live "/transactions/new", TransactionLive.Index, :new

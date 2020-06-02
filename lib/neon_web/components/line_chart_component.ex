@@ -1,5 +1,9 @@
-defmodule NeonWeb.LineChartComponent do
+defmodule NeonWeb.AggregateChartComponent do
   use NeonWeb, :live_component
+
+  import Ecto.Query
+
+  alias Neon.Stocks
 
   @impl true
   def mount(socket) do
@@ -8,38 +12,48 @@ defmodule NeonWeb.LineChartComponent do
 
   @impl true
   def update(assigns, socket) do
+    symbol = Map.get(assigns, :symbol)
+
+    aggregates =
+      Stocks.Aggregate
+      |> where(symbol: ^symbol)
+      |> where([s], s.inserted_at >= ^Neon.Util.date_days_ago(30))
+      |> Stocks.list_aggregates()
+
     {:ok, assign(socket, %{
-      id: 1,
-      title: "Graph Data",
-      data: [
-        %{date: DateTime.utc_now(), value: 1000}
-      ]
+      symbol: symbol,
+      title: String.upcase(symbol),
+      data: aggregates
     })}
   end
 
   @impl true
   def render(assigns) do
     ~L"""
-    <div class="chart" id="chart-<%= @id %>">
+    <div phx-hook="AggregateChart" class="chart">
       <h1><%= @title %></h1>
 
-      <div class="chart-body">
-        <div phx-hook="LineChartComponent" id="chart-<%= @id %>--datasets" style="display:none;">
-        <%= for d <- @data do %>
-          <span data-x="<%= x_value(d) %>" data-y="<%= y_value(d) %>" />
-        <% end %>
-        </div>
+      <div class="chart-data" data-chart="<%= format_data(@data) %>">
 
-        <div class="chart"
-            id="chart-ignore-<%= @id %>"
-            phx-update="ignore"
-        </div>
-      </div>
+      <div class="chart-body" phx-update="ignore" />
     </div>
     """
   end
 
-  defp x_value(data), do: data.date
+  def format_data(aggregates) do
+    aggregates
+    |> Enum.map(&format_row/1)
+    |> Enum.reverse()
+    |> Jason.encode!()
+  end
 
-  defp y_value(data), do: data.value
+  def format_row(aggregate) do
+    %{
+      o: aggregate.open_price,
+      h: aggregate.high_price,
+      l: aggregate.low_price,
+      c: aggregate.close_price,
+      t: DateTime.to_unix(aggregate.inserted_at) * 1000
+    }
+  end
 end

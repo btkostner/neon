@@ -101,6 +101,11 @@ a {
   flex: 1 0 auto;
 }
 
+.chart-body {
+  height: 100%;
+  width: 100%;
+}
+
 .page__footer {
   color: rgb(121, 133, 139);
   display: flex;

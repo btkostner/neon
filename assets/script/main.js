@@ -8,10 +8,10 @@ import { Socket } from "phoenix"
 import NProgress from "nprogress"
 import { LiveSocket } from "phoenix_live_view"
 
-import LineChartComponent from './hooks/line_chart_component'
+import AggregateChartComponent from './hooks/aggregate_chart_component'
 
 const hooks = {
-  LineChartComponent: LineChartComponent
+  AggregateChart: AggregateChartComponent
 }
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
