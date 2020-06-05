@@ -9,10 +9,9 @@ services:
       dockerfile: Dockerfile-development
     ports:
       - "4000:4000"
+      - "4002:4002"
     volumes:
-      - ./assets/script:/opt/app/assets/script
-      - ./assets/static:/opt/app/assets/static
-      - ./assets/style:/opt/app/assets/style
+      - ./assets:/opt/app/assets
       - ./config:/opt/app/config
       - ./lib:/opt/app/lib
       - ./priv:/opt/app/priv

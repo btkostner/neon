@@ -42,9 +42,7 @@ defmodule Neon.MixProject do
       {:hackney, "~> 1.15.2"},
       {:jason, "~> 1.0"},
       {:phoenix_ecto, "~> 4.1"},
-      {:phoenix_html, "~> 2.11"},
       {:phoenix_live_dashboard, "~> 0.1"},
-      {:phoenix_live_view, "~> 0.13.0"},
       {:phoenix, "~> 1.5.1"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
@@ -57,10 +55,10 @@ defmodule Neon.MixProject do
       {:credo, "~> 1.4", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:reverse_proxy_plug, "~> 1.2.1", only: :dev},
 
       {:bypass, "~> 1.0", only: :test},
-      {:ex_machina, "~> 2.4", only: :test},
-      {:floki, ">= 0.0.0", only: :test}
+      {:ex_machina, "~> 2.4", only: :test}
     ]
   end
 

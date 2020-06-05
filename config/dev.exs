@@ -22,11 +22,8 @@ config :neon, NeonWeb.Endpoint,
   check_origin: false,
   watchers: [
     node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
+      "node_modules/.bin/nuxt",
+      "dev"
     ]
   ]
 
@@ -58,7 +55,7 @@ config :neon, NeonWeb.Endpoint,
 config :neon, NeonWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/static/.*$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/neon_web/(live|views)/.*(ex)$",
       ~r"lib/neon_web/templates/.*(eex)$"

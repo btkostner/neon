@@ -5,7 +5,7 @@ name: CI
 on: [pull_request, push]
 
 jobs:
-  Format:
+  Format_Elixir:
     name: Format
     runs-on: ubuntu-latest
 
@@ -17,7 +17,7 @@ jobs:
         run: docker-compose build
 
       - name: Format
-        run: docker-compose run neon format
+        run: docker-compose run neon mix format
 
   Lint_Credo:
     name: Lint (Credo)
@@ -31,7 +31,7 @@ jobs:
         run: docker-compose build
 
       - name: Lint
-        run: docker-compose run neon credo --all
+        run: docker-compose run neon mix credo --all
 
   Lint_Dialyzer:
     name: Lint (Dialyzer)
@@ -51,7 +51,35 @@ jobs:
         run: docker-compose build
 
       - name: Lint
-        run: docker-compose run neon dialyzer
+        run: docker-compose run neon mix dialyzer
+
+  Lint_Eslint:
+    name: Lint (ESLint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Compile
+        run: docker-compose build
+
+      - name: Lint
+        run: docker-compose run neon npm run lint:js
+
+  Lint_Stylelint:
+    name: Lint (Stylelint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Compile
+        run: docker-compose build
+
+      - name: Lint
+        run: docker-compose run neon npm run lint:css
 
   Test:
     runs-on: ubuntu-latest
@@ -64,7 +92,7 @@ jobs:
         run: docker-compose build
 
       - name: Test
-        run: docker-compose run neon test
+        run: docker-compose run neon mix test
 
   Build:
     runs-on: ubuntu-latest

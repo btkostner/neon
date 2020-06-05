@@ -20,12 +20,9 @@ RUN cd /opt/app && \
   mix local.rebar --force && \
   mix deps.get && \
   mix deps.compile --all && \
-  cd /opt/app/assets && \
   npm ci && \
-  npx webpack --mode production && \
-  cd /opt/app && \
+  npm run build && \
   mix phx.digest && \
-  cd /opt/app && \
   mix release
 
 # Dockerfile

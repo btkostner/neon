@@ -6,11 +6,9 @@ defmodule NeonWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
     store: :cookie,
-    key: "_neon_key",
+    key: "neon-token",
     signing_salt: "Wip193/2"
   ]
-
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -19,8 +17,7 @@ defmodule NeonWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :neon,
-    gzip: false,
-    only: ~w(style fonts images script favicon.ico robots.txt)
+    gzip: false
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -46,5 +43,6 @@ defmodule NeonWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
+
   plug NeonWeb.Router
 end

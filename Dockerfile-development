@@ -19,10 +19,9 @@ RUN cd /opt/app && \
   mix deps.get --all && \
   MIX_ENV=dev mix deps.compile --all && \
   MIX_ENV=test mix deps.compile --all && \
-  cd /opt/app/assets && \
   npm ci
 
+VOLUME /opt/app
 EXPOSE 4000
 
-ENTRYPOINT ["mix"]
-CMD ["phx.server"]
+CMD ["mix", "phx.server"]

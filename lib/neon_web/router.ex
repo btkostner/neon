@@ -2,26 +2,14 @@ defmodule NeonWeb.Router do
   use NeonWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "stream"]
     plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, {NeonWeb.LayoutView, :root}
-    plug :protect_from_forgery
+
+    if Mix.env() != :dev do
+      plug :protect_from_forgery
+    end
+
     plug :put_secure_browser_headers
-  end
-
-  scope "/", NeonWeb do
-    pipe_through :browser
-
-    live "/dashboard", DashboardLive.Index, :index
-    live "/dashboard/:symbol", DashboardLive.Index, :index
-
-    live "/transactions", TransactionLive.Index, :index
-    live "/transactions/new", TransactionLive.Index, :new
-    live "/transactions/:id/edit", TransactionLive.Index, :edit
-
-    live "/transactions/:id", TransactionLive.Show, :show
-    live "/transactions/:id/show/edit", TransactionLive.Show, :edit
   end
 
   # Enables LiveDashboard only for development
@@ -38,6 +26,16 @@ defmodule NeonWeb.Router do
       pipe_through :browser
 
       live_dashboard "/debug", metrics: NeonWeb.Telemetry
+    end
+  end
+
+  scope "/" do
+    pipe_through :browser
+
+    if Mix.env() == :dev do
+      forward "/", ReverseProxyPlug, upstream: "http://localhost:3000"
+    else
+      forward "/", NeonWeb.Plugs.Nuxt
     end
   end
 end

@@ -18,7 +18,7 @@ config :neon, Neon.Repo,
 config :neon, NeonWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "giHslHR3X1KcK1+DTbgio+LHo6CHbAwfY8PgGPU4fRbbPX+sCI0RQS0ajgS8JK4l",
-  render_errors: [view: NeonWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [view: NeonWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: Neon.PubSub,
   live_view: [signing_salt: "njdqhjV1"]
 
@@ -31,6 +31,10 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :tesla, adapter: Tesla.Adapter.Hackney
+
+config :mime, :types, %{
+  "text/event-stream" => ["stream"]
+}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
