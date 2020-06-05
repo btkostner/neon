@@ -22,8 +22,8 @@ jobs:
 
       - name: Push
         run: |
-          git config --local user.email "webdev@elementary.io"
-          git config --local user.name "elementaryBot"
+          git config --local user.email "git@btkostner.io"
+          git config --local user.name "Blake Kostner"
 
           git add priv/gettext
           git commit -m "l10n: update gettext templates"
