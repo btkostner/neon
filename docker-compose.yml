@@ -16,7 +16,7 @@ services:
       - ./lib:/opt/app/lib
       - ./priv:/opt/app/priv
       - ./test:/opt/app/test
-    command: do ecto.create, phx.server
+    command: mix do ecto.create, phx.server
     working_dir: /opt/app
     depends_on:
       - postgres

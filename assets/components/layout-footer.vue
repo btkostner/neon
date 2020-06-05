@@ -1,0 +1,25 @@
+<template>
+  <footer>
+    <span>
+      Written with love by Blake Kostner
+    </span>
+
+    <span>
+      Source code available on <a href="https://github.com/btkostner/neon">GitHub</a>
+    </span>
+  </footer>
+</template>
+
+<style scoped>
+  footer {
+    color: var(--silver-700);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  a {
+    color: inherit;
+  }
+</style>

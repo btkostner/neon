@@ -1,6 +1,34 @@
 export default {
   mode: 'spa',
 
+  components: true,
+
+  srcDir: 'assets',
+
+  build: {
+    publicPath: '/app/'
+  },
+
+  generate: {
+    dir: 'priv/static'
+  },
+
+  buildModules: [
+    '@nuxt/components',
+    '@nuxtjs/eslint-module',
+    '@nuxtjs/stylelint-module'
+  ],
+
+  modules: [
+    // '@nuxtjs/apollo',
+    // '@nuxtjs/pwa'
+  ],
+
+  css: [
+    '~/assets/styles/variables.css',
+    '~/assets/styles/main.css'
+  ],
+
   head: {
     title: 'neon',
 
@@ -17,26 +45,6 @@ export default {
 
   loading: {
     color: '#fff'
-  },
-
-  buildModules: [
-    '@nuxtjs/eslint-module',
-    '@nuxtjs/stylelint-module'
-  ],
-
-  modules: [
-    // '@nuxtjs/apollo',
-    // '@nuxtjs/pwa'
-  ],
-
-  build: {
-    publicPath: '/app/'
-  },
-
-  srcDir: 'assets',
-
-  generate: {
-    dir: 'priv/static'
   },
 
   apollo: {

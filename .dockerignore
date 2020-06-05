@@ -1,5 +1,6 @@
 _build/*
-assets/node_modules
+.nuxt
+node_modules
 deps/*
 doc/*
 priv/persistent
