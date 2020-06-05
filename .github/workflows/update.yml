@@ -18,7 +18,7 @@ jobs:
         run: docker-compose build
 
       - name: Extract
-        run: docker-compose run neon gettext.extract --merge
+        run: docker-compose run neon mix gettext.extract --merge
 
       - name: Push
         run: |

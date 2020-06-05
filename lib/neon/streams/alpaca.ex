@@ -65,7 +65,7 @@ defmodule Neon.Streams.Alpaca do
   end
 
   def handle_frame(frame, state) do
-    IO.inspect(frame, label: "frame data")
+    Logger.warn("Unknown data from Alpaca: #{inspect(frame)}")
     {:ok, state}
   end
 
@@ -82,7 +82,7 @@ defmodule Neon.Streams.Alpaca do
   end
 
   def handle_stream(stream, data, state) do
-    IO.inspect(data, label: "Alpaca #{stream}")
+    Logger.debug("Data from Alpaca stream #{stream}: #{inspect(data)}")
     {:ok, state}
   end
 end

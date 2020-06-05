@@ -1,4 +1,8 @@
 defmodule Mix.Tasks.Backfill do
+  @moduledoc """
+  Backfills any given symbol for X amount of days
+  """
+
   use Mix.Task
 
   require Logger
