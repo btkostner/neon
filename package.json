@@ -11,9 +11,18 @@
     "lint:css": "stylelint assets/**/*.vue"
   },
   "dependencies": {
-    "@nuxtjs/apollo": "^4.0.1-rc.1",
+    "@absinthe/socket": "^0.2.1",
+    "@absinthe/socket-apollo-link": "^0.2.1",
+    "@jumpn/utils-graphql": "^0.6.0",
     "@nuxtjs/pwa": "^3.0.0-0",
-    "nuxt": "^2.0.0"
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-link": "^1.2.14",
+    "graphql": "^15.0.0",
+    "js-cookie": "^2.2.1",
+    "nuxt": "^2.0.0",
+    "phoenix": "file:./deps/phoenix",
+    "vue-apollo": "^3.0.3",
+    "vue-cli-plugin-apollo": "^0.21.3"
   },
   "devDependencies": {
     "@mapbox/stylelint-processor-arbitrary-tags": "^0.3.0",
@@ -23,6 +32,7 @@
     "@nuxtjs/stylelint-module": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^7.1.0",
+    "eslint-plugin-graphql": "^4.0.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "stylelint": "^13.6.0",
     "stylelint-config-standard": "^20.0.0"

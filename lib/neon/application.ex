@@ -15,6 +15,8 @@ defmodule Neon.Application do
       {Phoenix.PubSub, name: Neon.PubSub},
       # Start the Endpoint (http/https)
       NeonWeb.Endpoint,
+      # Start Absinthe subscriptions
+      {Absinthe.Subscription, NeonWeb.Endpoint},
       # Start websocket intake streams
       Neon.Streams.Alpaca
     ]

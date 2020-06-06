@@ -37,15 +37,18 @@ defmodule Neon.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:absinthe, "~> 1.5"},
+      {:absinthe_plug, "~> 1.5.0"},
+      {:absinthe_phoenix, "~> 2.0.0"},
       {:ecto_sql, "~> 3.4"},
       {:gettext, "~> 0.11"},
       {:hackney, "~> 1.15.2"},
       {:jason, "~> 1.0"},
       {:phoenix_ecto, "~> 4.1"},
-      {:phoenix_live_dashboard, "~> 0.1"},
+      {:phoenix_live_dashboard, "~> 0.2.6"},
       {:phoenix, "~> 1.5.1"},
       {:plug_cowboy, "~> 2.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:postgrex, "~> 0.15.5"},
       {:stripity_stripe, "~> 2.8"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},

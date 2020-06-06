@@ -1,14 +1,19 @@
 defmodule NeonWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :neon
+  use Absinthe.Phoenix.Endpoint
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
     store: :cookie,
-    key: "neon-token",
+    key: "neon-session",
     signing_salt: "Wip193/2"
   ]
+
+  # Setup the websocket used for Absinthe
+  socket "/socket", NeonWeb.UserSocket,
+    websocket: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -36,7 +41,7 @@ defmodule NeonWeb.Endpoint do
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
+    parsers: [:urlencoded, :multipart, :json, Absinthe.Plug.Parser],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 

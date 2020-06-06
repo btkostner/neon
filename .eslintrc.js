@@ -13,5 +13,16 @@ module.exports = {
   extends: [
     '@nuxtjs',
     'plugin:nuxt/recommended'
-  ]
+  ],
+
+  plugins: [
+    'graphql'
+  ],
+
+  rules: {
+    'graphql/template-strings': ['error', {
+      env: 'apollo',
+      schemaJson: require('./priv/static/schema.json')
+    }]
+  }
 }

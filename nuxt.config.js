@@ -10,18 +10,20 @@ export default {
   },
 
   generate: {
-    dir: 'priv/static'
+    dir: 'priv/static',
+    fallback: '404.html'
   },
 
   buildModules: [
-    '@nuxt/components',
-    '@nuxtjs/eslint-module',
-    '@nuxtjs/stylelint-module'
+    '@nuxt/components'
   ],
 
   modules: [
-    // '@nuxtjs/apollo',
-    // '@nuxtjs/pwa'
+    '@nuxtjs/pwa'
+  ],
+
+  plugins: [
+    '~/plugins/apollo'
   ],
 
   css: [
@@ -45,25 +47,5 @@ export default {
 
   loading: {
     color: '#fff'
-  },
-
-  apollo: {
-    tokenName: 'neon-token',
-    cookieAttributes: {
-      expires: 7,
-      path: '/',
-      secure: false
-    },
-    clientConfigs: {
-      default: {
-        httpEndpoint: 'http://localhost:4000',
-        browserHttpEndpoint: '/graphql',
-        httpLinkOptions: {
-          credentials: 'same-origin'
-        },
-        wsEndpoint: 'ws://localhost:4000',
-        persisting: true
-      }
-    }
   }
 }

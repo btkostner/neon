@@ -9,9 +9,10 @@
     <div class="sidebar__avatar avatar">
       <div class="avatar__look">
         <img
-          alt="Blake Kostner"
+          v-if="!$apollo.queries.profile.loading"
           class="avatar__image"
-          src="https://s.gravatar.com/avatar/38f0782764cf3df788a194494de08510?s=48"
+          :src="`${profile.gravatar}?s=48`"
+          :alt="profile.name"
         >
 
         <div
@@ -24,7 +25,7 @@
       </div>
 
       <span class="avatar__title">
-        Blake Kostner
+        {{ profile.name }}
       </span>
 
       <span class="avatar__subtitle">
@@ -72,6 +73,7 @@
   }
 
   .avatar__look {
+    background-color: var(--black-900);
     grid-column: 1 / 2;
     grid-row: 1 / 3;
     height: 48px;
@@ -122,3 +124,25 @@
     color: var(--silver-500);
   }
 </style>
+
+<script>
+import gql from 'graphql-tag'
+
+export default {
+  apollo: {
+    profile: gql`query {
+      profile{
+        name
+        gravatar
+      }
+    }`
+  },
+
+  data: () => ({
+    profile: {
+      name: 'Loading...',
+      gravatar: ''
+    }
+  })
+}
+</script>

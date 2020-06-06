@@ -6,11 +6,9 @@ defmodule NeonWeb.Plugs.Nuxt do
 
   import Plug.Conn
 
-  def init(opts) do
-    opts
-  end
+  def init(opts), do: opts
 
-  def call(conn, opts) do
+  def call(conn, _opts) do
     conn
     |> put_resp_header("charset", "UTF-8")
     |> put_resp_content_type("text/html")

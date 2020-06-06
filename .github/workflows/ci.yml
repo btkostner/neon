@@ -64,6 +64,9 @@ jobs:
       - name: Compile
         run: docker-compose build
 
+      - name: Generate
+        run: docker-compose run neon mix absinthe.schema.json ./priv/static/schema.json
+
       - name: Lint
         run: docker-compose run neon npm run lint:js
 
