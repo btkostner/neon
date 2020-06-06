@@ -3,23 +3,23 @@
 version: "3"
 
 services:
-  # neon:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile-development
-  #   ports:
-  #     - "4000:4000"
-  #     - "4002:4002"
-  #   volumes:
-  #     - ./assets:/opt/app/assets
-  #     - ./config:/opt/app/config
-  #     - ./lib:/opt/app/lib
-  #     - ./priv:/opt/app/priv
-  #     - ./test:/opt/app/test
-  #   command: mix do ecto.create, phx.server
-  #   working_dir: /opt/app
-  #   depends_on:
-  #     - postgres
+  neon:
+    build:
+      context: .
+      dockerfile: Dockerfile-development
+    ports:
+      - "4000:4000"
+      - "4002:4002"
+    volumes:
+      - ./assets:/opt/app/assets
+      - ./config:/opt/app/config
+      - ./lib:/opt/app/lib
+      - ./priv:/opt/app/priv
+      - ./test:/opt/app/test
+    command: mix do ecto.create, phx.server
+    working_dir: /opt/app
+    depends_on:
+      - postgres
 
   postgres:
     image: timescale/timescaledb:latest-pg11
