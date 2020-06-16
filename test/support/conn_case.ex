@@ -1,4 +1,4 @@
-defmodule NeonWeb.ConnCase do
+defmodule NeonServer.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -11,7 +11,7 @@ defmodule NeonWeb.ConnCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use NeonWeb.ConnCase, async: true`, although
+  by setting `use NeonServer.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -22,12 +22,13 @@ defmodule NeonWeb.ConnCase do
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
-      import NeonWeb.ConnCase
+      import NeonServer.ConnCase
+      import Neon.Factory
 
-      alias NeonWeb.Router.Helpers, as: Routes
+      alias NeonServer.Router.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint NeonWeb.Endpoint
+      @endpoint NeonServer.Endpoint
     end
   end
 

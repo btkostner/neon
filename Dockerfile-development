@@ -9,9 +9,18 @@ COPY . /opt/app
 WORKDIR /opt/app
 
 RUN apk --no-cache --update add \
-  bash git make g++ inotify-tools \
-  nodejs nodejs-npm python && \
-  npm install npm -g --no-progress
+  bash \
+  g++ \
+  gcc \
+  git \
+  inotify-tools \
+  libc-dev \
+  make \
+  nodejs \
+  nodejs-npm \
+  python
+
+RUN npm install npm -g --no-progress
 
 RUN cd /opt/app && \
   mix local.hex --force && \

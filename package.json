@@ -21,6 +21,7 @@
     "js-cookie": "^2.2.1",
     "nuxt": "^2.13.0",
     "phoenix": "file:./deps/phoenix",
+    "vee-validate": "^3.3.2",
     "vue-apollo": "^3.0.3",
     "vue-cli-plugin-apollo": "^0.22.2"
   },

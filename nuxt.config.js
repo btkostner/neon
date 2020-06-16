@@ -3,7 +3,7 @@ export default {
 
   components: true,
 
-  srcDir: 'assets',
+  srcDir: 'lib/neon_client',
 
   build: {
     publicPath: '/app/'
@@ -46,6 +46,6 @@ export default {
   },
 
   loading: {
-    color: '#fff'
+    color: 'var(--secondary-bg-color)'
   }
 }

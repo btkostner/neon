@@ -23,7 +23,7 @@ secret_key_base =
     You can generate one by calling: mix phx.gen.secret
     """
 
-config :neon, NeonWeb.Endpoint,
+config :neon, NeonServer.Endpoint,
   http: [
     port: String.to_integer(System.get_env("PORT") || "4000"),
     transport_options: [socket_opts: [:inet6]]

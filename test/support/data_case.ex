@@ -24,6 +24,7 @@ defmodule Neon.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Neon.DataCase
+      import Neon.Factory
     end
   end
 

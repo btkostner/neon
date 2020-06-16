@@ -15,10 +15,10 @@ config :neon, Neon.Repo,
   migration_timestamps: [type: :utc_datetime]
 
 # Configures the endpoint
-config :neon, NeonWeb.Endpoint,
+config :neon, NeonServer.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "giHslHR3X1KcK1+DTbgio+LHo6CHbAwfY8PgGPU4fRbbPX+sCI0RQS0ajgS8JK4l",
-  render_errors: [view: NeonWeb.ErrorView, accepts: ~w(html json), layout: true],
+  render_errors: [view: NeonServer.ErrorView, accepts: ~w(html json), layout: true],
   pubsub_server: Neon.PubSub,
   live_view: [signing_salt: "njdqhjV1"]
 
@@ -37,7 +37,7 @@ config :mime, :types, %{
 }
 
 config :absinthe,
-  schema: NeonWeb.Schema
+  schema: NeonServer.Schema
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
