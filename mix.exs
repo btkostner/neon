@@ -42,7 +42,7 @@ defmodule Neon.MixProject do
       {:absinthe_phoenix, "~> 2.0.0"},
       {:ecto_sql, "~> 3.4"},
       {:gettext, "~> 0.11"},
-      {:hackney, "~> 1.15.2"},
+      {:hackney, "~> 1.16.0"},
       {:jason, "~> 1.0"},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_live_dashboard, "~> 0.2.6"},
