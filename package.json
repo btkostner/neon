@@ -22,7 +22,7 @@
     "nuxt": "^2.0.0",
     "phoenix": "file:./deps/phoenix",
     "vue-apollo": "^3.0.3",
-    "vue-cli-plugin-apollo": "^0.21.3"
+    "vue-cli-plugin-apollo": "^0.22.2"
   },
   "devDependencies": {
     "@mapbox/stylelint-processor-arbitrary-tags": "^0.3.0",
