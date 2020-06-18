@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Cache
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: priv/plts
           key: dialyzer
