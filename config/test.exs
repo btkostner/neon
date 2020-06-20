@@ -9,17 +9,23 @@ config :neon, Neon.Repo,
   username: "postgres",
   password: "postgres",
   database: "neon_test#{System.get_env("MIX_TEST_PARTITION")}",
-  hostname: "postgres",
+  hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-# We don't run a server during test. If one is required,
-# you can enable the server option below.
 config :neon, NeonServer.Endpoint,
   http: [port: 4002],
   server: true
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :wallaby,
+  base_url: "http://localhost:4002",
+  driver: Wallaby.Selenium,
+  opt_app: :neon,
+  screenshot_dir: Path.expand("#{__DIR__}/../test/neon_client_errors"),
+  screenshot_on_failure: true,
+  sql_sandbox: true
 
 config :neon, :alpaca,
   key_id: "PKX3WI7D60LEIFZ5U4GI",

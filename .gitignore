@@ -46,3 +46,6 @@ npm-debug.log
 
 # Service worker
 sw.*
+
+# Test results
+/test/neon_client_errors/

@@ -11,6 +11,11 @@ defmodule NeonServer.Endpoint do
     signing_salt: "Wip193/2"
   ]
 
+  # Enable SQL sandboxing for client side browser tests
+  if Application.get_env(:wallaby, :sql_sandbox) do
+    plug Phoenix.Ecto.SQL.Sandbox
+  end
+
   # Setup the websocket used for Absinthe
   socket "/socket", NeonServer.UserSocket,
     websocket: true

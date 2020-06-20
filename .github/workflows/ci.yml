@@ -90,7 +90,8 @@ jobs:
       - name: Lint
         run: docker-compose run neon npm run lint:css
 
-  Test:
+  Test_Unit:
+    name: Test (Unit)
     runs-on: ubuntu-latest
 
     steps:
@@ -101,7 +102,21 @@ jobs:
         run: docker-compose build
 
       - name: Test
-        run: docker-compose run neon mix test
+        run: docker-compose run neon mix test.unit
+
+  Test_Browser:
+    name: Test (Browser)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Compile
+        run: docker-compose build
+
+      - name: Test
+        run: docker-compose run neon mix test.browser
 
   Build:
     runs-on: ubuntu-latest

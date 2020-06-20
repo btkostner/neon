@@ -10,6 +10,7 @@ defmodule Neon.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
+      preferred_cli_env: preferred_cli_env(),
       deps: deps(),
       dialyzer: [
         plt_add_deps: :transitive,
@@ -64,22 +65,25 @@ defmodule Neon.MixProject do
       {:reverse_proxy_plug, "~> 1.2.1", only: :dev},
 
       {:bypass, "~> 1.0", only: :test},
-      {:ex_machina, "~> 2.4", only: :test}
+      {:ex_machina, "~> 2.4", only: :test},
+      {:wallaby, "~> 0.26.0", runtime: false, only: :test}
     ]
   end
 
-  # Aliases are shortcuts or tasks specific to the current project.
-  # For example, to install project dependencies and perform other setup tasks, run:
-  #
-  #     $ mix setup
-  #
-  # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+
+      "test.unit": ["ecto.create --quiet", "ecto.migrate", "test test/neon test/neon_server"],
+      "test.browser": ["cmd npm run build", "ecto.create --quiet", "ecto.migrate", "test test/neon_client"]
+    ]
+  end
+
+  defp preferred_cli_env do
+    [
+      "test.unit": :test,
+      "test.browser": :test
     ]
   end
 end

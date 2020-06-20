@@ -7,9 +7,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-development
-    ports:
-      - "4000:4000"
-      - "4002:4002"
     volumes:
       - ./config:/opt/app/config
       - ./lib:/opt/app/lib
@@ -17,15 +14,22 @@ services:
       - ./test:/opt/app/test
     command: mix do ecto.create, phx.server
     working_dir: /opt/app
+    network_mode: host
     depends_on:
       - postgres
+      - chrome
 
   postgres:
     image: timescale/timescaledb:latest-pg11
-    ports:
-      - "5432:5432"
     volumes:
       - ./priv/persistent/database:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USERNAME: postgres
+    network_mode: host
+
+  chrome:
+    image: selenium/standalone-firefox:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    network_mode: host
