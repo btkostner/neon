@@ -74,3 +74,17 @@ We use stylelint to ensure our CSS is consistent throughout the application.
 ```sh
 docker-compose run neon npm run lint:css
 ```
+
+### Testing
+
+We use Elixir's ExUnit test suite for _all_ testing, even the JavaScript. All
+of the needed dependencies are wrapped up in the `docker-compose.yml` file,
+so all you need to do is run the command for the test you want to run.
+
+```sh
+docker-compose run neon mix test.unit
+```
+
+```sh
+docker-compose run neon mix test.browser
+```
