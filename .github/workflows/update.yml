@@ -4,7 +4,7 @@ name: Update
 
 on:
   schedule:
-    - cron:  "0 0 * * *"
+    - cron:  "0 0 * * 6"
 
 jobs:
   Translations:
@@ -26,6 +26,6 @@ jobs:
           git config --local user.name "Blake Kostner"
 
           git add priv/gettext
-          git commit -m "l10n: update gettext templates"
+          git commit -m "l10n: update gettext templates" || echo "no changes"
 
           git push
