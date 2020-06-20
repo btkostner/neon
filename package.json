@@ -8,7 +8,7 @@
     "start": "nuxt dev",
     "build": "nuxt generate",
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "lint:css": "stylelint assets/**/*.vue"
+    "lint:css": "stylelint lib/neon_client/**/*.vue lib/neon_client/**/*.css"
   },
   "dependencies": {
     "@absinthe/socket": "^0.2.1",
@@ -21,16 +21,14 @@
     "js-cookie": "^2.2.1",
     "nuxt": "^2.13.0",
     "phoenix": "file:./deps/phoenix",
+    "postcss-color-mod-function": "^3.0.3",
     "vee-validate": "^3.3.2",
-    "vue-apollo": "^3.0.3",
-    "vue-cli-plugin-apollo": "^0.22.2"
+    "vue-apollo": "^3.0.3"
   },
   "devDependencies": {
     "@mapbox/stylelint-processor-arbitrary-tags": "^0.3.0",
     "@nuxt/components": "^1.0.0",
     "@nuxtjs/eslint-config": "^3.0.0",
-    "@nuxtjs/eslint-module": "^2.0.0",
-    "@nuxtjs/stylelint-module": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^7.1.0",
     "eslint-plugin-graphql": "^4.0.0",

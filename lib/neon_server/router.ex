@@ -17,7 +17,6 @@ defmodule NeonServer.Router do
 
   scope "/" do
     pipe_through :browser
-    # TODO: Pipe through admin only authentication
 
     live_dashboard "/debug", metrics: NeonServer.Telemetry
 

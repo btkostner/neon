@@ -17,7 +17,7 @@ defmodule NeonServer.Middleware.Errors do
   defp handle_error(%Changeset{} = changeset) do
     changeset
     |> Changeset.traverse_errors(&format_changeset_error/1)
-    |> Enum.map(fn({k,v}) -> "#{k} #{v}" end)
+    |> Enum.map(fn({k, v}) -> "#{k} #{v}" end)
   end
 
   defp handle_error(error), do: [error]

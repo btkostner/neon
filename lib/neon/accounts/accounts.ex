@@ -135,7 +135,7 @@ defmodule Neon.Accounts do
   def login_user(params) do
     user = Repo.get_by(User, email: params.email)
 
-    case Argon2.check_pass(params.password) do
+    case Argon2.check_pass(user, params.password) do
       {:ok, %User{}} ->
         create_session(Map.put(params, :user_id, user.id))
 
@@ -145,6 +145,11 @@ defmodule Neon.Accounts do
       _ ->
         {:error, :not_found}
     end
+  end
+
+  def login_user(_params) do
+    Argon2.no_user_verify()
+    {:error, :not_found}
   end
 
   @doc """

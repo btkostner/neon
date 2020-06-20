@@ -4,14 +4,8 @@ defmodule NeonServer.UserSocket do
 
   @impl true
   def connect(%{"session" => session_id}, socket, _connect_info) do
-    with {:ok, session} <- Accounts.get_session(session_id) do
-      new_socket =
-        socket
-        |> assign(:session_id, session.id)
-        |> assign(:user_id, session.user.id)
-        |> assign(:user_role, session.user.role)
-
-      {:ok, new_socket}
+    with {:ok, session} <- Accounts.get_session!(session_id) do
+      {:ok, assign(socket, :session_id, session.id)}
     end
   end
 

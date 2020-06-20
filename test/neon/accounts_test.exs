@@ -39,23 +39,22 @@ defmodule Neon.AccountsTest do
     test "update_user/2 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(insert(:user), @invalid_attrs)
     end
-
-    test "delete_user/1 deletes the user" do
-      user = insert(:user)
-      assert {:ok, %User{}} = Accounts.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
-    end
   end
 
   describe "sessions" do
     alias Neon.Accounts.Session
 
-    test "create_session/1 with valid data creates a session" do
-      assert {:ok, %Session{}} = Accounts.create_session(insert(:user))
+    test "get_session!/1 returns the session with given id" do
+      session = insert(:session)
+      assert Accounts.get_session!(session.id).id == session.id
     end
 
-    test "create_session/1 with invalid user returns :not_found" do
-      assert {:error, :not_found} = Accounts.create_session(nil)
+    test "get_session!/1 throws error with invalid id" do
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_session!(1) end
+    end
+
+    test "create_session/1 with valid data creates a session" do
+      assert {:ok, %Session{}} = Accounts.create_session(params_with_assocs(:session))
     end
   end
 
@@ -76,7 +75,8 @@ defmodule Neon.AccountsTest do
 
     test "with invalid email returns :not_found" do
       assert {:error, :not_found} = Accounts.login_user(%{
-        email: "no"
+        email: "no",
+        password: "no"
       })
     end
 

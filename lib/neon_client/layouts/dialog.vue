@@ -8,12 +8,6 @@
   </div>
 </template>
 
-<style>
-  @import "~/assets/styles/variables.css";
-  @import "~/assets/styles/main.css";
-  @import "~/assets/styles/typography.css";
-</style>
-
 <style scoped>
   .page {
     display: flex;
@@ -30,6 +24,7 @@
   }
 
   .page__dialog {
+    animation: breath 10s ease alternate infinite;
     border-radius: 6px;
     border: 1px solid var(--blueberry-500);
     box-shadow: 0 0 25px var(--blueberry-700);
@@ -39,11 +34,11 @@
     transition: all 200ms linear;
   }
 
-  .page__dialog >>> >:first-child {
+  .page__dialog >>> > :first-child {
     margin-top: 0;
   }
 
-  .page__dialog >>> >:last-child {
+  .page__dialog >>> > :last-child {
     margin-bottom: 0;
   }
 
@@ -51,14 +46,32 @@
   .page__dialog >>> h2 {
     text-align: center;
   }
-</style>
 
-<script>
-import LayoutFooter from '~/components/layout-footer'
+  @keyframes breath {
+    0% {
+      border-color: var(--blueberry-500);
+      box-shadow: 0 0 25px var(--blueberry-700);
+    }
 
-export default {
-  components: {
-    LayoutFooter
+    20% {
+      box-shadow: 0 0 30px var(--blueberry-500);
+    }
+
+    40% {
+      box-shadow: 0 0 20px var(--blueberry-700);
+    }
+
+    60% {
+      border-color: var(--blueberry-700);
+      box-shadow: 0 0 20px var(--blueberry-700);
+    }
+
+    80% {
+      border-color: var(--blueberry-500);
+    }
+
+    100% {
+      box-shadow: 0 0 25px var(--blueberry-700);
+    }
   }
-}
-</script>
+</style>

@@ -5,10 +5,6 @@ export default {
 
   srcDir: 'lib/neon_client',
 
-  build: {
-    publicPath: '/app/'
-  },
-
   generate: {
     dir: 'priv/static',
     fallback: '404.html'
@@ -23,12 +19,14 @@ export default {
   ],
 
   plugins: [
-    '~/plugins/apollo'
+    '~/plugins/apollo.js',
+    '~/plugins/vee-validate.js'
   ],
 
   css: [
     '~/assets/styles/variables.css',
-    '~/assets/styles/main.css'
+    '~/assets/styles/main.css',
+    '~/assets/styles/typography.css'
   ],
 
   head: {
@@ -42,6 +40,20 @@ export default {
 
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ]
+  },
+
+  build: {
+    postcss: {
+      plugins: {
+        'postcss-color-mod-function': {}
+      }
+    },
+
+    publicPath: '/app/',
+
+    transpile: [
+      'vee-validate/dist/rules'
     ]
   },
 

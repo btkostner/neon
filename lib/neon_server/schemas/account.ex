@@ -1,4 +1,8 @@
 defmodule NeonServer.Schemas.Account do
+  @moduledoc """
+  All GraphQL mutations and queries for the Neon.Account context.
+  """
+
   use NeonServer, :schema
 
   alias Neon.Accounts

@@ -1,45 +1,37 @@
 <template>
-  <form @submit.prevent="register">
-    <h1>Neon Registration</h1>
-
-    <template v-if="error">
-      <p>{{ error }}</p>
-    </template>
-
-    <input
+  <basic-form
+    :submit-function="register"
+    header-text="Neon Registration"
+    submit-text="Register"
+  >
+    <form-input
+      id="name"
       v-model="name"
       type="text"
       placeholder="Blake"
-      required
-    >
+      label="Full Name"
+      validation="required"
+    />
 
-    <input
+    <form-input
+      id="email"
       v-model="email"
       type="email"
+      label="Email Address"
       placeholder="blake@example.com"
-      required
-    >
+      validation="required|email"
+    />
 
-    <input
+    <form-input
+      id="password"
       v-model="password"
       type="password"
-      placeholder="password"
-      min="6"
-      required
-    >
-
-    <input
-      type="submit"
-      value="Register"
-    >
-  </form>
+      label="Password"
+      placeholder="correct horse battery staple"
+      validation="required|min:8"
+    />
+  </basic-form>
 </template>
-
-<style scoped>
-  div {
-    padding: 1rem;
-  }
-</style>
 
 <script>
 import gql from 'graphql-tag'
@@ -48,8 +40,6 @@ export default {
   layout: 'dialog',
 
   data: () => ({
-    error: null,
-
     name: '',
     email: '',
     password: ''
@@ -57,31 +47,24 @@ export default {
 
   methods: {
     async register () {
-      const { password } = this
-      this.password = ''
-
-      try {
-        const res = await this.$apollo.mutate({
-          mutation: gql`mutation ($name: String!, $email: String!, $password: String!) {
-            register(name: $name, email: $email, password: $password) {
-              token
-              expiredAt
-            }
-          }`,
-          variables: {
-            name: this.name,
-            email: this.email,
-            password
+      const res = await this.$apollo.mutate({
+        mutation: gql`mutation ($name: String!, $email: String!, $password: String!) {
+          register(name: $name, email: $email, password: $password) {
+            token
+            expiredAt
           }
-        })
+        }`,
+        variables: {
+          name: this.name,
+          email: this.email,
+          password: this.password
+        }
+      })
 
-        const { expiredAt, token } = res.data.register
+      const { expiredAt, token } = res.data.register
 
-        await this.$apolloHelpers.login(token, new Date(expiredAt))
-        this.$router.push('/')
-      } catch (err) {
-        this.error = err.graphQLErrors.map((e) => e.message).join(' & ')
-      }
+      await this.$apolloHelpers.login(token, new Date(expiredAt))
+      this.$router.push('/')
     }
   }
 }

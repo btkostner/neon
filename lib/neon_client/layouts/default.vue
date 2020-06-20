@@ -12,11 +12,6 @@
   </div>
 </template>
 
-<style>
-  @import "~/assets/styles/variables.css";
-  @import "~/assets/styles/main.css";
-</style>
-
 <style scoped>
   #__page {
     display: grid;
@@ -32,15 +27,3 @@
     flex: 1 0 auto;
   }
 </style>
-
-<script>
-import LayoutFooter from '~/components/layout-footer'
-import LayoutSidebar from '~/components/layout-sidebar'
-
-export default {
-  components: {
-    LayoutFooter,
-    LayoutSidebar
-  }
-}
-</script>

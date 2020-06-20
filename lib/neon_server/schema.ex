@@ -1,4 +1,8 @@
 defmodule NeonServer.Schema do
+  @moduledoc """
+  The root GraphQL schema for Absinthe and Neon.
+  """
+
   use Absinthe.Schema
 
   import_types Absinthe.Type.Custom

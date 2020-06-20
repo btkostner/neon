@@ -37,3 +37,40 @@ management.
 This project has _a lot_ of linting to ensure everything works together. It all
 runs on push and PR for this repo. If you want to run them manually, I would
 take a look at the GitHub CI workflow for an up to date script.
+
+## Commands
+
+### Linting
+
+There are a bunch of linting applications used for this project. Here is how to
+run them, and other commands like auto fixing.
+
+#### JavaScript
+
+We use eslint to lint our client side application. This will also check all
+GraphQL queries have the correct fields. Because of this, you will want to
+ensure that the query file us up to date first with:
+
+```sh
+docker-compose run neon mix absinthe.schema.json ./priv/static/schema.json
+```
+
+Then run the lint command with:
+
+```sh
+docker-compose run neon npm run lint:js
+```
+
+To auto fix:
+
+```sh
+docker-compose run neon npm run lint:js -- --fix
+```
+
+### Stylesheets
+
+We use stylelint to ensure our CSS is consistent throughout the application.
+
+```sh
+docker-compose run neon npm run lint:css
+```

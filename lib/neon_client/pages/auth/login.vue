@@ -1,31 +1,28 @@
 <template>
-  <form @submit.prevent="login">
-    <h1>Neon Login</h1>
-
-    <input
+  <basic-form
+    :submit-function="login"
+    header-text="Neon Login"
+    submit-text="Login"
+  >
+    <form-input
+      id="email"
       v-model="email"
-      type="text"
-      placeholder="blake"
-    >
+      label="Email Address"
+      placeholder="blake@example.com"
+      type="email"
+      validation="required|email"
+    />
 
-    <input
+    <form-input
+      id="password"
       v-model="password"
+      label="Password"
+      placeholder="correct horse battery staple"
       type="password"
-      placeholder="password"
-    >
-
-    <input
-      type="submit"
-      value="Log In"
-    >
-  </form>
+      validation="required|min:8"
+    />
+  </basic-form>
 </template>
-
-<style scoped>
-  div {
-    padding: 1rem;
-  }
-</style>
 
 <script>
 import gql from 'graphql-tag'
@@ -40,10 +37,10 @@ export default {
 
   methods: {
     async login () {
-      const res = await this.$apollo.mutate({
+      await this.$apollo.mutate({
         mutation: gql`mutation ($email: String!, $password: String!) {
           login(email: $email, password: $password) {
-            email
+            token
           }
         }`,
         variables: {
@@ -51,8 +48,6 @@ export default {
           password: this.password
         }
       })
-
-      console.log('res', res)
     }
   }
 }

@@ -1,4 +1,8 @@
 defmodule NeonServer.Types.Account do
+  @moduledoc """
+  GraphQL objects for the Neon.Account context.
+  """
+
   use NeonServer, :schema
 
   alias Neon.Accounts

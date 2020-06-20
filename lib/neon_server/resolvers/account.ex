@@ -1,4 +1,8 @@
 defmodule NeonServer.Resolvers.Account do
+  @moduledoc """
+  All of the Absinthe resolvers for the Neon.Account context.
+  """
+
   alias Neon.Accounts
 
   def show_profile(_parent, _args, _resolution) do
