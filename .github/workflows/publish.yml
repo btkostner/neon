@@ -143,4 +143,4 @@ jobs:
       - name: Publish
         run: |
           docker login -u neon -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
-          docker push docker.pkg.github.com/docker.pkg.github.com/btkostner/neon/neon
+          docker push docker.pkg.github.com/docker.pkg.github.com/btkostner/neon/neon:latest
