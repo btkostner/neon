@@ -11,7 +11,6 @@ import Config
 # before starting your production server.
 config :neon, NeonServer.Endpoint,
   url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json",
   http: [
     port: 80,
     transport_options: [socket_opts: [:inet6]]

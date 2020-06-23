@@ -115,6 +115,11 @@ jobs:
       - name: Compile
         run: docker-compose build
 
+      - name: Build
+        run: docker-compose run neon npm run build
+        env:
+          MIX_ENV: test
+
       - name: Test
         run: docker-compose run neon mix test.browser
 

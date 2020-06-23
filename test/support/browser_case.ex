@@ -1,11 +1,10 @@
-defmodule NeonServer.ConnCase do
+defmodule NeonClient.BrowserCase do
   @moduledoc """
   This module defines the test case to be used by
-  tests that require setting up a connection.
+  tests for neon_client.
 
-  Such tests rely on `Phoenix.ConnTest` and also
-  import other functionality to make it easier
-  to build common data structures and query the data layer.
+  Such tests rely on `Wallaby` and also import other functionality
+  to make it easier to query HTML documents and interact with them.
 
   Finally, if the test case interacts with the database,
   we enable the SQL sandbox, so changes done to the database
@@ -17,16 +16,23 @@ defmodule NeonServer.ConnCase do
 
   use ExUnit.CaseTemplate
 
+  alias Wallaby.Browser
+
   using do
     quote do
+      use Wallaby.Feature
+
       import Plug.Conn
-      import Phoenix.ConnTest
-      import NeonServer.ConnCase
       import Neon.Factory
 
-      alias NeonServer.Router.Helpers, as: Routes
-
-      @endpoint NeonServer.Endpoint
+      import NeonClient.BrowserCase
+      import Wallaby.Query, only: [
+        css: 2,
+        text_field: 1,
+        button: 1,
+        link: 1,
+        link: 2
+      ]
     end
   end
 
@@ -38,5 +44,18 @@ defmodule NeonServer.ConnCase do
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  @doc """
+  Blurs the currently focused element on the page. Useful for testing form
+  validation.
+  """
+  def blur(session) do
+    session
+    |> Browser.execute_script("""
+      if (document.activeElement != null && document.activeElement.blur != null) {
+        document.activeElement.blur()
+      }
+    """)
   end
 end

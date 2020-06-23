@@ -2,6 +2,7 @@ export default {
   mode: 'spa',
 
   components: true,
+  telemetry: false,
 
   srcDir: 'lib/neon_client',
 
@@ -13,6 +14,10 @@ export default {
   buildModules: [
     '@nuxt/components'
   ],
+
+  env: {
+    MIX_ENV: (process.env.MIX_ENV || 'dev')
+  },
 
   modules: [
     '@nuxtjs/pwa'

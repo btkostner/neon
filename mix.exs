@@ -76,7 +76,7 @@ defmodule Neon.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
 
       "test.unit": ["ecto.create --quiet", "ecto.migrate", "test test/neon test/neon_server"],
-      "test.browser": ["cmd npm run build", "ecto.create --quiet", "ecto.migrate", "test test/neon_client"]
+      "test.browser": ["ecto.create --quiet", "ecto.migrate", "test test/neon_client"]
     ]
   end
 

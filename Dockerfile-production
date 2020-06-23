@@ -28,8 +28,7 @@ RUN cd /opt/app && \
   mix deps.get && \
   mix deps.compile --all && \
   npm ci && \
-  npm run build && \
-  mix phx.digest && \
+  MIX_ENV=prod npm run build && \
   mix release
 
 # Dockerfile

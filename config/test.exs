@@ -22,6 +22,11 @@ config :logger, level: :warn
 config :wallaby,
   base_url: "http://localhost:4002",
   driver: Wallaby.Selenium,
+  selenium: [
+    capabilities: %{
+      browserName: "chrome"
+    }
+  ],
   opt_app: :neon,
   screenshot_dir: Path.expand("#{__DIR__}/../test/neon_client_errors"),
   screenshot_on_failure: true,
