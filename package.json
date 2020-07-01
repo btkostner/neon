@@ -24,7 +24,7 @@
     "nuxt": "^2.13.2",
     "phoenix": "file:./deps/phoenix",
     "postcss-color-mod-function": "^3.0.3",
-    "vee-validate": "^3.3.2",
+    "vee-validate": "^3.3.6",
     "vue-apollo": "^3.0.3"
   },
   "devDependencies": {
