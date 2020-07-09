@@ -25,10 +25,9 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
-
 export default {
   layout: 'dialog',
+  auth: 'guest',
 
   data: () => ({
     email: '',
@@ -37,17 +36,12 @@ export default {
 
   methods: {
     async login () {
-      await this.$apollo.mutate({
-        mutation: gql`mutation ($email: String!, $password: String!) {
-          login(email: $email, password: $password) {
-            token
-          }
-        }`,
-        variables: {
-          email: this.email,
-          password: this.password
-        }
+      await this.$store.dispatch('auth/login', {
+        email: this.email,
+        password: this.password
       })
+
+      this.$router.push('/dashboard')
     }
   }
 }

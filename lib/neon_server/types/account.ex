@@ -11,8 +11,9 @@ defmodule NeonServer.Types.Account do
     field :user, :user
 
     field :token, :string do
-      resolve fn session, _, _ ->
-        {:ok, Accounts.Session.generate_token(session)}
+      resolve fn session, data, _ ->
+        token = Phoenix.Token.sign(NeonServer.Endpoint, "session_id", session.id)
+        {:ok, token}
       end
     end
 

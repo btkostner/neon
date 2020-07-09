@@ -25,7 +25,7 @@ defmodule Neon.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :email, :password, :role])
+    |> cast(attrs, [:name, :email, :password])
     |> put_password_hash()
     |> validate_required([:name, :email, :password_hash, :role])
     |> validate_length(:name, max: 255)

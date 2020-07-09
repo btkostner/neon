@@ -53,7 +53,6 @@ defmodule Neon.MixProject do
       {:phoenix, "~> 1.5.1"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, "~> 0.15.5"},
-      {:stripity_stripe, "~> 2.8"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:tesla, "~> 1.3.0"},

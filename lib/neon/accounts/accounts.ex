@@ -95,7 +95,11 @@ defmodule Neon.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_session!(id), do: Repo.get!(Session, id)
+  def get_session!(id) do
+    Session
+    |> preload([:user])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a session.
@@ -110,9 +114,27 @@ defmodule Neon.Accounts do
 
   """
   def create_session(attrs \\ %{}) do
-    %Session{}
-    |> Session.changeset(attrs)
-    |> Repo.insert()
+    changeset = Session.changeset(%Session{}, attrs)
+
+    with {:ok, session} <- Repo.insert(changeset),
+         preloaded_session <- Repo.preload(session, :user) do
+      {:ok, preloaded_session}
+    else
+      res -> res
+    end
+  end
+
+  @doc """
+  Checks if the given session is valid for use or not
+
+  ## Examples
+
+      iex> valid_session?(valid_session)
+      true
+
+  """
+  def valid_session?(session) do
+    DateTime.compare(DateTime.utc_now(), session.expired_at) == :lt
   end
 
   @doc """

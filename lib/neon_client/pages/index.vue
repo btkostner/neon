@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1>Dashboard</h1>
+    <h1>Homepage</h1>
+    <nuxt-link to="/dashboard">Dashboard</nuxt-link>
   </div>
 </template>
 
@@ -12,6 +13,7 @@
 
 <script>
 export default {
-  middleware: 'guest'
+  layout: 'marketing',
+  auth: false
 }
 </script>

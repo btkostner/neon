@@ -90,6 +90,7 @@ export default {
 
   methods: {
     handleError (err, vm, info) {
+      console.error(err)
       this.errorMessage = err.message
 
       if (!this.swallowError) {

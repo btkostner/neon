@@ -2,7 +2,7 @@ export default {
   mode: 'spa',
 
   components: true,
-  telemetry: false,
+  telemetry: true,
 
   srcDir: 'lib/neon_client',
 
@@ -10,10 +10,6 @@ export default {
     dir: 'priv/static',
     fallback: '404.html'
   },
-
-  buildModules: [
-    '@nuxt/components'
-  ],
 
   env: {
     MIX_ENV: (process.env.MIX_ENV || 'dev')
@@ -25,7 +21,9 @@ export default {
 
   plugins: [
     '~/plugins/apollo.js',
-    '~/plugins/vee-validate.js'
+    '~/plugins/auth.js',
+    '~/plugins/vee-validate.js',
+    '~/plugins/vuex-persistedstate.js'
   ],
 
   css: [
@@ -63,6 +61,6 @@ export default {
   },
 
   loading: {
-    color: 'var(--secondary-bg-color)'
+    color: '#64baff'
   }
 }

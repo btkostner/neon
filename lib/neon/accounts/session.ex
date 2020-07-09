@@ -41,8 +41,4 @@ defmodule Neon.Accounts.Session do
     |> DateTime.add(@session_expire_seconds, :second)
     |> DateTime.truncate(:second)
   end
-
-  def generate_token(session) do
-    session.id
-  end
 end

@@ -38,6 +38,7 @@ import gql from 'graphql-tag'
 
 export default {
   layout: 'dialog',
+  auth: 'guest',
 
   data: () => ({
     name: '',
@@ -47,23 +48,12 @@ export default {
 
   methods: {
     async register () {
-      const res = await this.$apollo.mutate({
-        mutation: gql`mutation ($name: String!, $email: String!, $password: String!) {
-          register(name: $name, email: $email, password: $password) {
-            token
-            expiredAt
-          }
-        }`,
-        variables: {
-          name: this.name,
-          email: this.email,
-          password: this.password
-        }
+      await this.$store.dispatch('auth/register', {
+        name: this.name,
+        email: this.email,
+        password: this.password
       })
 
-      const { expiredAt, token } = res.data.register
-
-      await this.$apolloHelpers.login(token, new Date(expiredAt))
       this.$router.push('/')
     }
   }
