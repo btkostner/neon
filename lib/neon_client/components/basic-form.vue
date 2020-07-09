@@ -90,6 +90,7 @@ export default {
 
   methods: {
     handleError (err, vm, info) {
+      // eslint-disable-next-line no-console
       console.error(err)
       this.errorMessage = err.message
 
