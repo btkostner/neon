@@ -2,7 +2,7 @@
   <div id="__page">
     <div class="sidebar">
       <div class="sidebar__links">
-        <nuxt-link class="sidebar__link" to="/">
+        <nuxt-link class="sidebar__link" to="/dashboard">
           Dashboard
         </nuxt-link>
       </div>
@@ -10,7 +10,7 @@
       <div class="sidebar__avatar avatar">
         <div class="avatar__look">
           <img
-            v-if="!$apollo.queries && !$apollo.queries.profile.loading"
+            v-if="!$apollo.queries.profile.loading"
             class="avatar__image"
             :src="`${profile.gravatarUrl}?s=48`"
             :alt="profile.name"
