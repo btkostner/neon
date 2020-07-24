@@ -6,11 +6,12 @@ defmodule NeonServer.Resolvers.Account do
   alias Neon.Accounts
 
   def show_profile(_parent, _args, _resolution) do
-    {:ok, %{
-      name: "Blake Kostner",
-      email: "btkostner@gmail.com",
-      role: :admin
-    }}
+    {:ok,
+     %{
+       name: "Blake Kostner",
+       email: "btkostner@gmail.com",
+       role: :admin
+     }}
   end
 
   def list_users(_parent, _args, _resolution) do

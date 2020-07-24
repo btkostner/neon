@@ -1,4 +1,4 @@
-defmodule NeonWeb.Pages.RegisterTest do
+defmodule NeonWeb.Pages.Auth.RegisterTest do
   use ExUnit.Case
   use NeonClient.BrowserCase
 

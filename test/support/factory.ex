@@ -26,7 +26,8 @@ defmodule Neon.Factory do
     %Neon.Accounts.Session{
       user: build(:user),
       ip: "127.0.0.1",
-      user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+      user_agent:
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
       expired_at: ~U[2096-01-01 08:27:13Z]
     }
   end

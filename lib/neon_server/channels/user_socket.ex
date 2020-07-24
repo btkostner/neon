@@ -9,10 +9,9 @@ defmodule NeonServer.UserSocket do
     case get_session(token) do
       {:ok, session} ->
         {:ok,
-          socket
-          |> assign(:session_id, session.id)
-          |> assign(:user_role, session.user.role)
-        }
+         socket
+         |> assign(:session_id, session.id)
+         |> assign(:user_role, session.user.role)}
 
       _ ->
         :error

@@ -63,29 +63,35 @@ defmodule Neon.AccountsTest do
 
     test "with valid data creates a session" do
       user = insert(:user, password: "testing")
-      assert {:ok, %Session{} = session} = Accounts.login_user(%{
-        email: user.email,
-        password: "testing",
-        ip: "127.0.0.1",
-        user_agent: "testing"
-      })
+
+      assert {:ok, %Session{} = session} =
+               Accounts.login_user(%{
+                 email: user.email,
+                 password: "testing",
+                 ip: "127.0.0.1",
+                 user_agent: "testing"
+               })
+
       assert "127.0.0.1" = session.ip
       assert "testing" = session.user_agent
     end
 
     test "with invalid email returns :not_found" do
-      assert {:error, :not_found} = Accounts.login_user(%{
-        email: "no",
-        password: "no"
-      })
+      assert {:error, :not_found} =
+               Accounts.login_user(%{
+                 email: "no",
+                 password: "no"
+               })
     end
 
     test "with invalid password returns :not_found" do
       user = insert(:user, password: "testing")
-      assert {:error, :invalid_password} = Accounts.login_user(%{
-        email: user.email,
-        password: "this is not correct"
-      })
+
+      assert {:error, :invalid_password} =
+               Accounts.login_user(%{
+                 email: user.email,
+                 password: "this is not correct"
+               })
     end
   end
 end

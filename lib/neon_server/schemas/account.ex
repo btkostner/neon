@@ -19,19 +19,19 @@ defmodule NeonServer.Schemas.Account do
   object :account_mutations do
     @desc "Log in a user"
     field :login, type: :session do
-      arg :email, non_null(:string)
-      arg :password, non_null(:string)
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
 
-      resolve &Resolvers.Account.login/3
+      resolve(&Resolvers.Account.login/3)
     end
 
     @desc "Creates a new user"
     field :register, type: :session do
-      arg :name, non_null(:string)
-      arg :email, non_null(:string)
-      arg :password, non_null(:string)
+      arg(:name, non_null(:string))
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
 
-      resolve &Resolvers.Account.register/3
+      resolve(&Resolvers.Account.register/3)
     end
   end
 end

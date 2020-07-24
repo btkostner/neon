@@ -34,7 +34,7 @@ defmodule Neon.Accounts.User do
     |> validate_format(
       :email,
       ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
-      )
+    )
     |> unique_constraint(:email)
   end
 

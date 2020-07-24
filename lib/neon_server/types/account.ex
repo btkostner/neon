@@ -11,10 +11,10 @@ defmodule NeonServer.Types.Account do
     field :user, :user
 
     field :token, :string do
-      resolve fn session, data, _ ->
+      resolve(fn session, data, _ ->
         token = Phoenix.Token.sign(NeonServer.Endpoint, "session_id", session.id)
         {:ok, token}
-      end
+      end)
     end
 
     field :ip, :string
@@ -30,9 +30,9 @@ defmodule NeonServer.Types.Account do
     field :email, :string
 
     field :gravatar_url, :string do
-      resolve fn user, _, _ ->
+      resolve(fn user, _, _ ->
         {:ok, Accounts.User.gravatar_url(user)}
-      end
+      end)
     end
 
     field :password, :string

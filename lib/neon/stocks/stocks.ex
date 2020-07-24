@@ -4,6 +4,7 @@ defmodule Neon.Stocks do
   """
 
   import Ecto.Query
+  import Neon.Query
 
   alias Neon.Repo
   alias Neon.Services.Alpaca
@@ -108,15 +109,22 @@ defmodule Neon.Stocks do
 
   ## Examples
 
-      iex> list_aggregates()
+      iex> list_aggregates("LYFT")
       [%Aggregate{}, ...]
 
-      iex> Aggregate |> where(:symbol, "LYFT") |> list_aggregates()
+      iex> list_aggregates("LYFT", width: "30 minutes")
       [%Aggregate{}, ...]
 
   """
-  def list_aggregates(query \\ Aggregate) do
-    Repo.all(query)
+  def list_aggregates(symbol, opts \\ []) do
+    width = Keyword.get(opts, :width, "5 minutes")
+    limit = Keyword.get(opts, :limit, 100)
+
+    Aggregate
+    |> Aggregate.aggregate_query(interval(width))
+    |> where([a], a.symbol == ^symbol)
+    |> limit(^limit)
+    |> Repo.all()
   end
 
   @doc """
@@ -138,9 +146,14 @@ defmodule Neon.Stocks do
   end
 
   @doc """
-  Inserts backfil aggregate data for a symbol.
+  Inserts backfil aggregate data for a symbol. The second parameter is the
+  exact `DateTime` to start, or the number of days from the current day. If
+  neither is given, we backfill from the last known time.
 
   ## Examples
+
+      iex> backfill_aggregate("LYFT")
+      :ok
 
       iex> backfill_aggregate("LYFT", 30)
       :ok
@@ -164,6 +177,7 @@ defmodule Neon.Stocks do
   end
 
   defp backfill_aggregate_data([]), do: :ok
+
   defp backfill_aggregate_data(aggregate) do
     aggregate
     |> Enum.map(&create_aggregate/1)

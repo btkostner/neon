@@ -17,8 +17,7 @@ defmodule NeonServer.Endpoint do
   end
 
   # Setup the websocket used for Absinthe
-  socket "/socket", NeonServer.UserSocket,
-    websocket: true
+  socket "/socket", NeonServer.UserSocket, websocket: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #

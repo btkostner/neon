@@ -11,8 +11,7 @@ config :neon,
   ecto_repos: [Neon.Repo],
   generators: [binary_id: true]
 
-config :neon, Neon.Repo,
-  migration_timestamps: [type: :utc_datetime]
+config :neon, Neon.Repo, migration_timestamps: [type: :utc_datetime]
 
 # Configures the endpoint
 config :neon, NeonServer.Endpoint,

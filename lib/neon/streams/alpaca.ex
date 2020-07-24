@@ -34,13 +34,17 @@ defmodule Neon.Streams.Alpaca do
   end
 
   def authenticate(pid) do
-    WebSockex.send_frame(pid, {:text, Jason.encode!(%{
-      action: "authenticate",
-      data: %{
-        key_id: Application.get_env(:neon, :alpaca)[:key_id],
-        secret_key: Application.get_env(:neon, :alpaca)[:secret_key]
-      }
-    })})
+    WebSockex.send_frame(
+      pid,
+      {:text,
+       Jason.encode!(%{
+         action: "authenticate",
+         data: %{
+           key_id: Application.get_env(:neon, :alpaca)[:key_id],
+           secret_key: Application.get_env(:neon, :alpaca)[:secret_key]
+         }
+       })}
+    )
   end
 
   def subscribe(pid) do
@@ -51,12 +55,16 @@ defmodule Neon.Streams.Alpaca do
       |> Repo.all()
       |> Enum.map(fn s -> "AM.#{s}" end)
 
-    WebSockex.send_frame(pid, {:text, Jason.encode!(%{
-      action: "listen",
-      data: %{
-        streams: symbols
-      }
-    })})
+    WebSockex.send_frame(
+      pid,
+      {:text,
+       Jason.encode!(%{
+         action: "listen",
+         data: %{
+           streams: symbols
+         }
+       })}
+    )
   end
 
   def handle_frame({:text, message}, state) do
@@ -78,6 +86,7 @@ defmodule Neon.Streams.Alpaca do
     for stream <- streams do
       Logger.debug("Streaming #{stream} from Alpaca")
     end
+
     {:ok, state}
   end
 

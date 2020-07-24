@@ -26,13 +26,15 @@ defmodule NeonClient.BrowserCase do
       import Neon.Factory
 
       import NeonClient.BrowserCase
-      import Wallaby.Query, only: [
-        css: 2,
-        text_field: 1,
-        button: 1,
-        link: 1,
-        link: 2
-      ]
+
+      import Wallaby.Query,
+        only: [
+          css: 2,
+          text_field: 1,
+          button: 1,
+          link: 1,
+          link: 2
+        ]
     end
   end
 

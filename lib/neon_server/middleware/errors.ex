@@ -9,15 +9,13 @@ defmodule NeonServer.Middleware.Errors do
   alias Ecto.Changeset
 
   def call(resolution, _) do
-    %{resolution |
-      errors: Enum.flat_map(resolution.errors, &handle_error/1)
-    }
+    %{resolution | errors: Enum.flat_map(resolution.errors, &handle_error/1)}
   end
 
   defp handle_error(%Changeset{} = changeset) do
     changeset
     |> Changeset.traverse_errors(&format_changeset_error/1)
-    |> Enum.map(fn({k, v}) -> "#{k} #{v}" end)
+    |> Enum.map(fn {k, v} -> "#{k} #{v}" end)
   end
 
   defp handle_error(error), do: [error]

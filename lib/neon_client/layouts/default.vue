@@ -167,7 +167,7 @@ export default {
   data: () => ({
     profile: {
       name: 'Loading...',
-      gravatar: ''
+      gravatarUrl: ''
     }
   })
 }

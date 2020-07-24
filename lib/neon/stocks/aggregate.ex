@@ -7,6 +7,8 @@ defmodule Neon.Stocks.Aggregate do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Ecto.Query
+  import Neon.Query
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -47,6 +49,25 @@ defmodule Neon.Stocks.Aggregate do
     |> validate_number(:low_price, greater_than_or_equal_to: 0)
     |> validate_number(:close_price, greater_than_or_equal_to: 0)
     |> validate_number(:volume, greater_than_or_equal_to: 0)
-    |> unique_constraint([:symbol, :inserted_at], name: "_hyper_2_1_chunk_stocks_aggregate_symbol_inserted_at_index")
+    |> unique_constraint([:symbol, :inserted_at],
+      name: "_hyper_2_1_chunk_stocks_aggregate_symbol_inserted_at_index"
+    )
+  end
+
+  @doc """
+  Timescale DB select clause for an aggregate query
+  """
+  def aggregate_query(query, width) do
+    from a in query,
+      select: %__MODULE__{
+        open_price: max(a.open_price),
+        high_price: max(a.high_price),
+        low_price: min(a.low_price),
+        close_price: min(a.low_price),
+        volume: sum(a.volume),
+        inserted_at: time_bucket(^width, a.inserted_at)
+      },
+      group_by: :inserted_at,
+      order_by: [desc: :inserted_at]
   end
 end

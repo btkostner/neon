@@ -6,10 +6,12 @@ defmodule Neon.Services.Alpaca do
   use Tesla
 
   plug Tesla.Middleware.BaseUrl, "https://data.alpaca.markets"
+
   plug Tesla.Middleware.Headers, [
     {"APCA-API-KEY-ID", Application.get_env(:neon, :alpaca)[:key_id]},
     {"APCA-API-SECRET-KEY", Application.get_env(:neon, :alpaca)[:secret_key]}
   ]
+
   plug Tesla.Middleware.JSON
 
   def get_aggregated(symbol, opts \\ []) do
@@ -38,8 +40,9 @@ defmodule Neon.Services.Alpaca do
   defp format_datetime(datetime), do: DateTime.to_iso8601(datetime, :extended)
 
   defp cast_bars(data, symbol) when is_list(data) do
-    Enum.map(data, &(cast_bars(&1, symbol)))
+    Enum.map(data, &cast_bars(&1, symbol))
   end
+
   defp cast_bars(data, symbol) do
     %{
       symbol: String.upcase(symbol),
