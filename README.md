@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/btkostner/neon/actions">
-    <img src="https://github.com/btkostner/neon/workflows/CI/badge.svg" alt="GitHub Actions">
+    <img src="https://github.com/btkostner/neon/workflows/Publish/badge.svg" alt="GitHub Actions">
   </a>
 </p>
 
@@ -17,5 +17,5 @@ neon is a real time stock trading and monitoring app. It uses web sockets to
 connect to third party stock trading services, Nuxt.JS for the front end user
 view, and Rust for machine learning and predictions.
 
-neon is hosted on [GitHub](https://github.com/btkostner/neon) and uses GitHub
-actions for testing.
+neon source code is hosted on [GitHub](https://github.com/btkostner/neon) and
+uses GitHub actions for testing.

@@ -24,7 +24,7 @@ things.
 
 This project services a fully static SPA written with Nuxt.JS. It is served as
 raw files by the Elixir process and uses GraphQL to communicate. Everything is
-found in the `assets` directory.
+found in the `lib/neon_client` directory.
 
 ### Rust
 
@@ -85,6 +85,10 @@ so all you need to do is run the command for the test you want to run.
 docker-compose run neon mix test.unit
 ```
 
+In order to run the browser tests, you will need to generate the frontend SPA
+app first.
+
 ```sh
+docker-compose run neon npm run build
 docker-compose run neon mix test.browser
 ```
