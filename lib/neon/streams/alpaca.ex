@@ -70,6 +70,8 @@ defmodule Neon.Streams.Alpaca do
   def handle_frame({:text, message}, state) do
     body = Jason.decode!(message)
     handle_stream(body["stream"], body["data"], state)
+  rescue
+    e -> Logger.error(Exception.message(e))
   end
 
   def handle_frame(frame, state) do
@@ -90,8 +92,30 @@ defmodule Neon.Streams.Alpaca do
     {:ok, state}
   end
 
+  def handle_stream("AM." <> symbol, data, state) do
+    Logger.debug("New Aggregate from Alpaca #{symbol}: #{inspect(data)}")
+
+    data
+    |> cast_bar()
+    |> Neon.Stocks.create_aggregate()
+
+    {:ok, state}
+  end
+
   def handle_stream(stream, data, state) do
     Logger.debug("Data from Alpaca stream #{stream}: #{inspect(data)}")
     {:ok, state}
+  end
+
+  defp cast_bar(data) do
+    %{
+      symbol: String.upcase(data["T"]),
+      open_price: data["o"],
+      high_price: data["h"],
+      low_price: data["l"],
+      close_price: data["c"],
+      volume: data["v"],
+      inserted_at: DateTime.from_unix!(data["s"], :millisecond)
+    }
   end
 end

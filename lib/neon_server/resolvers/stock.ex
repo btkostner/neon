@@ -9,4 +9,9 @@ defmodule NeonServer.Resolvers.Stock do
     aggregates = Stocks.list_aggregates(symbol, Neon.Util.to_keyword_list(args))
     {:ok, aggregates}
   end
+
+  def last_aggregate(_parent, %{symbol: symbol} = args, _resolution) do
+    aggregate = Stocks.last_aggregate(symbol, Neon.Util.to_keyword_list(args))
+    {:ok, aggregate}
+  end
 end

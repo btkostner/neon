@@ -41,4 +41,8 @@ defmodule NeonServer.Schema do
   mutation do
     import_fields(:account_mutations)
   end
+
+  subscription do
+    import_fields(:stock_subscriptions)
+  end
 end

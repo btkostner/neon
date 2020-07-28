@@ -128,7 +128,31 @@ defmodule Neon.Stocks do
   end
 
   @doc """
-  Creates a new stock aggregate.
+  Returns the last stick in aggregate data. Used if someone wants to subscribe
+  to more data, so we don't need to query _everything_ again.
+
+  ## Examples
+
+      iex> last_aggregate("LYFT")
+      %Aggregate{}
+
+      iex> last_aggregate("LYFT", width: "30 minutes")
+      %Aggregate{}
+
+  """
+  def last_aggregate(symbol, opts \\ []) do
+    width = Keyword.get(opts, :width, "5 minutes")
+
+    Aggregate
+    |> Aggregate.aggregate_query(interval(width))
+    |> where([a], a.symbol == ^symbol)
+    |> limit(1)
+    |> Repo.one()
+  end
+
+  @doc """
+  Creates a new stock aggregate. If the `inserted_at` date already exists for
+  the symbol, we will update all other fields.
 
   ## Examples
 
@@ -143,7 +167,15 @@ defmodule Neon.Stocks do
     %Aggregate{}
     |> Aggregate.changeset(attrs)
     |> Repo.insert(on_conflict: :replace_all, conflict_target: [:symbol, :inserted_at])
+    |> notify_change()
   end
+
+  defp notify_change({:ok, %Aggregate{} = aggregate}) do
+    Absinthe.Subscription.publish(NeonServer.Endpoint, aggregate, aggregate: aggregate.symbol)
+    {:ok, aggregate}
+  end
+
+  defp notify_change(res), do: res
 
   @doc """
   Inserts backfil aggregate data for a symbol. The second parameter is the

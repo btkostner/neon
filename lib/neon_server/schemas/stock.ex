@@ -18,4 +18,18 @@ defmodule NeonServer.Schemas.Stock do
       resolve(&Resolvers.Stock.list_aggregates/3)
     end
   end
+
+  object :stock_subscriptions do
+    @desc "Subscribe to changes in stock aggregate data"
+    field :aggregate, :aggregate do
+      arg(:symbol, non_null(:string))
+      arg(:width, :string)
+
+      config(fn args, _ ->
+        {:ok, topic: args.symbol}
+      end)
+
+      resolve(&Resolvers.Stock.last_aggregate/3)
+    end
+  end
 end
