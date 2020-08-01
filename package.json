@@ -22,7 +22,7 @@
     "graphql": "^15.3.0",
     "graphql-tag": "^2.10.3",
     "js-cookie": "^2.2.1",
-    "nuxt": "^2.13.3",
+    "nuxt": "^2.14.0",
     "phoenix": "file:./deps/phoenix",
     "postcss-color-mod-function": "^3.0.3",
     "secure-ls": "^1.2.6",
