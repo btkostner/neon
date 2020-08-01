@@ -27,7 +27,7 @@
     "postcss-color-mod-function": "^3.0.3",
     "secure-ls": "^1.2.6",
     "vee-validate": "^3.3.7",
-    "vue-apollo": "^3.0.3",
+    "vue-apollo": "^3.0.4",
     "vue-chartjs": "^3.5.0",
     "vuex-persistedstate": "^3.0.1"
   },
