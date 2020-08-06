@@ -12,26 +12,32 @@ defmodule Mix.Tasks.Backfill do
 
   @default_day_backfill 30
 
-  @start_apps [
-    :hackney,
-    :postgrex,
-    :ecto,
-    :ecto_sql
-  ]
-
-  def run([symbol]) do
-    run([symbol, @default_day_backfill])
-  end
-
-  def run([symbol, days]) do
+  def run(symbols) do
     start_services()
 
-    Logger.info("Backfilling #{days} days for #{symbol}")
-    Stocks.backfill_aggregate(symbol, days)
+    symbols
+    |> Enum.map(&parse_symbol/1)
+    |> Enum.each(fn [symbol, days] ->
+      Logger.info("Backfilling #{days} days for #{symbol}")
+      Stocks.backfill_aggregate(symbol, days)
+    end)
+  end
+
+  defp parse_symbol(input) do
+    case String.split(input, ":") do
+      [symbol] ->
+        [symbol, @default_day_backfill]
+
+      [symbol, days] ->
+        {backfull, _} = Integer.parse(days)
+        [symbol, backfull]
+
+      _ ->
+        Logger.error("Unable to parse \"#{input}\" for backfilling")
+    end
   end
 
   defp start_services() do
-    Enum.each(@start_apps, &Application.ensure_all_started/1)
-    Repo.start_link()
+    Mix.Task.run("app.start")
   end
 end
