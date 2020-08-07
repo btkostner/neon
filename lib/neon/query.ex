@@ -4,8 +4,6 @@ defmodule Neon.Query do
   Wrapped up for convenience and security.
   """
 
-  import Ecto.Query
-
   @doc """
   Timescale db's `time_bucket` SQL function with some security addons.
   """

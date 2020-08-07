@@ -5,15 +5,14 @@ defmodule NeonServer.Types.Account do
 
   use NeonServer, :schema
 
-  alias Neon.Accounts
+  alias Neon.Account
 
-  object :session do
-    field :user, :user
+  object :account_session do
+    field :user, :account_user
 
     field :token, :string do
-      resolve(fn session, data, _ ->
-        token = Phoenix.Token.sign(NeonServer.Endpoint, "session_id", session.id)
-        {:ok, token}
+      resolve(fn session, _data, _ ->
+        {:ok, Phoenix.Token.sign(NeonServer.Endpoint, "session_id", session.id)}
       end)
     end
 
@@ -23,15 +22,15 @@ defmodule NeonServer.Types.Account do
     field :expired_at, :datetime
   end
 
-  object :user do
+  object :account_user do
     field :id, :string
 
     field :name, :string
     field :email, :string
 
-    field :gravatar_url, :string do
+    field :avatar, :string do
       resolve(fn user, _, _ ->
-        {:ok, Accounts.User.gravatar_url(user)}
+        {:ok, Account.User.avatar(user)}
       end)
     end
 

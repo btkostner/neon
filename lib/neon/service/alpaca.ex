@@ -1,4 +1,4 @@
-defmodule Neon.Services.Alpaca do
+defmodule Neon.Service.Alpaca do
   @moduledoc """
   Third party API module for Alpaca.
   """
@@ -14,6 +14,15 @@ defmodule Neon.Services.Alpaca do
 
   plug Tesla.Middleware.JSON
 
+  @doc """
+  Grabs aggregated information from Alpaca.
+
+  ## Examples
+
+      iex> get_aggregated("LYFT", limit: 60)
+      [%{}]
+
+  """
   def get_aggregated(symbol, opts \\ []) do
     query = [
       symbols: String.upcase(symbol),

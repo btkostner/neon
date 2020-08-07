@@ -1,4 +1,4 @@
-defmodule Neon.Streams do
+defmodule Neon.Stream do
   @moduledoc """
   A supervisor tree for all of our live updating websocket connections to third
   party services.
@@ -13,9 +13,10 @@ defmodule Neon.Streams do
   @impl true
   def init(_opts) do
     children = [
-      Neon.Streams.Alpaca
+      Neon.Stream.Alpaca
     ]
 
-    Supervisor.start_link(children, strategy: :one_for_one)
+    opts = [strategy: :one_for_one, name: Neon.Stream.Supervisor]
+    Supervisor.init(children, opts)
   end
 end

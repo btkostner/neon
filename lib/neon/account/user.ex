@@ -1,23 +1,20 @@
-defmodule Neon.Accounts.User do
+defmodule Neon.Account.User do
   @moduledoc """
-  Represents anyone who can log into the system
+  Represents anyone who can log into the system.
   """
 
-  use Ecto.Schema
+  use Neon.Schema
 
-  import Ecto.Changeset
+  @email_regex ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
-
-  schema "users" do
+  schema "account_users" do
     field :name, :string
     field :email, :string
 
     field :password, :string, virtual: true
     field :password_hash, :string
 
-    field :role, Neon.Accounts.RoleEnum, default: :user
+    field :role, Neon.Account.RoleEnum, default: :user
 
     timestamps()
   end
@@ -25,16 +22,13 @@ defmodule Neon.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :email, :password])
+    |> cast(attrs, [:name, :email, :password, :role])
     |> put_password_hash()
     |> validate_required([:name, :email, :password_hash, :role])
     |> validate_length(:name, max: 255)
     |> validate_length(:email, max: 255)
     |> validate_length(:password, min: 8)
-    |> validate_format(
-      :email,
-      ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
-    )
+    |> validate_format(:email, @email_regex)
     |> unique_constraint(:email)
   end
 
@@ -44,7 +38,16 @@ defmodule Neon.Accounts.User do
 
   defp put_password_hash(changeset), do: changeset
 
-  def gravatar_url(user) do
+  @doc """
+  Returns a url to the user's avatar image.
+
+  ## Examples
+
+      iex> avatar(user)
+      "https://www.gravatar.com/avatar/hashinformationhere"
+
+  """
+  def avatar(user) do
     hash =
       user.email
       |> String.trim()

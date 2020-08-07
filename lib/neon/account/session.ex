@@ -1,21 +1,21 @@
-defmodule Neon.Accounts.Session do
+defmodule Neon.Account.Session do
   @moduledoc """
   Tracks every single session instance for a user.
   """
 
-  use Ecto.Schema
+  use Neon.Schema
 
-  import Ecto.Changeset
-
-  alias Neon.Accounts.User
+  alias Neon.Account.User
 
   @session_expire_seconds 3600 * 24 * 2
 
-  schema "sessions" do
-    belongs_to :user, User, type: :binary_id
-
+  schema "account_sessions" do
     field :ip, :string
     field :user_agent, :string
+
+    field :expired, :boolean, default: false
+
+    belongs_to :user, User
 
     timestamps(updated_at: false)
     field :expired_at, :utc_datetime
@@ -24,7 +24,8 @@ defmodule Neon.Accounts.Session do
   @doc false
   def changeset(session, attrs) do
     session
-    |> cast(attrs, [:user_id, :ip, :user_agent, :inserted_at])
+    |> cast(attrs, [:ip, :user_agent, :expired, :user_id, :inserted_at])
+    |> validate_required([:expired, :user_id])
     |> put_expired_at()
     |> foreign_key_constraint(:user_id)
   end
@@ -41,4 +42,18 @@ defmodule Neon.Accounts.Session do
     |> DateTime.add(@session_expire_seconds, :second)
     |> DateTime.truncate(:second)
   end
+
+  @doc """
+  Checks if the given session is valid for use or not
+
+  ## Examples
+
+      iex> valid_session?(valid_session)
+      true
+
+  """
+  def valid?(%{expired: true}), do: false
+
+  def valid?(session),
+    do: DateTime.compare(DateTime.utc_now(), session.expired_at) == :lt
 end

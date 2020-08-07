@@ -16,7 +16,7 @@ defmodule NeonClient.BrowserCase do
 
   use ExUnit.CaseTemplate
 
-  alias Wallaby.Browser
+  import Wallaby.{Browser, Query}
 
   using do
     quote do
@@ -53,11 +53,23 @@ defmodule NeonClient.BrowserCase do
   validation.
   """
   def blur(session) do
-    session
-    |> Browser.execute_script("""
+    execute_script(session, """
       if (document.activeElement != null && document.activeElement.blur != null) {
         document.activeElement.blur()
       }
     """)
+  end
+
+  @doc """
+  A helper to log in under an account.
+  """
+  def login(session, user) do
+    session
+    |> visit("/auth/login")
+    |> fill_in(text_field("Email Address"), with: user.email)
+    |> fill_in(text_field("Password"), with: user.password)
+    |> blur()
+    |> click(button("Login"))
+    |> assert_has(link("Dashboard"))
   end
 end
