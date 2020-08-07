@@ -1,20 +1,11 @@
-defmodule Neon.Accounts do
+defmodule Neon.Account do
   @moduledoc """
   The Accounts context.
   """
 
-  import Ecto.Query
+  use Neon.Context
 
-  alias Neon.Repo
-  alias Neon.Accounts.{Session, User}
-
-  def data() do
-    Dataloader.Ecto.new(Neon.Repo, query: &query/2)
-  end
-
-  def query(queryable, _params) do
-    queryable
-  end
+  alias Neon.Account.{Session, User}
 
   @doc """
   Returns the list of users.
@@ -44,6 +35,22 @@ defmodule Neon.Accounts do
 
   """
   def get_user!(id), do: Repo.get!(User, id)
+
+  @doc """
+  Grabs a user by their email address.
+
+  Raises `Ecto.NoResultsError` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user_by_email!("testing@example.com")
+      %User{}
+
+      iex> get_user_by_email!("nope@example.com")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_by_email!(email), do: Repo.get_by!(User, email: email)
 
   @doc """
   Creates a user.
@@ -82,6 +89,19 @@ defmodule Neon.Accounts do
   end
 
   @doc """
+  Deletes a user.
+
+  ## Examples
+
+      iex> delete_user(user)
+      {:ok, user}
+
+  """
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
+  end
+
+  @doc """
   Gets a single session.
 
   Raises `Ecto.NoResultsError` if the Session does not exist.
@@ -97,7 +117,7 @@ defmodule Neon.Accounts do
   """
   def get_session!(id) do
     Session
-    |> preload([:user])
+    |> Query.preload([:user])
     |> Repo.get!(id)
   end
 
@@ -125,19 +145,6 @@ defmodule Neon.Accounts do
   end
 
   @doc """
-  Checks if the given session is valid for use or not
-
-  ## Examples
-
-      iex> valid_session?(valid_session)
-      true
-
-  """
-  def valid_session?(session) do
-    DateTime.compare(DateTime.utc_now(), session.expired_at) == :lt
-  end
-
-  @doc """
   Logins in a user with the given params
 
   ## Examples
@@ -155,10 +162,13 @@ defmodule Neon.Accounts do
 
   """
   def login_user(params) do
-    user = Repo.get_by(User, email: params.email)
+    check =
+      params.email
+      |> get_user_by_email!()
+      |> Argon2.check_pass(params.password)
 
-    case Argon2.check_pass(user, params.password) do
-      {:ok, %User{}} ->
+    case check do
+      {:ok, %User{} = user} ->
         create_session(Map.put(params, :user_id, user.id))
 
       {:error, "invalid password"} ->
@@ -167,11 +177,8 @@ defmodule Neon.Accounts do
       _ ->
         {:error, :not_found}
     end
-  end
-
-  def login_user(_params) do
-    Argon2.no_user_verify()
-    {:error, :not_found}
+  rescue
+    Ecto.NoResultsError -> {:error, :not_found}
   end
 
   @doc """

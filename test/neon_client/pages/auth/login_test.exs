@@ -19,7 +19,7 @@ defmodule NeonWeb.Pages.Auth.LoginTest do
   end
 
   feature "allows login for a registered account", %{session: session} do
-    user = insert(:user, password: "valid_password")
+    user = insert(:account_user, password: "valid_password")
 
     session =
       session

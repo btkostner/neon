@@ -18,7 +18,7 @@ defmodule Neon.Application do
       # Start Absinthe subscriptions
       {Absinthe.Subscription, NeonServer.Endpoint},
       # Start websocket intake streams
-      Neon.Streams.Alpaca
+      Neon.Stream
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

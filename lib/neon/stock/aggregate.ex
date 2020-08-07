@@ -1,22 +1,16 @@
-defmodule Neon.Stocks.Aggregate do
+defmodule Neon.Stock.Aggregate do
   @moduledoc """
   Ecto database schema for historical bar data graph data on stocks. Each entry
   here is based averaged over 5 minutes.
   """
 
-  use Ecto.Schema
+  use Neon.Schema
 
-  import Ecto.Changeset
-  import Ecto.Query
-  import Neon.Query
+  alias Neon.Stock.Symbol
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
   @timestamps_opts [type: :utc_datetime_usec]
 
-  schema "stocks_aggregates" do
-    field :symbol, :string
-
+  schema "stock_aggregates" do
     field :open_price, :decimal
     field :high_price, :decimal
     field :low_price, :decimal
@@ -24,12 +18,13 @@ defmodule Neon.Stocks.Aggregate do
 
     field :volume, :integer
 
+    belongs_to :symbol, Symbol
+    has_one :market, through: [:symbol, :market]
+
     timestamps(updated_at: false)
   end
 
   @fields ~w(
-    symbol
-
     open_price
     high_price
     low_price
@@ -41,16 +36,16 @@ defmodule Neon.Stocks.Aggregate do
   @doc false
   def changeset(aggregate, attrs) do
     aggregate
-    |> cast(attrs, @fields ++ [:inserted_at])
+    |> cast(attrs, @fields ++ [:symbol_id, :inserted_at])
     |> validate_required(@fields)
-    |> validate_length(:symbol, max: 5)
     |> validate_number(:open_price, greater_than_or_equal_to: 0)
     |> validate_number(:high_price, greater_than_or_equal_to: 0)
     |> validate_number(:low_price, greater_than_or_equal_to: 0)
     |> validate_number(:close_price, greater_than_or_equal_to: 0)
     |> validate_number(:volume, greater_than_or_equal_to: 0)
-    |> unique_constraint([:symbol, :inserted_at],
-      name: "_hyper_2_1_chunk_stocks_aggregate_symbol_inserted_at_index"
+    |> foreign_key_constraint(:symbol_id)
+    |> unique_constraint([:symbol_id, :inserted_at],
+      name: "_hyper_2_1_chunk_stocks_aggregate_symbol_id_inserted_at_index"
     )
   end
 

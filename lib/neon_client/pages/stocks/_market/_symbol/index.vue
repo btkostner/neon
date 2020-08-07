@@ -55,56 +55,7 @@
 </style>
 
 <script>
-import gql from 'graphql-tag'
-
 export default {
-  auth: 'user',
-
-  apollo: {
-    aggregates: {
-      query: gql`query($symbol: String!, $width: String!, $limit: Int!){
-        aggregates(symbol: $symbol, width: $width, limit: $limit) {
-          openPrice
-          highPrice
-          lowPrice
-          closePrice
-          insertedAt
-        }
-      }`,
-      variables () {
-        return {
-          symbol: this.symbol,
-          width: this.width,
-          limit: this.limit
-        }
-      },
-      subscribeToMore: {
-        document: gql`subscription($symbol: String!, $width: String!){
-          aggregate(symbol: $symbol, width: $width) {
-            openPrice
-            highPrice
-            lowPrice
-            closePrice
-            insertedAt
-          }
-        }`,
-        variables () {
-          return {
-            symbol: this.symbol,
-            width: this.width
-          }
-        },
-        updateQuery: (aggregates, { subscriptionData: { aggregate } }) => {
-          // TODO: We could probably make this faster once we perfect sort order
-          // TODO: We probably want to ensure this array doesn't get too long
-          return aggregates
-            .filter(a => (a.insertedAt !== aggregate.insertedAt))
-            .push(aggregate)
-        }
-      }
-    }
-  },
-
   data: () => ({
     aggregates: [],
 

@@ -28,6 +28,6 @@ defmodule NeonWeb.Pages.Auth.RegisterTest do
       |> click(@register_button)
       |> assert_has(link("Dashboard"))
 
-    assert current_path(session) == "/"
+    assert current_path(session) == "/dashboard"
   end
 end

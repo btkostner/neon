@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Backfill do
+defmodule Mix.Tasks.Stock.Backfill do
   @moduledoc """
   Backfills any given symbol for X amount of days
   """
@@ -7,8 +7,7 @@ defmodule Mix.Tasks.Backfill do
 
   require Logger
 
-  alias Neon.Repo
-  alias Neon.Stocks
+  alias Neon.Stock
 
   @default_day_backfill 30
 
@@ -19,7 +18,7 @@ defmodule Mix.Tasks.Backfill do
     |> Enum.map(&parse_symbol/1)
     |> Enum.each(fn [symbol, days] ->
       Logger.info("Backfilling #{days} days for #{symbol}")
-      Stocks.backfill_aggregate(symbol, days)
+      Stock.backfill_aggregate(symbol, days)
     end)
   end
 
@@ -37,7 +36,5 @@ defmodule Mix.Tasks.Backfill do
     end
   end
 
-  defp start_services() do
-    Mix.Task.run("app.start")
-  end
+  defp start_services(), do: Mix.Task.run("app.start")
 end

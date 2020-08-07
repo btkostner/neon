@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Accounts.CreateUser do
+defmodule Mix.Tasks.Account.CreateUser do
   @moduledoc """
   Creates a new user account.
   """
@@ -7,14 +7,7 @@ defmodule Mix.Tasks.Accounts.CreateUser do
 
   require Logger
 
-  alias Neon.Accounts.User
-  alias Neon.Repo
-
-  @start_apps [
-    :postgrex,
-    :ecto,
-    :ecto_sql
-  ]
+  alias Neon.Account
 
   def run([name, email]) do
     run([name, email, :user])
@@ -24,14 +17,17 @@ defmodule Mix.Tasks.Accounts.CreateUser do
     run([name, email, role, random_string(32)])
   end
 
+  @shortdoc "Creates a new user"
   def run([name, email, role, password]) do
     start_services()
 
     user =
-      %User{}
-      |> User.changeset(%{name: name, email: email, password: password})
-      |> Ecto.Changeset.put_change(:role, role)
-      |> Repo.insert!()
+      Account.create_user(%{
+        name: name,
+        email: email,
+        password: password,
+        role: role
+      })
 
     Mix.shell().info("Created #{user.email} with password \"#{password}\"")
   end
@@ -43,8 +39,5 @@ defmodule Mix.Tasks.Accounts.CreateUser do
     |> Base.encode16(case: :lower)
   end
 
-  defp start_services() do
-    Enum.each(@start_apps, &Application.ensure_all_started/1)
-    Repo.start_link()
-  end
+  defp start_services(), do: Mix.Task.run("app.start")
 end

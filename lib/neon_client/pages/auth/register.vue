@@ -52,7 +52,7 @@ export default {
         password: this.password
       })
 
-      this.$router.push('/')
+      this.$router.push('/dashboard')
     }
   }
 }

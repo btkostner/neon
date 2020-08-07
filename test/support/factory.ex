@@ -8,10 +8,10 @@ defmodule Neon.Factory do
 
   use ExMachina.Ecto, repo: Neon.Repo
 
-  def user_factory(attrs) do
+  def account_user_factory(attrs) do
     password = Map.get(attrs, :password, "password")
 
-    user = %Neon.Accounts.User{
+    user = %Neon.Account.User{
       name: "John Wick",
       email: sequence(:email, &"email-#{&1}@example.com"),
       password: password,
@@ -22,12 +22,13 @@ defmodule Neon.Factory do
     merge_attributes(user, attrs)
   end
 
-  def session_factory do
-    %Neon.Accounts.Session{
-      user: build(:user),
+  def account_session_factory do
+    %Neon.Account.Session{
       ip: "127.0.0.1",
       user_agent:
         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+      expired: false,
+      user: build(:account_user),
       expired_at: ~U[2096-01-01 08:27:13Z]
     }
   end

@@ -8,9 +8,22 @@ is going on.
 ## Running
 
 Because this is such a huge project, there is a simple `docker-compose.yml` file
-that will take care of everything you need. Simply run `docker-compose up` and
-access `localhost:4000` for a working environment. This also sets up hot code
-reloading for most of the project (Elixir and JavaScript).
+that will take care of everything you need.
+
+To start, you will want to build the initial images. Don't worry, most of the
+code is hot reloading, so you will not need to do this for every change. Only
+if you are adding or removing packages.
+
+First off, run `docker-compose build`.
+
+Then, you will want to setup the database, so run this:
+`docker-compose run neon mix ecto.setup`.
+
+And finally, you should be able to start the app with `docker-compose up`.
+
+It may take a bit to start up, but after a bit, you should be able to access
+`localhost:4000` to see the site. Most modifications should update
+automatically, so hack away!
 
 ## Languages
 
