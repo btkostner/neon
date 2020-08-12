@@ -36,7 +36,7 @@ defmodule NeonServer.Schemas.Stock do
       arg(:width, :string)
       arg(:limit, :integer)
 
-      resolve(&Resolvers.Stock.list_aggregates/3)
+      resolve(&Stock.list_aggregates/3)
     end
   end
 
@@ -50,7 +50,7 @@ defmodule NeonServer.Schemas.Stock do
         {:ok, topic: args.symbol_id}
       end)
 
-      resolve(&Resolvers.Stock.last_aggregate/3)
+      resolve(&Stock.last_aggregate/3)
     end
   end
 end

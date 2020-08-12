@@ -61,7 +61,7 @@ defmodule Neon.MixProject do
       {:credo, "~> 1.4", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:reverse_proxy_plug, "~> 1.2.1", only: :dev},
+      {:reverse_proxy_plug, "~> 1.3.0", only: :dev},
 
       {:bypass, "~> 1.0", only: :test},
       {:ex_machina, "~> 2.4", only: :test},

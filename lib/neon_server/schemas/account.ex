@@ -21,7 +21,7 @@ defmodule NeonServer.Schemas.Account do
       arg(:email, non_null(:string))
       arg(:password, non_null(:string))
 
-      resolve(&Resolvers.Account.login/3)
+      resolve(&Account.login/3)
     end
 
     @desc "Creates a new user"
@@ -30,7 +30,7 @@ defmodule NeonServer.Schemas.Account do
       arg(:email, non_null(:string))
       arg(:password, non_null(:string))
 
-      resolve(&Resolvers.Account.register/3)
+      resolve(&Account.register/3)
     end
   end
 end
