@@ -16,8 +16,12 @@ defmodule NeonServer.Endpoint do
     plug Phoenix.Ecto.SQL.Sandbox
   end
 
+  # Setup live dashboard socket
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options]]
+
   # Setup the websocket used for Absinthe
-  socket "/socket", NeonServer.UserSocket, websocket: true
+  socket "/graphql", NeonServer.UserSocket, websocket: true
 
   # Serve at "/" the static files from "priv/static" directory.
   #

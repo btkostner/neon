@@ -19,7 +19,7 @@
           <a
             v-if="isAdmin"
             class="sidebar__link"
-            href="/debug"
+            href="/system/debug"
             @click="toggleSettings"
           >
             Debug System
@@ -28,7 +28,7 @@
           <a
             v-if="isAdmin"
             class="sidebar__link"
-            href="/graphiql"
+            href="/system/graphql"
             @click="toggleSettings"
           >
             Debug GraphQL
