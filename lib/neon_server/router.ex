@@ -22,7 +22,8 @@ defmodule NeonServer.Router do
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: NeonServer.Schema,
-      socket: NeonServer.UserSocket
+      socket: NeonServer.UserSocket,
+      interface: :advanced
   end
 
   scope "/", log: false do

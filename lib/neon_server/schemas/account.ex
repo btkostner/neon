@@ -5,14 +5,14 @@ defmodule NeonServer.Schemas.Account do
 
   use NeonServer, :schema
 
-  alias NeonServer.Resolvers.Account
-
   object :account_queries do
     @desc "Get the current user's profile"
-    field :account_profile, :account_user, resolve: &Account.show_profile/3
+    field :account_profile, :account_user,
+      resolve: &Resolvers.Account.show_profile/3
 
     @desc "Get all users"
-    field :account_users, list_of(:account_user), resolve: &Account.list_users/3
+    field :account_users, list_of(:account_user),
+      resolve: &Resolvers.Account.list_users/3
   end
 
   object :account_mutations do
@@ -21,7 +21,7 @@ defmodule NeonServer.Schemas.Account do
       arg(:email, non_null(:string))
       arg(:password, non_null(:string))
 
-      resolve(&Account.login/3)
+      resolve(&Resolvers.Account.login/3)
     end
 
     @desc "Creates a new user"
@@ -30,7 +30,7 @@ defmodule NeonServer.Schemas.Account do
       arg(:email, non_null(:string))
       arg(:password, non_null(:string))
 
-      resolve(&Account.register/3)
+      resolve(&Resolvers.Account.register/3)
     end
   end
 end

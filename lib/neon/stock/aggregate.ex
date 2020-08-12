@@ -4,7 +4,7 @@ defmodule Neon.Stock.Aggregate do
   here is based averaged over 5 minutes.
   """
 
-  use Neon.Schema
+  use Neon, :schema
 
   alias Neon.Stock.Symbol
 

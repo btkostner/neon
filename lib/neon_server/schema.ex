@@ -13,11 +13,8 @@ defmodule NeonServer.Schema do
   import_types(NeonServer.Types.Stock)
 
   def context(ctx) do
-    loader =
-      Dataloader.new()
-      |> Dataloader.add_source(Neon.Repo, Dataloader.Ecto.new(Neon.Repo))
-
-    Map.put(ctx, :loader, loader)
+    ctx
+    |> Map.put(:loader, Neon.Dataloader.source())
   end
 
   def plugins do

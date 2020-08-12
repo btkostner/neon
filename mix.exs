@@ -71,8 +71,9 @@ defmodule Neon.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "ecto.seed"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "ecto.seed": ["run priv/repo/seeds.exs"],
 
       "test.unit": ["ecto.create --quiet", "ecto.migrate", "test test/neon test/neon_server"],
       "test.browser": ["ecto.create --quiet", "ecto.migrate", "test test/neon_client"]

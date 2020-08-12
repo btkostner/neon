@@ -3,7 +3,7 @@ defmodule Neon.Account do
   The Accounts context.
   """
 
-  use Neon.Context
+  use Neon, :context
 
   alias Neon.Account.{Session, User}
 

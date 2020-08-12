@@ -3,7 +3,7 @@ defmodule Neon.Stock.Market do
   Schema for the different stock markets.
   """
 
-  use Neon.Schema
+  use Neon, :schema
 
   alias Neon.Stock.Symbol
 

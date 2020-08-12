@@ -3,6 +3,8 @@ defmodule NeonServer.Resolvers.Account do
   All of the Absinthe resolvers for the Neon.Account context.
   """
 
+  use NeonServer, :resolver
+
   alias Neon.Account
 
   def show_profile(_parent, _args, %{context: %{session_id: session_id}}) do

@@ -3,9 +3,8 @@ defmodule Neon.Stock do
   The context related to anything stock market.
   """
 
-  use Neon.Context
+  use Neon, :context
 
-  import Ecto.Query
   import Neon.Query
 
   alias Neon.Service.Alpaca

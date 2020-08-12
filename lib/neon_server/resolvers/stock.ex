@@ -3,18 +3,12 @@ defmodule NeonServer.Resolvers.Stock do
   All of the Absinthe resolvers for the Neon.Stock context.
   """
 
-  alias Neon.Stock
+  use NeonServer, :resolver
 
-  def list_markets(_parent, _args, _resolution) do
-    {:ok, Stock.list_markets()}
-  end
+  alias Neon.Stock
 
   def get_market(_parent, %{id: id}, _resolution) do
     {:ok, Stock.get_market(id)}
-  end
-
-  def list_symbols(_parent, _args, _resolution) do
-    {:ok, Stock.list_symbols()}
   end
 
   def get_symbol(_parent, %{id: id}, _resolution) do

@@ -4,7 +4,7 @@ defmodule Neon.Stock.Symbol do
   as it can be used in different markets.
   """
 
-  use Neon.Schema
+  use Neon, :schema
 
   alias Neon.Stock.{Aggregate, Market}
 
