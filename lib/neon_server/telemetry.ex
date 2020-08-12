@@ -2,6 +2,7 @@ defmodule NeonServer.Telemetry do
   @moduledoc false
 
   use Supervisor
+
   import Telemetry.Metrics
 
   def start_link(arg) do
@@ -21,24 +22,54 @@ defmodule NeonServer.Telemetry do
 
   def metrics do
     [
+      # Absinthe Metrics
+      summary("absinthe.execute.operation.stop.duration",
+        unit: {:native, :millisecond}
+      ),
+      summary("absinthe.subscription.publish.stop.duration",
+        unit: {:native, :millisecond}
+      ),
+      summary("absinthe.resolve.field.stop.duration",
+        unit: {:native, :millisecond}
+      ),
+      summary("absinthe.middleware.batch.stop.duration",
+        unit: {:native, :millisecond}
+      ),
+
       # Phoenix Metrics
       summary("phoenix.endpoint.stop.duration",
         unit: {:native, :millisecond}
       ),
       summary("phoenix.router_dispatch.stop.duration",
-        tags: [:route],
+        unit: {:native, :millisecond}
+      ),
+
+      # Plug Metrics
+      summary("plug.stop.duration",
         unit: {:native, :millisecond}
       ),
 
       # Database Metrics
-      summary("neon.repo.query.total_time", unit: {:native, :millisecond}),
-      summary("neon.repo.query.decode_time", unit: {:native, :millisecond}),
-      summary("neon.repo.query.query_time", unit: {:native, :millisecond}),
-      summary("neon.repo.query.queue_time", unit: {:native, :millisecond}),
-      summary("neon.repo.query.idle_time", unit: {:native, :millisecond}),
+      summary("neon.repo.query.total_time",
+        unit: {:native, :millisecond}
+      ),
+      summary("neon.repo.query.decode_time",
+        unit: {:native, :millisecond}
+      ),
+      summary("neon.repo.query.query_time",
+        unit: {:native, :millisecond}
+      ),
+      summary("neon.repo.query.queue_time",
+        unit: {:native, :millisecond}
+      ),
+      summary("neon.repo.query.idle_time",
+        unit: {:native, :millisecond}
+      ),
 
       # VM Metrics
-      summary("vm.memory.total", unit: {:byte, :kilobyte}),
+      summary("vm.memory.total",
+        unit: {:byte, :kilobyte}
+      ),
       summary("vm.total_run_queue_lengths.total"),
       summary("vm.total_run_queue_lengths.cpu"),
       summary("vm.total_run_queue_lengths.io")

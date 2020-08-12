@@ -50,6 +50,7 @@ defmodule Neon.MixProject do
       {:jason, "~> 1.0"},
       {:phoenix_ecto, "~> 4.1"},
       {:phoenix_live_dashboard, "~> 0.2.6"},
+      {:phoenix_live_view, "~> 0.14.2"},
       {:phoenix, "~> 1.5.1"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, "~> 0.15.5"},
