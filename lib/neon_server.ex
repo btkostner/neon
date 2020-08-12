@@ -21,8 +21,9 @@ defmodule NeonServer do
     quote do
       use Phoenix.Controller, namespace: NeonServer
 
-      import Plug.Conn
       import NeonServer.Gettext
+      import Phoenix.LiveView.Controller
+      import Plug.Conn
 
       alias NeonServer.Router.Helpers, as: Routes
     end
@@ -35,6 +36,7 @@ defmodule NeonServer do
         namespace: NeonServer
 
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
+      import Phoenix.LiveView.Helpers
 
       unquote(view_helpers())
     end
@@ -47,6 +49,7 @@ defmodule NeonServer do
       import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+      import Phoenix.LiveDashboard.Router
     end
   end
 
