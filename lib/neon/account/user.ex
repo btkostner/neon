@@ -3,7 +3,7 @@ defmodule Neon.Account.User do
   Represents anyone who can log into the system.
   """
 
-  use Neon.Schema
+  use Neon, :schema
 
   @email_regex ~r/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-\.]+\.[a-zA-Z]{2,}$/
 

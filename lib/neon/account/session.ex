@@ -3,7 +3,7 @@ defmodule Neon.Account.Session do
   Tracks every single session instance for a user.
   """
 
-  use Neon.Schema
+  use Neon, :schema
 
   alias Neon.Account.User
 

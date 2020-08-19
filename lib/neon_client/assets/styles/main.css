@@ -16,15 +16,7 @@ body,
   width: 100vw;
 }
 
-html {
-  font-family: var(--ui-font);
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-}
-
 body {
-  background-color: var(--bg-color);
-  color: var(--fg-color);
+  background-color: var(--first-bg-color);
+  color: var(--first-fg-color);
 }

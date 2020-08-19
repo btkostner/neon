@@ -60,20 +60,25 @@
   --slate-900: #0e141f;
 
   --black-100: #666666;
+  --black-200: #535353;
   --black-300: #4d4d4d;
+  --black-400: #383838;
   --black-500: #333333;
+  --black-600: #252525;
   --black-700: #1a1a1a;
+  --black-800: #0c0c0c;
   --black-900: #000000;
-
-  --bg-color: var(--black-700);
-  --fg-color: var(--silver-300);
 
   --accent-color: var(--blueberry-300);
 
-  --secondary-bg-color: var(--black-500);
-  --secondary-fg-color: var(--silver-300);
+  --second-bg-color: var(--black-800);
+  --second-fg-color: var(--silver-500);
 
-  --ui-font: "Open Sans", "Noto Sans", "Roboto", "Droid Sans", sans-serif;
-  --copy-font: "Noto Serif", "Droid Serif", serif;
-  --heading-font: Raleway, var(--ui-font);
+  --first-bg-color: var(--black-700);
+  --first-fg-color: var(--silver-300);
+
+  --third-bg-color: var(--black-500);
+  --third-fg-color: var(--silver-300);
+
+  --font: "Open Sans", "Noto Sans", "Roboto", "Droid Sans", sans-serif;
 }

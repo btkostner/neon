@@ -58,7 +58,7 @@
           <div :class="avatarActivityClasses" />
 
           <div :class="avatarHoverClasses">
-            <font-awesome-icon icon="angle-up" />
+            <font-awesome-icon :icon="faAngleUp" />
           </div>
         </div>
 
@@ -99,11 +99,10 @@
   }
 
   .sidebar {
-    background-color: var(--secondary-bg-color);
-    color: var(--secondary-fg-color);
+    background-color: var(--second-bg-color);
+    color: var(--second-fg-color);
     display: flex;
     flex-direction: column;
-    font-family: var(--ui-font);
     height: 100vh;
     min-width: 20ch;
     overflow-y: auto;
@@ -114,22 +113,24 @@
   }
 
   .sidebar__link {
-    border-radius: 6px;
     color: inherit;
     display: block;
-    margin: 0.6rem;
+    margin: 0 1px 0 0;
     opacity: 1;
-    padding: 0.6rem 1rem;
-    text-decoration: none;
-    transition: all 80ms ease;
+    padding: 0.8rem 1rem;
+    transition: all 120ms ease;
     user-select: none;
   }
 
-  .sidebar__link:hover,
-  .sidebar__link:focus,
   .sidebar__link.nuxt-link-active {
-    background-color: var(--bg-color);
-    color: var(--fg-color);
+    background-color: var(--first-bg-color);
+    box-shadow: inset 0.5ch 0 0 0 var(--second-bg-color);
+    color: var(--first-fg-color);
+  }
+
+  .sidebar__link:hover,
+  .sidebar__link:focus {
+    box-shadow: inset 0.5ch 0 0 0 var(--blueberry-700);
   }
 
   .sidebar__avatar {
@@ -157,34 +158,29 @@
 
   .avatar__image {
     border-radius: 6px;
-    box-shadow: 0 0 0 1px var(--black-700);
     display: block;
     height: 100%;
     width: 100%;
   }
 
   .avatar__activity {
-    border-radius: 8px;
-    height: 12px;
-    left: -6px;
+    border-radius: 4px;
+    height: 8px;
+    left: -4px;
     position: absolute;
-    top: -6px;
-    width: 12px;
+    top: -4px;
+    width: 8px;
     z-index: 3;
   }
 
   .avatar__activity--offline {
     background-color: var(--strawberry-300);
-    box-shadow:
-      inset 0 0 0 1px var(--strawberry-100),
-      0 0 0 1px var(--strawberry-700);
+    box-shadow: 0 0 0 1px var(--strawberry-700);
   }
 
   .avatar__activity--online {
     background-color: var(--lime-300);
-    box-shadow:
-      inset 0 0 0 1px var(--lime-100),
-      0 0 0 1px var(--lime-700);
+    box-shadow: 0 0 0 1px var(--lime-700);
   }
 
   .avatar__hover {
@@ -223,11 +219,10 @@
   }
 
   .avatar__subtitle {
-    color: var(--silver-500);
-    font-size: 0.8rem;
+    color: var(--silver-700);
+    font-size: 0.9rem;
     grid-column: 2 / 3;
     grid-row: 2 / 3;
-    text-decoration: none;
   }
 
   .avatar:hover .avatar__hover,
@@ -254,18 +249,10 @@
 
 <script>
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import gql from 'graphql-tag'
 import { mapGetters } from 'vuex'
 
-library.add(faAngleUp)
-
 export default {
-  components: {
-    FontAwesomeIcon
-  },
-
   apollo: {
     profile: gql`query {
       profile: accountProfile{
@@ -276,6 +263,8 @@ export default {
   },
 
   data: () => ({
+    faAngleUp,
+
     profile: {
       name: 'Loading...',
       avatar: ''

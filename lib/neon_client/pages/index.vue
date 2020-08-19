@@ -55,7 +55,6 @@
     color: var(--blueberry-500);
     cursor: pointer;
     display: inline-flex;
-    font-family: var(--ui-font);
     font-size: 1.2rem;
     justify-content: center;
     padding: 0.5rem 0.75rem;

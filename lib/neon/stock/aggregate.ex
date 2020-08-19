@@ -4,7 +4,7 @@ defmodule Neon.Stock.Aggregate do
   here is based averaged over 5 minutes.
   """
 
-  use Neon.Schema
+  use Neon, :schema
 
   alias Neon.Stock.Symbol
 
@@ -47,22 +47,5 @@ defmodule Neon.Stock.Aggregate do
     |> unique_constraint([:symbol_id, :inserted_at],
       name: "_hyper_2_1_chunk_stocks_aggregate_symbol_id_inserted_at_index"
     )
-  end
-
-  @doc """
-  Timescale DB select clause for an aggregate query
-  """
-  def aggregate_query(query, width) do
-    from a in query,
-      select: %__MODULE__{
-        open_price: max(a.open_price),
-        high_price: max(a.high_price),
-        low_price: min(a.low_price),
-        close_price: min(a.low_price),
-        volume: sum(a.volume),
-        inserted_at: time_bucket(^width, a.inserted_at)
-      },
-      group_by: :inserted_at,
-      order_by: [desc: :inserted_at]
   end
 end

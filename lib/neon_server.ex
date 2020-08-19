@@ -56,13 +56,24 @@ defmodule NeonServer do
   def channel do
     quote do
       use Phoenix.Channel
+
       import NeonServer.Gettext
+    end
+  end
+
+  def resolver do
+    quote do
+      import Absinthe.Resolution.Helpers
     end
   end
 
   def schema do
     quote do
       use Absinthe.Schema.Notation
+
+      import Absinthe.Resolution.Helpers
+
+      alias NeonServer.Resolvers
     end
   end
 

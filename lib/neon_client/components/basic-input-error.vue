@@ -15,7 +15,6 @@
     color: var(--strawberry-500);
     display: block;
     display: flex;
-    font-family: var(--ui-font);
     font-size: 0.9rem;
     justify-content: flex-start;
     line-height: 1;

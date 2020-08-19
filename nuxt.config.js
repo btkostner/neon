@@ -22,6 +22,7 @@ export default {
   plugins: [
     '~/plugins/apollo.js',
     '~/plugins/auth.js',
+    '~/plugins/font-awesome.js',
     '~/plugins/vee-validate.js',
     '~/plugins/vuex-persistedstate.js'
   ],

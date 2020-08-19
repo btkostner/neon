@@ -71,7 +71,6 @@ export default {
     border: 1px solid var(--slate-500);
     color: var(--silver-500);
     display: block;
-    font-family: var(--copy-font);
     font-size: 1rem;
     margin: 0;
     padding: 0.5rem 0.75rem;

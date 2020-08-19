@@ -82,6 +82,10 @@ export default {
       }
     },
 
+    market () {
+      return this.$route.params.market.toUpperCase()
+    },
+
     symbol () {
       return this.$route.params.symbol.toUpperCase()
     },
