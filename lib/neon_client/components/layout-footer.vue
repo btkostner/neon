@@ -15,7 +15,6 @@
     color: var(--silver-700);
     display: flex;
     flex-wrap: wrap;
-    font-family: var(--ui-font);
     justify-content: space-between;
     padding: 1rem;
     user-select: none;

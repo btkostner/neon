@@ -15,10 +15,11 @@
     </h1>
 
     <slot
+      v-if="errorMessage"
       name="error"
       v-bind="{ errorMessage }"
     >
-      <span v-if="errorMessage">
+      <span>
         {{ errorMessage }}
       </span>
     </slot>
@@ -28,10 +29,10 @@
     <div :class="$style.actions">
       <slot
         name="actions"
-        v-bind="{ submitting, submittable: (binds.valid && !submitting), ...binds }"
+        v-bind="{ submitting, submittable: ((binds.passed || !binds.failed) && !submitting), ...binds }"
       >
         <form-button
-          :disabled="!binds.valid || submitting"
+          :disabled="(!binds.passed && binds.failed) || submitting"
           @click.prevent="submit"
         >
           {{ submitText }}

@@ -25,9 +25,12 @@ defmodule Neon do
     end
   end
 
-  def dataloader do
+  def query do
     quote do
+      import Ecto.Query
+      import Neon.Query
 
+      alias Neon.Repo
     end
   end
 

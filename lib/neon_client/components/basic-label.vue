@@ -30,7 +30,6 @@ export default {
 <style module>
   .label {
     display: block;
-    font-family: var(--ui-font);
     font-size: 0.9rem;
     padding: 0.2rem 0.75rem;
     text-align: left;

@@ -8,7 +8,7 @@ defmodule Neon.Stock do
   import Neon.Query
 
   alias Neon.Service.Alpaca
-  alias Neon.Stock.{Aggregate, Market, Symbol}
+  alias Neon.Stock.{Aggregate, Market, Query, Symbol}
 
   @doc """
   Returns the list of transactions.
@@ -18,9 +18,14 @@ defmodule Neon.Stock do
       iex> list_markets()
       [%Market{}, ...]
 
+      iex> list_markets(%{limit: 20})
+      [%Market{}, ...]
+
   """
-  def list_markets do
-    Repo.all(Market)
+  def list_markets(params \\ %{}) do
+    Market
+    |> Query.query(params)
+    |> Repo.all()
   end
 
   @doc """
@@ -28,14 +33,18 @@ defmodule Neon.Stock do
 
   ## Examples
 
-      iex> get_market(123)
+      iex> get_market(%{id: 123})
       %Market{}
 
-      iex> get_market(456)
+      iex> get_market(%{id: 456})
       nil
 
   """
-  def get_market(id), do: Repo.get(Market, id)
+  def get_market(params) do
+    Market
+    |> Query.query(params)
+    |> Repo.one()
+  end
 
   @doc """
   Creates a market.
@@ -97,9 +106,14 @@ defmodule Neon.Stock do
       iex> list_symbols()
       [%Symbol{}, ...]
 
+      iex> list_symbols(%{limit: 20})
+      [%Symbol{}, ...]
+
   """
-  def list_symbols do
-    Repo.all(Symbol)
+  def list_symbols(params \\ %{}) do
+    Symbol
+    |> Query.query(params)
+    |> Repo.all()
   end
 
   @doc """
@@ -107,14 +121,18 @@ defmodule Neon.Stock do
 
   ## Examples
 
-      iex> get_symbol(123)
+      iex> get_symbol(%{id: 123})
       %Market{}
 
-      iex> get_symbol(456)
+      iex> get_symbol(%{id: 456})
       nil
 
   """
-  def get_symbol(id), do: Repo.get(Symbol, id)
+  def get_symbol(params) do
+    Symbol
+    |> Query.query(params)
+    |> Repo.one()
+  end
 
   @doc """
   Creates a symbol.
@@ -173,45 +191,17 @@ defmodule Neon.Stock do
 
   ## Examples
 
-      iex> list_aggregates(%Symbol{})
+      iex> list_aggregates(%{symbol_id: 123, limit: 300})
       [%Aggregate{}, ...]
 
-      iex> list_aggregates(%Symbol{}, width: "30 minutes")
+      iex> list_aggregates(%{symbol_id: 123, width: "30 minutes"})
       [%Aggregate{}, ...]
 
   """
-  def list_aggregates(%{id: symbol_id}, opts \\ []) do
-    width = Keyword.get(opts, :width, "5 minutes")
-    limit = Keyword.get(opts, :limit, 100)
-
+  def list_aggregates(params \\ %{}) do
     Aggregate
-    |> Aggregate.aggregate_query(interval(width))
-    |> where([a], a.symbol_id == ^symbol_id)
-    |> limit(^limit)
+    |> Query.query(params)
     |> Repo.all()
-  end
-
-  @doc """
-  Returns the last stick in aggregate data. Used if someone wants to subscribe
-  to more data, so we don't need to query _everything_ again.
-
-  ## Examples
-
-      iex> last_aggregate(%Symbol{})
-      %Aggregate{}
-
-      iex> last_aggregate(%Symbol{}, width: "30 minutes")
-      %Aggregate{}
-
-  """
-  def last_aggregate(%{id: symbol_id}, opts \\ []) do
-    width = Keyword.get(opts, :width, "5 minutes")
-
-    Aggregate
-    |> Aggregate.aggregate_query(interval(width))
-    |> where([a], a.symbol_id == ^symbol_id)
-    |> limit(1)
-    |> Repo.one()
   end
 
   @doc """

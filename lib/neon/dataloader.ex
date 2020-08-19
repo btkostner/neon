@@ -8,6 +8,6 @@ defmodule Neon.Dataloader do
   """
   def source() do
     Dataloader.new()
-    |> Dataloader.add_source(Neon.Stock, Neon.Stock.Dataloader.source())
+    |> Dataloader.add_source(Neon.Stock, Neon.Stock.Query.source())
   end
 end

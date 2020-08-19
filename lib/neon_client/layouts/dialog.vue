@@ -10,6 +10,8 @@
 
 <style scoped>
   .page {
+    background-color: var(--second-bg-color);
+    color: var(--second-fg-color);
     display: flex;
     flex-direction: column;
   }

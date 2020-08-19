@@ -1,5 +1,9 @@
 html {
-  font-family: var(--copy-font);
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font);
   font-weight: 400;
   word-spacing: -0.05em;
 }
@@ -11,14 +15,24 @@ html {
 }
 
 a {
-  color: var(--accent-color);
-  opacity: 0.8;
+  color: inherit;
   text-decoration-skip-ink: auto;
-  transition: opacity 250ms ease;
+  text-decoration: none;
 }
 
 a:hover,
 a:focus {
+  text-decoration: underline;
+}
+
+article a {
+  color: var(--accent-color);
+  opacity: 0.8;
+  transition: opacity 250ms ease;
+}
+
+article a:hover,
+article a:focus {
   opacity: 1;
 }
 
@@ -28,7 +42,6 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--heading-font);
   line-height: 1.2em;
   margin-top: 2em;
   margin-bottom: 0;
@@ -53,7 +66,6 @@ header h1 {
 }
 
 header h1 + h2 {
-  font-family: var(--ui-font);
   font-size: 1.2rem;
   font-weight: normal;
   opacity: 0.5;
@@ -64,7 +76,6 @@ header h2 {
 }
 
 header h2 + h3 {
-  font-family: var(--ui-font);
   font-size: 0.9rem;
   font-weight: normal;
   opacity: 0.5;
