@@ -5,8 +5,6 @@ defmodule NeonServer.Schemas.Stock do
 
   use NeonServer, :schema
 
-  alias Neon.Stock
-
   object :stock_queries do
     @desc "List all of the stock markets"
     field :stock_markets, list_of(:stock_market) do
@@ -49,9 +47,11 @@ defmodule NeonServer.Schemas.Stock do
     field :stock_aggregates, list_of(:stock_aggregate) do
       arg(:symbol_id, :id)
 
+      arg(:from, :datetime)
+      arg(:to, :datetime)
       arg(:width, non_null(:string), default_value: "5 minutes")
 
-      arg(:limit, non_null(:integer), default_value: 100)
+      arg(:limit, non_null(:integer), default_value: 1000)
 
       resolve(&Resolvers.Stock.list_aggregates/3)
     end
@@ -68,7 +68,24 @@ defmodule NeonServer.Schemas.Stock do
         {:ok, topic: args.symbol_id}
       end)
 
-      resolve(&Resolvers.Stock.last_aggregates/3)
+      trigger :stock_backfill, topic: fn res ->
+        case res do
+          [%{symbol_id: symbol_id} | _] -> symbol_id
+          _ -> nil
+        end
+      end
+
+      resolve(&Resolvers.Stock.last_aggregate/3)
+    end
+  end
+
+  object :stock_mutations do
+    @desc "Backfills a stock"
+    field :stock_backfill, type: list_of(:stock_aggregate) do
+      arg(:symbol_id, non_null(:string))
+      arg(:days, non_null(:integer), default_value: 30)
+
+      resolve(&Resolvers.Stock.backfill_symbol/3)
     end
   end
 end

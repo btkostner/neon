@@ -20,6 +20,14 @@ defmodule Neon.Stock.Market do
   def changeset(market, attrs) do
     market
     |> cast(attrs, [:abbreviation, :name])
+    |> uppercase(:abbreviation)
     |> validate_required([:abbreviation])
+  end
+
+  defp uppercase(changeset, field) do
+    case get_change(changeset, field) do
+      nil -> changeset
+      value -> put_change(changeset, field, String.upcase(value))
+    end
   end
 end

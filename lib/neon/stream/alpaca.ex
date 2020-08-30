@@ -56,7 +56,7 @@ defmodule Neon.Stream.Alpaca do
   end
 
   def handle_stream("listening", %{"streams" => streams}, state) do
-    Enum.each(streams, &Logger.debug("Streaming #{&1} from Alpaca"))
+    Logger.debug("Streaming #{length(streams)} symbols from Alpaca")
     {:ok, state}
   end
 
@@ -90,7 +90,10 @@ defmodule Neon.Stream.Alpaca do
   end
 
   def subscribe() do
-    symbols = Enum.map(get_symbols(), fn s -> "AM.#{s}" end)
+    symbols =
+      [market_abbreviation: @markets]
+      |> Stock.list_symbols()
+      |> Enum.map(fn s -> "AM.#{s.symbol}" end)
 
     if length(symbols) != 0 do
       WebSockex.cast(
@@ -107,10 +110,10 @@ defmodule Neon.Stream.Alpaca do
   end
 
   defp cast_bar(data) do
-    symbol_id = get_symbol_id(String.upcase(data["T"]))
+    symbol = Stock.get_symbol(symbol: data["T"], market_abbreviation: @markets)
 
     %{
-      symbol_id: symbol_id,
+      symbol_id: symbol.id,
       open_price: data["o"],
       high_price: data["h"],
       low_price: data["l"],
@@ -118,27 +121,5 @@ defmodule Neon.Stream.Alpaca do
       volume: data["v"],
       inserted_at: DateTime.from_unix!(data["s"], :millisecond)
     }
-  end
-
-  defp get_symbols() do
-    query =
-      from s in Stock.Symbol,
-        select: [s.symbol],
-        join: m in assoc(s, :market),
-        where: m.abbreviation in @markets
-
-    Repo.all(query)
-  end
-
-  defp get_symbol_id(symbol) do
-    query =
-      from s in Stock.Symbol,
-        select: [s.id],
-        join: m in assoc(s, :market),
-        where: m.abbreviation in @markets,
-        where: s.symbol == ^symbol,
-        limit: 1
-
-    Repo.one(query)
   end
 end

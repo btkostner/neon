@@ -1,46 +1,45 @@
 <template>
-  <div class="page">
-    <h1>{{ symbol }}</h1>
+  <div :class="['page', style]">
+    <header>
+      <h1>{{ symbol.symbol }}</h1>
+
+      <template v-if="diffPrice">
+        {{ diffPrice }}
+      </template>
+    </header>
 
     <div class="graph">
-      <button
-        :disabled="zoom === 'day'"
-        @click="zoom = 'day'"
-      >
-        1 Day
-      </button>
+      <svg ref="chart" />
+    </div>
 
-      <button
-        :disabled="zoom === 'week'"
-        @click="zoom = 'week'"
-      >
-        1 Week
-      </button>
-
-      <button
-        :disabled="zoom === 'month'"
-        @click="zoom = 'month'"
-      >
-        1 Month
-      </button>
-
-      <button
-        :disabled="zoom === 'year'"
-        @click="zoom = 'year'"
-      >
-        1 Year
-      </button>
-
-      <aggregate-graph
-        :aggregates="aggregates"
+    <div>
+      <form-input
+        id="days"
+        label="days"
+        v-model.number="days"
+        type="number"
       />
+
+      <form-button @click="backfill">
+        Backfill
+      </form-button>
     </div>
   </div>
 </template>
 
 <style scoped>
   .page {
+    --accent: var(--first-bg-color);
+
     padding: 1rem;
+  }
+
+  .page.up {
+    --accent: var(--lime-300);
+  }
+
+  .page.down {
+    --accent: var(--strawberry-300);
   }
 
   h1 {
@@ -48,56 +47,180 @@
   }
 
   .graph {
-    max-height: 80vh;
-    max-width: 100%;
-    padding: 2rem 0;
+    background-color: var(--accent);
+    height: 60vh;
+    margin: 1rem 0;
+    width: 100%;
   }
 </style>
 
 <script>
+import d3 from 'd3'
+import gql from 'graphql-tag'
+import { startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns'
+
 export default {
+  apollo: {
+    aggregates: {
+      query: gql`query($symbol: ID!, $width: String!, $from: DateTime!) {
+        aggregates: stockAggregates(symbolId: $symbol, width: $width, from: $from){
+          openPrice
+          highPrice
+          lowPrice
+          closePrice
+          volume
+          insertedAt
+        }
+      }`,
+      variables () {
+        return {
+          symbol: this.symbol.id,
+          from: this.fromDate,
+          width: this.width
+        }
+      },
+      skip () {
+        return (this.symbol.id == null)
+      },
+      subscribeToMore: {
+        document: gql`subscription ($symbol: ID!, $width: String!) {
+          aggregate: stockAggregates(symbolId: $symbol, width: $width){
+            openPrice
+            highPrice
+            lowPrice
+            closePrice
+            volume
+            insertedAt
+          }
+        }`,
+        variables () {
+          return {
+            symbol: this.symbol.id,
+            width: this.width
+          }
+        },
+        updateQuery: ({ aggregates }, { subscriptionData: { data: { aggregate }}}) => {
+          const newAggregates = aggregates
+            .filter((a) => (a.insertedAt !== aggregate.insertedAt))
+            .push(aggregate)
+
+          return { aggregates: newAggregates }
+        },
+      }
+    },
+
+    symbol: {
+      query: gql`query($market: String!, $symbol: String!) {
+        symbol: stockSymbol(marketAbbreviation: $market, symbol: $symbol) {
+          id
+          symbol
+          market {
+            id
+            abbreviation
+          }
+        }
+      }`,
+      variables () {
+        return {
+          market: this.$route.params.market.toUpperCase(),
+          symbol: this.$route.params.symbol.toUpperCase()
+        }
+      }
+    }
+  },
+
   data: () => ({
     aggregates: [],
+    symbol: {
+      id: null
+    },
 
-    zoom: 'day'
+    timeframe: 'day',
+
+    days: 30
   }),
 
   computed: {
-    limit () {
-      switch (this.zoom) {
-        case 'day':
-          return 96
+    aggregateData () {
+      return this.aggregates
+        .sort((a, b) => (a.insertedAt - b.insertedAt))
+    },
 
-        case 'week':
-          return 672
-
-        case 'month':
-          return 2920
-
-        case 'year':
-          return 35040
-
-        default:
-          return 666
+    diffPrice () {
+      if (this.firstData != null && this.lastData != null) {
+        return this.firstData.openPrice - this.lastData.openPrice
+      } else {
+        return null
       }
     },
 
-    market () {
-      return this.$route.params.market.toUpperCase()
+    firstData () {
+      return this.aggregateData[0]
     },
 
-    symbol () {
-      return this.$route.params.symbol.toUpperCase()
+    fromDate () {
+      switch (this.timeframe) {
+        case 'week':
+          return startOfWeek(new Date())
+
+        case 'month':
+          return startOfMonth(new Date())
+
+        case 'year':
+          return startOfYear(new Date())
+
+        default:
+          return startOfDay(new Date())
+      }
+    },
+
+    lastData () {
+      return this.aggregateData[this.aggregateData.length - 1]
+    },
+
+    style () {
+      if (this.diffPrice != null) {
+        return (this.diffPrice > 0) ? 'up' : 'down'
+      } else {
+        return null
+      }
     },
 
     width () {
-      switch (this.zoom) {
-        case 'day':
-          return '5 minutes'
+      switch (this.timeframe) {
+        case 'week':
+          return '1 hour'
+
+        case 'month':
+          return '12 hours'
+
+        case 'year':
+          return '5 day'
 
         default:
-          return '15 minutes'
+          return '5 minutes'
       }
+    }
+  },
+
+  methods: {
+    async backfill () {
+      await this.$apollo.mutate({
+        mutation: gql`mutation($symbol: String!, $days: Integer!) {
+          backfill: stockBackfill(symbolId: $symbol, days: $days) {
+            openPrice
+            highPrice
+            lowPrice
+            closePrice
+            volume
+            insertedAt
+          }
+        }`,
+        variables: {
+          symbol: this.symbol.id,
+          days: this.days
+        }
+      })
     }
   }
 }

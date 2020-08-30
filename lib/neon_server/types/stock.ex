@@ -32,7 +32,11 @@ defmodule NeonServer.Types.Stock do
       resolve: dataloader(Stock)
 
     field :aggregates, list_of(:stock_aggregate) do
-      arg(:limit, non_null(:integer), default_value: 100)
+      arg(:from, :datetime)
+      arg(:to, :datetime)
+      arg(:width, non_null(:string), default_value: "5 minutes")
+
+      arg(:limit, non_null(:integer), default_value: 1000)
 
       resolve dataloader(Stock)
     end

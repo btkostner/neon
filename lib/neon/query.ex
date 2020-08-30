@@ -29,22 +29,22 @@ defmodule Neon.Query do
     {time, remainder} = Integer.parse(interval)
 
     cond do
-      String.ends_with?(remainder, "seconds") ->
+      String.contains?(remainder, "second") ->
         %Postgrex.Interval{secs: time}
 
-      String.ends_with?(remainder, "minutes") ->
+      String.contains?(remainder, "minute") ->
         %Postgrex.Interval{secs: time * 60}
 
-      String.ends_with?(remainder, "hours") ->
+      String.contains?(remainder, "hour") ->
         %Postgrex.Interval{secs: time * 60 * 60}
 
-      String.ends_with?(remainder, "days") ->
+      String.contains?(remainder, "day") ->
         %Postgrex.Interval{days: time}
 
-      String.ends_with?(remainder, "months") ->
+      String.contains?(remainder, "month") ->
         %Postgrex.Interval{months: time}
 
-      String.ends_with?(remainder, "years") ->
+      String.contains?(remainder, "year") ->
         %Postgrex.Interval{months: time * 12}
     end
   end

@@ -18,11 +18,11 @@ defmodule Neon.Stock do
       iex> list_markets()
       [%Market{}, ...]
 
-      iex> list_markets(%{limit: 20})
+      iex> list_markets(limit: 20)
       [%Market{}, ...]
 
   """
-  def list_markets(params \\ %{}) do
+  def list_markets(params \\ []) do
     Market
     |> Query.query(params)
     |> Repo.all()
@@ -33,10 +33,10 @@ defmodule Neon.Stock do
 
   ## Examples
 
-      iex> get_market(%{id: 123})
+      iex> get_market(id: 123)
       %Market{}
 
-      iex> get_market(%{id: 456})
+      iex> get_market(id: 456)
       nil
 
   """
@@ -106,11 +106,11 @@ defmodule Neon.Stock do
       iex> list_symbols()
       [%Symbol{}, ...]
 
-      iex> list_symbols(%{limit: 20})
+      iex> list_symbols(limit: 20)
       [%Symbol{}, ...]
 
   """
-  def list_symbols(params \\ %{}) do
+  def list_symbols(params \\ []) do
     Symbol
     |> Query.query(params)
     |> Repo.all()
@@ -121,10 +121,10 @@ defmodule Neon.Stock do
 
   ## Examples
 
-      iex> get_symbol(%{id: 123})
+      iex> get_symbol(id: 123)
       %Market{}
 
-      iex> get_symbol(%{id: 456})
+      iex> get_symbol(id: 456)
       nil
 
   """
@@ -191,14 +191,14 @@ defmodule Neon.Stock do
 
   ## Examples
 
-      iex> list_aggregates(%{symbol_id: 123, limit: 300})
+      iex> list_aggregates(symbol_id: 123, limit: 300)
       [%Aggregate{}, ...]
 
-      iex> list_aggregates(%{symbol_id: 123, width: "30 minutes"})
+      iex> list_aggregates(symbol_id: 123, width: "30 minutes")
       [%Aggregate{}, ...]
 
   """
-  def list_aggregates(params \\ %{}) do
+  def list_aggregates(params \\ []) do
     Aggregate
     |> Query.query(params)
     |> Repo.all()
@@ -248,34 +248,45 @@ defmodule Neon.Stock do
       :ok
 
   """
-  def backfill_aggregate(%Aggregate{symbol_id: symbol_id, inserted_at: inserted_at}) do
-    case get_symbol(symbol_id) do
-      nil ->
-        :not_found
-
-      symbol ->
-        start_at = DateTime.add(inserted_at, 60 * 5, :second)
-        backfill_aggregate(symbol, start_at)
+  def backfill_aggregate(%Aggregate{symbol_id: symbol_id} = aggregate) do
+    case get_symbol(id: symbol_id) do
+      nil -> :not_found
+      symbol -> backfill_aggregate(symbol, aggregate)
     end
   end
 
-  def backfill_aggregate(%{symbol: symbol}, %DateTime{} = start) do
-    {:ok, aggregated} = Alpaca.get_aggregated(symbol, start: start)
-    backfill_aggregate_data(aggregated)
+  def backfill_aggregate(symbol, start, res \\ [])
+
+  def backfill_aggregate(symbol, %Aggregate{inserted_at: inserted_at}, res) do
+    start_at = DateTime.add(inserted_at, 60 * 5, :second)
+    backfill_aggregate(symbol, start_at, res)
   end
 
-  def backfill_aggregate(%{symbol: symbol}, days) do
-    backfill_aggregate(symbol, Neon.Util.date_days_ago(days))
+  def backfill_aggregate(symbol, days, res) when is_integer(days) do
+    backfill_aggregate(symbol, Neon.Util.date_days_ago(days), res)
   end
 
-  defp backfill_aggregate_data([]), do: :ok
+  def backfill_aggregate(symbol, %DateTime{} = start, res) do
+    case DateTime.compare(start, DateTime.utc_now()) do
+      :lt ->
+        {:ok, data} = Alpaca.get_aggregated(symbol, start: start)
 
-  defp backfill_aggregate_data(aggregate) do
-    aggregate
-    |> Enum.map(&create_aggregate/1)
-    |> Enum.map(fn {:ok, aggregate} -> aggregate end)
-    |> Enum.sort(&(DateTime.compare(&1.inserted_at, &2.inserted_at) == :lt))
-    |> Enum.at(-1)
-    |> backfill_aggregate()
+        aggregates =
+          data
+          |> Enum.map(&create_aggregate/1)
+          |> Enum.map(fn {:ok, aggregate} -> aggregate end)
+          |> Enum.sort(&(DateTime.compare(&1.inserted_at, &2.inserted_at) == :lt))
+
+        new_start_at =
+          aggregates
+          |> Enum.at(-1, %{})
+          |> Map.get(:inserted_at, DateTime.utc_now())
+          |> DateTime.add(60 * 5, :second)
+
+        backfill_aggregate(symbol, new_start_at, res ++ aggregates)
+
+      _ ->
+        {:ok, res}
+    end
   end
 end

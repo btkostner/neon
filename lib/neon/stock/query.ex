@@ -11,12 +11,18 @@ defmodule Neon.Stock.Query do
   def source(),
     do: Dataloader.Ecto.new(Repo, query: &query/2)
 
-  def query(source, args) when is_map(args),
-    do: Enum.reduce(args, source, &(query(source, &2, &1)))
+  def query(source, args) when is_map(args) or is_list(args) do
+    Enum.reduce(args, source, &(query(source, &2, &1)))
+  end
 
   def query(_source, query, {:id, id}) do
     from q in query,
       where: q.id == ^id
+  end
+
+  def query(_source, query, {:limit, limit}) do
+    from q in query,
+      limit: ^limit
   end
 
   def query(Symbol, query, {:market_id, market_id}) do
@@ -25,10 +31,18 @@ defmodule Neon.Stock.Query do
       where: m.id == ^market_id
   end
 
-  def query(Symbol, query, {:market_abbreviation, abbreviation}) do
+  def query(Symbol, query, {:market_abbreviation, abbrs}) when is_list(abbrs) do
+    upcase_abbrs = Enum.map(abbrs, &String.upcase/1)
+
     from q in query,
       join: m in assoc(q, :market),
-      where: m.abbreviation == ^abbreviation
+      where: m.abbreviation in ^upcase_abbrs
+  end
+
+  def query(Symbol, query, {:market_abbreviation, abbr}) do
+    from q in query,
+      join: m in assoc(q, :market),
+      where: m.abbreviation == ^String.upcase(abbr)
   end
 
   def query(Symbol, query, {:symbol, symbol}) do
@@ -36,9 +50,15 @@ defmodule Neon.Stock.Query do
       where: q.symbol == ^String.upcase(symbol)
   end
 
+  def query(Aggregate, query, {:symbol_id, symbol}) do
+    from a in query,
+      where: a.symbol_id == ^symbol
+  end
+
   def query(Aggregate, query, {:width, width}) do
     from a in query,
       select: %Aggregate{
+        symbol_id: a.symbol_id,
         open_price: max(a.open_price),
         high_price: max(a.high_price),
         low_price: min(a.low_price),
@@ -46,13 +66,18 @@ defmodule Neon.Stock.Query do
         volume: sum(a.volume),
         inserted_at: time_bucket(^interval(width), a.inserted_at)
       },
-      group_by: :inserted_at,
+      group_by: [:symbol_id, :inserted_at],
       order_by: [desc: :inserted_at]
   end
 
-  def query(_, query, {:limit, limit}) do
-    from q in query,
-      limit: ^limit
+  def query(Aggregate, query, {:from, datetime}) do
+    from a in query,
+      where: a.inserted_at >= ^datetime
+  end
+
+  def query(Aggregate, query, {:to, datetime}) do
+    from a in query,
+      where: a.inserted_at <= ^datetime
   end
 
   def query(_, query, _), do: query

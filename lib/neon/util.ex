@@ -16,8 +16,4 @@ defmodule Neon.Util do
     DateTime.utc_now()
     |> DateTime.add(days * -1 * @second_to_days, :second)
   end
-
-  def to_keyword_list(map) when is_map(map) do
-    Enum.map(map, fn {key, value} -> {key, value} end)
-  end
 end

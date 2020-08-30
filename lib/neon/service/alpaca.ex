@@ -19,13 +19,13 @@ defmodule Neon.Service.Alpaca do
 
   ## Examples
 
-      iex> get_aggregated("LYFT", limit: 60)
+      iex> get_aggregated(%Symbol{}, limit: 60)
       [%{}]
 
   """
   def get_aggregated(symbol, opts \\ []) do
     query = [
-      symbols: String.upcase(symbol),
+      symbols: String.upcase(symbol.symbol),
       limit: Keyword.get(opts, :limit, 1000),
       start: format_datetime(Keyword.get(opts, :start)),
       after: format_datetime(Keyword.get(opts, :after))
@@ -35,7 +35,7 @@ defmodule Neon.Service.Alpaca do
       {:ok, response} ->
         list =
           response.body
-          |> Map.get(String.upcase(symbol), [])
+          |> Map.get(String.upcase(symbol.symbol), [])
           |> cast_bars(symbol)
 
         {:ok, list}
@@ -54,7 +54,7 @@ defmodule Neon.Service.Alpaca do
 
   defp cast_bars(data, symbol) do
     %{
-      symbol: String.upcase(symbol),
+      symbol_id: symbol.id,
       open_price: data["o"],
       high_price: data["h"],
       low_price: data["l"],

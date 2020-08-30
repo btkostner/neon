@@ -7,8 +7,8 @@ export default {
   layout: 'dialog',
   auth: 'user',
 
-  mounted () {
-    this.$store.commit('auth/logout')
+  async mounted () {
+    await this.$store.dispatch('auth/logout')
     this.$router.push('/')
   }
 }

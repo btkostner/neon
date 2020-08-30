@@ -32,7 +32,13 @@ defmodule NeonServer.Resolvers.Stock do
       args
       |> Map.put(:limit, 1)
       |> Stock.list_aggregates()
+      |> Enum.at(-1)
 
     {:ok, aggregate}
+  end
+
+  def backfill_symbol(_parent, %{symbol_id: symbol_id, days: days}, _resolution) do
+    symbol = Stock.get_symbol(id: symbol_id)
+    Stock.backfill_aggregate(symbol, days)
   end
 end
