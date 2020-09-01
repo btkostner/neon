@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@mapbox/stylelint-processor-arbitrary-tags": "^0.3.0",
-    "@nuxtjs/eslint-config": "^3.0.0",
+    "@nuxtjs/eslint-config": "^3.1.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^7.6.0",
     "eslint-plugin-graphql": "^4.0.0",
