@@ -40,7 +40,7 @@
     "@mapbox/stylelint-processor-arbitrary-tags": "^0.3.0",
     "@nuxtjs/eslint-config": "^3.0.0",
     "babel-eslint": "^10.0.1",
-    "eslint": "^7.6.0",
+    "eslint": "^7.8.0",
     "eslint-plugin-graphql": "^4.0.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "stylelint": "^13.6.1",
