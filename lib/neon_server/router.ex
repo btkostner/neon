@@ -21,7 +21,6 @@ defmodule NeonServer.Router do
   end
 
   pipeline :auth do
-
   end
 
   scope "/system", as: :system do
@@ -41,8 +40,7 @@ defmodule NeonServer.Router do
   scope "/", as: :frontend, log: false do
     pipe_through :api
 
-    forward "/graphql", Absinthe.Plug,
-      schema: NeonServer.Schema
+    forward "/graphql", Absinthe.Plug, schema: NeonServer.Schema
 
     if Mix.env() == :dev do
       forward "/", ReverseProxyPlug, upstream: "http://localhost:3000"

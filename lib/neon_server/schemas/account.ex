@@ -7,12 +7,10 @@ defmodule NeonServer.Schemas.Account do
 
   object :account_queries do
     @desc "Get the current user's profile"
-    field :account_profile, :account_user,
-      resolve: &Resolvers.Account.show_profile/3
+    field :account_profile, :account_user, resolve: &Resolvers.Account.show_profile/3
 
     @desc "Get all users"
-    field :account_users, list_of(:account_user),
-      resolve: &Resolvers.Account.list_users/3
+    field :account_users, list_of(:account_user), resolve: &Resolvers.Account.list_users/3
   end
 
   object :account_mutations do

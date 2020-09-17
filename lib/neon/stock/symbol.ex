@@ -27,7 +27,7 @@ defmodule Neon.Stock.Symbol do
     |> uppercase(:symbol)
     |> uppercase(:currency)
     |> validate_required([:symbol])
-    |> validate_length(:symbol, max: 6)
+    |> validate_format(:symbol, ~r/^[A-Z]{1,6}$/)
     |> validate_length(:currency, is: 3)
     |> foreign_key_constraint(:market_id)
   end

@@ -5,21 +5,16 @@ defmodule Neon.Stream.Alpaca do
 
   use WebSockex
 
-  import Ecto.Query
-
   require Logger
 
-  alias Neon.{Stock, Repo}
+  alias Neon.Stock
+  alias Neon.Stream.{Cache, Inserter}
 
   @url "wss://data.alpaca.markets/stream"
   @markets ["AMEX", "ARCA", "BATS", "NYSE", "NASDAQ", "NYSEARCA"]
 
   def start_link(_opts \\ []) do
-    {:ok, pid} = WebSockex.start_link(@url, __MODULE__, :no_state)
-
-    # :sys.trace(pid, true)
-
-    {:ok, pid}
+    WebSockex.start_link(@url, __MODULE__, :no_state, name: __MODULE__)
   end
 
   def handle_connect(_conn, state) do
@@ -30,6 +25,7 @@ defmodule Neon.Stream.Alpaca do
 
   def handle_disconnect(_conn, state) do
     Logger.debug("Disconnected from Alpaca")
+    Cache.clear(__MODULE__)
     {:ok, state}
   end
 
@@ -38,11 +34,6 @@ defmodule Neon.Stream.Alpaca do
     handle_stream(body["stream"], body["data"], state)
   rescue
     e -> Logger.error(Exception.message(e))
-  end
-
-  def handle_frame(frame, state) do
-    Logger.warn("Unknown data from Alpaca: #{inspect(frame)}")
-    {:ok, state}
   end
 
   def handle_cast({:json, msg}, state) do
@@ -65,19 +56,14 @@ defmodule Neon.Stream.Alpaca do
 
     data
     |> cast_bar()
-    |> Stock.create_aggregate()
+    |> Inserter.insert()
 
-    {:ok, state}
-  end
-
-  def handle_stream(stream, data, state) do
-    Logger.debug("Data from Alpaca stream #{stream}: #{inspect(data)}")
     {:ok, state}
   end
 
   def authenticate() do
     WebSockex.cast(
-      self(),
+      __MODULE__,
       {:json,
        %{
          action: "authenticate",
@@ -90,14 +76,16 @@ defmodule Neon.Stream.Alpaca do
   end
 
   def subscribe() do
-    symbols =
-      [market_abbreviation: @markets]
-      |> Stock.list_symbols()
-      |> Enum.map(fn s -> "AM.#{s.symbol}" end)
+    symbols = Stock.list_symbols(market_abbreviation: @markets)
 
-    if length(symbols) != 0 do
+    Cache.set(__MODULE__, Enum.map(symbols, &[&1.symbol, &1.id]))
+
+    symbols
+    |> Enum.map(fn s -> "AM.#{s.symbol}" end)
+    |> Enum.chunk_every(1000)
+    |> Enum.each(fn symbols ->
       WebSockex.cast(
-        self(),
+        __MODULE__,
         {:json,
          %{
            action: "listen",
@@ -106,14 +94,12 @@ defmodule Neon.Stream.Alpaca do
            }
          }}
       )
-    end
+    end)
   end
 
   defp cast_bar(data) do
-    symbol = Stock.get_symbol(symbol: data["T"], market_abbreviation: @markets)
-
     %{
-      symbol_id: symbol.id,
+      symbol_id: Cache.get(__MODULE__, data["T"]),
       open_price: data["o"],
       high_price: data["h"],
       low_price: data["l"],

@@ -205,6 +205,35 @@ defmodule Neon.Stock do
   end
 
   @doc """
+  Mass inserts a bunch of new aggregate data. If the `inserted_at` date already
+  exists for the symbol, we will update all other fields.
+
+  ## Examples
+
+      iex> create_aggregates([%{field: value}])
+      {:ok, [%Aggregate{}]}
+
+  """
+  def create_aggregates(attrs \\ []) do
+    data =
+      attrs
+      |> Enum.map(&Aggregate.changeset(%Aggregate{}, &1))
+      |> Enum.map(&Ecto.Changeset.apply_changes/1)
+      |> Enum.map(&Map.from_struct/1)
+      |> Enum.map(&Map.take(&1, Aggregate.__schema__(:fields)))
+      |> Enum.map(&Map.drop(&1, [:id]))
+
+    {_number, results} =
+      Repo.insert_all(Aggregate, data,
+        on_conflict: :replace_all,
+        conflict_target: [:symbol_id, :inserted_at],
+        returning: true
+      )
+
+    Enum.each(results, &notify_change/1)
+  end
+
+  @doc """
   Creates a new stock aggregate. If the `inserted_at` date already exists for
   the symbol, we will update all other fields.
 
@@ -222,6 +251,11 @@ defmodule Neon.Stock do
     |> Aggregate.changeset(attrs)
     |> Repo.insert(on_conflict: :replace_all, conflict_target: [:symbol_id, :inserted_at])
     |> notify_change()
+  end
+
+  defp notify_change(%Aggregate{} = aggregate) do
+    Absinthe.Subscription.publish(NeonServer.Endpoint, aggregate, symbol_id: aggregate.symbol_id)
+    aggregate
   end
 
   defp notify_change({:ok, %Aggregate{} = aggregate}) do

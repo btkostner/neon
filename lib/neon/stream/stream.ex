@@ -13,6 +13,8 @@ defmodule Neon.Stream do
   @impl true
   def init(_opts) do
     children = [
+      Neon.Stream.Cache,
+      Neon.Stream.Inserter,
       Neon.Stream.Alpaca
     ]
 

@@ -3,9 +3,14 @@
     <header>
       <h1>{{ symbol.symbol }}</h1>
 
-      <template v-if="diffPrice">
-        {{ diffPrice }}
-      </template>
+      <span
+        ref="price"
+        class="price"
+      >
+        {{ currency(animation.price) }}
+
+        <font-awesome-icon :icon="faAngleUp" />
+      </span>
     </header>
 
     <div class="graph">
@@ -15,8 +20,8 @@
     <div>
       <form-input
         id="days"
-        label="days"
         v-model.number="days"
+        label="days"
         type="number"
       />
 
@@ -42,12 +47,44 @@
     --accent: var(--strawberry-300);
   }
 
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    align-content: flex-end;
+    justify-content: flex-start;
+  }
+
   h1 {
-    margin: 0;
+    margin: 0 1ch 0 0;
+  }
+
+  .graph svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  .price {
+    color: var(--accent);
+    font-size: 1.2rem;
+    transition: color 400ms ease;
+  }
+
+  .price >>> svg {
+    margin: 0 0.5ch;
+    transform: rotate(270deg);
+    transition: transform 400ms ease;
+  }
+
+  .page.up .price >>> svg {
+    transform: rotate(0deg);
+  }
+
+  .page.down .price >>> svg {
+    transform: rotate(180deg);
   }
 
   .graph {
-    background-color: var(--accent);
     height: 60vh;
     margin: 1rem 0;
     width: 100%;
@@ -55,9 +92,13 @@
 </style>
 
 <script>
-import d3 from 'd3'
+import anime from 'animejs'
+import * as d3 from 'd3'
 import gql from 'graphql-tag'
+import { faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns'
+
+import currency from '~/filters/currency'
 
 export default {
   apollo: {
@@ -99,13 +140,13 @@ export default {
             width: this.width
           }
         },
-        updateQuery: ({ aggregates }, { subscriptionData: { data: { aggregate }}}) => {
+        updateQuery: ({ aggregates }, { subscriptionData: { data: { aggregate } } }) => {
           const newAggregates = aggregates
-            .filter((a) => (a.insertedAt !== aggregate.insertedAt))
+            .filter(a => (a.insertedAt !== aggregate.insertedAt))
             .push(aggregate)
 
           return { aggregates: newAggregates }
-        },
+        }
       }
     },
 
@@ -130,19 +171,31 @@ export default {
   },
 
   data: () => ({
+    faAngleUp,
+
     aggregates: [],
     symbol: {
       id: null
     },
 
     timeframe: 'day',
+    days: 30,
 
-    days: 30
+    animation: {
+      price: 0
+    }
   }),
 
   computed: {
     aggregateData () {
       return this.aggregates
+        .map(d => ({
+          closePrice: Number(d.closePrice),
+          highPrice: Number(d.highPrice),
+          insertedAt: new Date(d.insertedAt),
+          lowPrice: Number(d.lowPrice),
+          openPrice: Number(d.openPrice)
+        }))
         .sort((a, b) => (a.insertedAt - b.insertedAt))
     },
 
@@ -203,10 +256,31 @@ export default {
     }
   },
 
+  watch: {
+    aggregateData: {
+      deep: true,
+      handler () {
+        this.drawGraph()
+      }
+    },
+
+    diffPrice (newPrice) {
+      anime({
+        targets: this.animation,
+        price: newPrice,
+        round: 1000,
+        easing: 'easeOutExpo',
+        duration: 1000
+      })
+    }
+  },
+
   methods: {
+    currency,
+
     async backfill () {
       await this.$apollo.mutate({
-        mutation: gql`mutation($symbol: String!, $days: Integer!) {
+        mutation: gql`mutation($symbol: String!, $days: Int!) {
           backfill: stockBackfill(symbolId: $symbol, days: $days) {
             openPrice
             highPrice
@@ -221,6 +295,44 @@ export default {
           days: this.days
         }
       })
+    },
+
+    drawGraph () {
+      const { height, width } = this.$refs.chart.getBoundingClientRect()
+      const svg = d3.select(this.$refs.chart)
+
+      const marginLeft = 60
+      const marginBottom = 30
+
+      const x = d3.scaleTime()
+        .domain(d3.extent(this.aggregateData, d => d.insertedAt))
+        .range([0, width - marginLeft])
+
+      svg.append('g')
+        .attr('transform', `translate(${marginLeft}, ${height - marginBottom})`)
+        .call(d3.axisBottom(x))
+
+      const y = d3.scaleLinear()
+        .domain([
+          d3.min(this.aggregateData, d => d.closePrice) - 100,
+          d3.max(this.aggregateData, d => d.closePrice) + 100
+        ])
+        .range([height - marginBottom, 0])
+
+      svg.append('g')
+        .attr('transform', `translate(${marginLeft}, 0)`)
+        .call(d3.axisLeft(y))
+
+      svg.append('path')
+        .datum(this.aggregateData)
+        .attr('transform', `translate(${marginLeft}, 0)`)
+        .attr('fill', 'none')
+        .attr('stroke', 'var(--accent)')
+        .attr('stroke-width', 1.5)
+        .attr('d', d3.line()
+          .x(d => x(d.insertedAt))
+          .y(d => y(d.closePrice))
+        )
     }
   }
 }

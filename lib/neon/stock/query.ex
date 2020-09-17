@@ -12,7 +12,12 @@ defmodule Neon.Stock.Query do
     do: Dataloader.Ecto.new(Repo, query: &query/2)
 
   def query(source, args) when is_map(args) or is_list(args) do
-    Enum.reduce(args, source, &(query(source, &2, &1)))
+    Enum.reduce(args, source, &query(source, &2, &1))
+  end
+
+  def query(_source, query, {:id, ids}) when is_list(ids) do
+    from q in query,
+      where: q.id in ^ids
   end
 
   def query(_source, query, {:id, id}) do

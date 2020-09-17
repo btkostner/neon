@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Account.PromoteUser do
   alias Neon.Account
 
   def run([email]) do
-    run([email, :admin])
+    run([email, "admin"])
   end
 
   @shortdoc "Sets a user's role"

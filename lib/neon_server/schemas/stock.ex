@@ -10,7 +10,7 @@ defmodule NeonServer.Schemas.Stock do
     field :stock_markets, list_of(:stock_market) do
       arg(:limit, non_null(:integer), default_value: 100)
 
-      resolve &Resolvers.Stock.get_markets/3
+      resolve(&Resolvers.Stock.get_markets/3)
     end
 
     @desc "Get information about a single stock market"
@@ -29,7 +29,7 @@ defmodule NeonServer.Schemas.Stock do
 
       arg(:limit, non_null(:integer), default_value: 100)
 
-      resolve &Resolvers.Stock.get_symbols/3
+      resolve(&Resolvers.Stock.get_symbols/3)
     end
 
     @desc "Get information about a single stock symbol"
@@ -68,12 +68,14 @@ defmodule NeonServer.Schemas.Stock do
         {:ok, topic: args.symbol_id}
       end)
 
-      trigger :stock_backfill, topic: fn res ->
-        case res do
-          [%{symbol_id: symbol_id} | _] -> symbol_id
-          _ -> nil
+      trigger(:stock_backfill,
+        topic: fn res ->
+          case res do
+            [%{symbol_id: symbol_id} | _] -> symbol_id
+            _ -> nil
+          end
         end
-      end
+      )
 
       resolve(&Resolvers.Stock.last_aggregate/3)
     end

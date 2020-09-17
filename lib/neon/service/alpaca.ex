@@ -5,7 +5,7 @@ defmodule Neon.Service.Alpaca do
 
   use Tesla
 
-  plug Tesla.Middleware.BaseUrl, "https://data.alpaca.markets"
+  alias Neon.Stock
 
   plug Tesla.Middleware.Headers, [
     {"APCA-API-KEY-ID", Application.get_env(:neon, :alpaca)[:key_id]},
@@ -13,6 +13,31 @@ defmodule Neon.Service.Alpaca do
   ]
 
   plug Tesla.Middleware.JSON
+
+  def get_assets() do
+    query = [
+      status: "active",
+      tradable: true
+    ]
+
+    case get("https://paper-api.alpaca.markets/v2/assets", query: query) do
+      {:ok, response} ->
+        {:ok, response.body}
+
+      res ->
+        res
+    end
+  end
+
+  def get_asset(id) do
+    case get("https://paper-api.alpaca.markets/v2/assets/#{id}") do
+      {:ok, response} ->
+        {:ok, response.body}
+
+      res ->
+        res
+    end
+  end
 
   @doc """
   Grabs aggregated information from Alpaca.
@@ -31,7 +56,7 @@ defmodule Neon.Service.Alpaca do
       after: format_datetime(Keyword.get(opts, :after))
     ]
 
-    case get("/v1/bars/5Min", query: query) do
+    case get("https://data.alpaca.markets/v1/bars/5Min", query: query) do
       {:ok, response} ->
         list =
           response.body

@@ -17,8 +17,7 @@ defmodule NeonServer.Endpoint do
   end
 
   # Setup live dashboard socket
-  socket "/live", Phoenix.LiveView.Socket,
-    websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
 
   # Setup the websocket used for Absinthe
   socket "/graphql", NeonServer.UserSocket, websocket: true
