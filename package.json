@@ -19,7 +19,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "@jumpn/utils-graphql": "^0.6.0",
-    "@nuxtjs/pwa": "^3.0.1",
+    "@nuxtjs/pwa": "^3.0.2",
     "animejs": "^3.2.0",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
