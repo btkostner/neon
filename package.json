@@ -44,7 +44,7 @@
     "eslint": "^7.9.0",
     "eslint-plugin-graphql": "^4.0.0",
     "eslint-plugin-nuxt": ">=0.4.2",
-    "stylelint": "^13.6.1",
+    "stylelint": "^13.7.2",
     "stylelint-config-standard": "^20.0.0"
   }
 }
