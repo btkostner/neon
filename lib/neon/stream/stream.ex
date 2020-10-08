@@ -13,12 +13,16 @@ defmodule Neon.Stream do
   @impl true
   def init(_opts) do
     children = [
-      Neon.Stream.Cache,
+      Neon.Stream.Alpaca,
+      Neon.Stream.Polygon,
+
       Neon.Stream.Inserter,
-      Neon.Stream.Alpaca
+
+      Supervisor.child_spec({Cachex, name: Neon.Stream.AlpacaCache}, id: Neon.Stream.AlpacaCache),
+      Supervisor.child_spec({Cachex, name: Neon.Stream.PolygonCache}, id: Neon.Stream.PolygonCache),
     ]
 
-    opts = [strategy: :one_for_one, name: Neon.Stream.Supervisor]
+    opts = [strategy: :one_for_one, name: __MODULE__]
     Supervisor.init(children, opts)
   end
 end

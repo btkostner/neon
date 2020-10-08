@@ -24,8 +24,8 @@ defmodule Neon.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
+      extra_applications: [:cachex, :logger, :runtime_tools],
       mod: {Neon.Application, []},
-      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -42,6 +42,7 @@ defmodule Neon.MixProject do
       {:absinthe_plug, "~> 1.5.0"},
       {:absinthe_phoenix, "~> 2.0.0"},
       {:argon2_elixir, "~> 2.0"},
+      {:cachex, "~> 3.3"},
       {:dataloader, "~> 1.0.0"},
       {:ecto_enum, "~> 1.4"},
       {:ecto_sql, "~> 3.4"},

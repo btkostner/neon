@@ -30,6 +30,11 @@ defmodule Neon.Stock.Query do
       limit: ^limit
   end
 
+  def query(_source, query, {:offset, offset}) do
+    from q in query,
+      offset: ^offset
+  end
+
   def query(Symbol, query, {:market_id, market_id}) do
     from q in query,
       join: m in assoc(q, :market),
@@ -63,16 +68,18 @@ defmodule Neon.Stock.Query do
   def query(Aggregate, query, {:width, width}) do
     from a in query,
       select: %Aggregate{
+        id: fragment("last(?, inserted_at)::text", a.id),
         symbol_id: a.symbol_id,
         open_price: max(a.open_price),
         high_price: max(a.high_price),
         low_price: min(a.low_price),
-        close_price: min(a.low_price),
-        volume: sum(a.volume),
-        inserted_at: time_bucket(^interval(width), a.inserted_at)
+        close_price: min(a.close_price),
+        volume: max(a.volume),
+        records: count(a.id),
+        inserted_at: fragment("time_bucket(?, inserted_at) AS t", ^interval(width)),
       },
-      group_by: [:symbol_id, :inserted_at],
-      order_by: [desc: :inserted_at]
+      group_by: [fragment("t"), :symbol_id],
+      order_by: fragment("t DESC")
   end
 
   def query(Aggregate, query, {:from, datetime}) do

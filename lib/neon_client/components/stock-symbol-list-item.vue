@@ -1,116 +1,108 @@
 <template>
-  <div :class="['page', style]">
-    <header>
-      <h1>{{ symbol.symbol }}</h1>
+  <nuxt-link
+    :class="['box', style]"
+    :to="href"
+  >
+    <h1 v-if="$apollo.queries.symbol.loading">Loading...</h1>
+    <h1 v-else>{{ symbol.name }}</h1>
 
-      <span
-        ref="price"
-        class="price"
-      >
-        {{ animation.price | currency }}
+    <h2 v-if="!$apollo.queries.symbol.loading">
+      {{ symbol.symbol }} on {{ symbol.market.abbreviation }}
+    </h2>
 
-        <font-awesome-icon :icon="faAngleUp" />
+    <h3 v-if="!$apollo.queries.symbol.loading">
+      {{ animation.price | currency }}
 
-        {{ animation.diffPrice | currency }}
-      </span>
+      <font-awesome-icon :icon="faAngleUp" />
+    </h3>
 
-      <dl>
-        <dt>Change:</dt>
-        <dd>{{ animation.percentage | percentage }}</dd>
+    <h4 v-if="!$apollo.queries.symbol.loading">
+      {{ animation.percentage | percentage }}
+    </h4>
 
-        <dt>Volume:</dt>
-        <dd>{{ animation.volume | round }}</dd>
-      </dl>
-    </header>
-
-    <div class="graph">
-      <svg ref="chart" />
-    </div>
-
-    <div>
-      <form-input
-        id="days"
-        v-model.number="days"
-        label="days"
-        type="number"
-      />
-
-      <form-button @click="backfill">
-        Backfill
-      </form-button>
-    </div>
-  </div>
+    <div class="left-hide" />
+    <svg ref="chart" />
+  </nuxt-link>
 </template>
 
 <style scoped>
-  .page {
-    --accent: var(--first-bg-color);
+  .box {
+    --accent: var(--first-fg-color);
 
+    align-content: flex-start;
+    align-items: flex-start;
+    background-color: var(--black-800);
+    border-radius: 3px;
+    border: 1px solid var(--black-900);
+    display: grid;
+    grid-gap: 1ch;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "title . price"
+                         "info . diff"
+                         ". . .";
+    margin: 1rem 0;
     padding: 1rem;
+    position: relative;
   }
 
-  .page.up {
+  .box.up {
     --accent: var(--lime-300);
   }
 
-  .page.down {
+  .box.down {
     --accent: var(--strawberry-300);
   }
 
-  header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    align-content: flex-end;
-    justify-content: flex-start;
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  h3,
+  h4 {
+    text-align: right;
+    color: var(--accent);
   }
 
   h1 {
-    margin: 0;
+    grid-area: title;
   }
 
-  .graph svg {
+  h2 {
+    grid-area: info;
+  }
+
+  h3 {
+    grid-area: price;
+  }
+
+  h4 {
+    grid-area: diff;
+  }
+
+  .left-hide {
+    background: linear-gradient(to right, var(--black-800) 80%, rgba(11, 11, 11, 0));
     height: 100%;
-    width: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 40%;
+    z-index: 1;
   }
 
-  .price {
-    color: var(--accent);
-    font-size: 1.2rem;
-    margin: 0 0 0 calc(4ch * 0.8);
-    transition: color 400ms ease;
-  }
-
-  .price >>> svg {
-    margin: 0 0.5ch;
-    transform: rotate(270deg);
-    transition: transform 400ms ease;
-  }
-
-  .page.up .price >>> svg {
-    transform: rotate(0deg);
-  }
-
-  .page.down .price >>> svg {
-    transform: rotate(180deg);
-  }
-
-  dl {
-    display: flex;
-  }
-
-  dt {
-    margin: 0 1ch 0 4ch;
-  }
-
-  dd {
-    color: var(--accent);
-  }
-
-  .graph {
-    height: 60vh;
-    margin: 1rem 0;
-    width: 100%;
+  svg {
+    height: calc(100% - 2rem);
+    left: 0;
+    position: absolute;
+    top: 1rem;
+    width: calc(100% - 16ch);
+    z-index: 0;
   }
 </style>
 
@@ -119,7 +111,7 @@ import anime from 'animejs'
 import * as d3 from 'd3'
 import gql from 'graphql-tag'
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons'
-import { startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns'
+import { subHours } from 'date-fns'
 
 import * as formatting from '~/filters/formatting'
 
@@ -141,8 +133,8 @@ export default {
       variables () {
         return {
           symbol: this.symbol.id,
-          from: this.fromDate,
-          width: this.width
+          from: this.startDate(),
+          width: '5 minutes'
         }
       },
       skip () {
@@ -164,7 +156,7 @@ export default {
         variables () {
           return {
             symbol: this.symbol.id,
-            width: this.width
+            width: '5 minutes'
           }
         },
         updateQuery: ({ aggregates }, { subscriptionData: { data: { aggregate } } }) => {
@@ -178,20 +170,22 @@ export default {
     },
 
     symbol: {
-      query: gql`query($market: String!, $symbol: String!) {
-        symbol: stockSymbol(marketAbbreviation: $market, symbol: $symbol) {
+      query: gql`query($symbol: ID!) {
+        symbol: stockSymbol(id: $symbol){
           id
           symbol
-          market {
+          name
+
+          market{
             id
             abbreviation
+            name
           }
         }
       }`,
       variables () {
         return {
-          market: this.$route.params.market.toUpperCase(),
-          symbol: this.$route.params.symbol.toUpperCase()
+          symbol: this.symbolId
         }
       }
     }
@@ -201,16 +195,16 @@ export default {
     ...formatting
   },
 
+  props: {
+    symbolId: {
+      type: String,
+      required: true
+    }
+  },
+
   data: () => ({
-    faAngleUp,
-
     aggregates: [],
-    symbol: {
-      id: null
-    },
-
-    timeframe: 'day',
-    days: 30,
+    symbol: {},
 
     animation: {
       diffPrice: 0,
@@ -243,24 +237,16 @@ export default {
       }
     },
 
-    firstData () {
-      return this.aggregateData[0]
+    href () {
+      if (this.symbol.market != null) {
+        return `/stocks/${this.symbol.market.abbreviation}/${this.symbol.symbol}`
+      } else {
+        return '#'
+      }
     },
 
-    fromDate () {
-      switch (this.timeframe) {
-        case 'week':
-          return startOfWeek(new Date())
-
-        case 'month':
-          return startOfMonth(new Date())
-
-        case 'year':
-          return startOfYear(new Date())
-
-        default:
-          return startOfDay(new Date())
-      }
+    firstData () {
+      return this.aggregateData[0]
     },
 
     lastData () {
@@ -291,30 +277,6 @@ export default {
       } else {
         return null
       }
-    },
-
-    volume () {
-      if (this.lastData != null) {
-        return this.lastData.volume
-      } else {
-        return 0
-      }
-    },
-
-    width () {
-      switch (this.timeframe) {
-        case 'week':
-          return '1 hour'
-
-        case 'month':
-          return '12 hours'
-
-        case 'year':
-          return '5 day'
-
-        default:
-          return '5 minutes'
-      }
     }
   },
 
@@ -332,7 +294,7 @@ export default {
         diffPrice,
         round: 1000,
         easing: 'easeOutExpo',
-        duration: 1000
+        duration: 200
       })
     },
 
@@ -342,7 +304,7 @@ export default {
         percentage,
         round: 1000,
         easing: 'easeOutExpo',
-        duration: 1000
+        duration: 200
       })
     },
 
@@ -352,67 +314,31 @@ export default {
         price,
         round: 1000,
         easing: 'easeOutExpo',
-        duration: 1000
-      })
-    },
-
-    volume (volume) {
-      anime({
-        targets: this.animation,
-        volume,
-        round: 1000,
-        easing: 'easeOutExpo',
-        duration: 400
+        duration: 200
       })
     }
   },
 
   methods: {
-    async backfill () {
-      await this.$apollo.mutate({
-        mutation: gql`mutation($symbol: String!, $days: Int!) {
-          backfill: stockBackfill(symbolId: $symbol, days: $days) {
-            __typename
-          }
-        }`,
-        variables: {
-          symbol: this.symbol.id,
-          days: this.days
-        }
-      })
-    },
-
     drawGraph () {
       const { height, width } = this.$refs.chart.getBoundingClientRect()
       const svg = d3.select(this.$refs.chart)
-
-      const marginLeft = 60
-      const marginBottom = 30
 
       svg.selectAll('*').remove()
 
       const x = d3.scaleTime()
         .domain(d3.extent(this.aggregateData, d => d.insertedAt))
-        .range([0, width - marginLeft])
-
-      svg.append('g')
-        .attr('transform', `translate(${marginLeft}, ${height - marginBottom})`)
-        .call(d3.axisBottom(x))
+        .range([0, width])
 
       const y = d3.scaleLinear()
         .domain([
           d3.min(this.aggregateData, d => d.openPrice) - 10,
           d3.max(this.aggregateData, d => d.openPrice) + 10
         ])
-        .range([height - marginBottom, 0])
-
-      svg.append('g')
-        .attr('transform', `translate(${marginLeft}, 0)`)
-        .call(d3.axisLeft(y))
+        .range([height, 0])
 
       svg.append('path')
         .datum(this.aggregateData)
-        .attr('transform', `translate(${marginLeft}, 0)`)
         .attr('fill', 'none')
         .attr('stroke', 'var(--accent)')
         .attr('stroke-width', 1.5)
@@ -420,7 +346,12 @@ export default {
           .x(d => x(d.insertedAt))
           .y(d => y(d.openPrice))
         )
+    },
+
+    startDate () {
+      return subHours(new Date(), 24)
     }
   }
 }
+
 </script>

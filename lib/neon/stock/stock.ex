@@ -253,14 +253,13 @@ defmodule Neon.Stock do
     |> notify_change()
   end
 
-  defp notify_change(%Aggregate{} = aggregate) do
-    Absinthe.Subscription.publish(NeonServer.Endpoint, aggregate, symbol_id: aggregate.symbol_id)
-    aggregate
+  defp notify_change({:ok, %Aggregate{} = aggregate}) do
+    {:ok, notify_change(aggregate)}
   end
 
-  defp notify_change({:ok, %Aggregate{} = aggregate}) do
-    Absinthe.Subscription.publish(NeonServer.Endpoint, aggregate, symbol_id: aggregate.symbol_id)
-    {:ok, aggregate}
+  defp notify_change(%Aggregate{} = aggregate) do
+    Absinthe.Subscription.publish(NeonServer.Endpoint, aggregate, stock_new_aggregate: aggregate.symbol_id)
+    aggregate
   end
 
   defp notify_change(res), do: res

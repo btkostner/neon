@@ -8,7 +8,8 @@ defmodule NeonServer.Schemas.Stock do
   object :stock_queries do
     @desc "List all of the stock markets"
     field :stock_markets, list_of(:stock_market) do
-      arg(:limit, non_null(:integer), default_value: 100)
+      arg(:limit, :integer, default_value: 100)
+      arg(:offset, :integer, default_value: 0)
 
       resolve(&Resolvers.Stock.get_markets/3)
     end
@@ -27,7 +28,8 @@ defmodule NeonServer.Schemas.Stock do
 
       arg(:symbol, :string)
 
-      arg(:limit, non_null(:integer), default_value: 100)
+      arg(:limit, :integer, default_value: 100)
+      arg(:offset, :integer, default_value: 0)
 
       resolve(&Resolvers.Stock.get_symbols/3)
     end
@@ -49,9 +51,10 @@ defmodule NeonServer.Schemas.Stock do
 
       arg(:from, :datetime)
       arg(:to, :datetime)
-      arg(:width, non_null(:string), default_value: "5 minutes")
+      arg(:width, :string, default_value: "5 minutes")
 
-      arg(:limit, non_null(:integer), default_value: 1000)
+      arg(:limit, :integer, default_value: 1000)
+      arg(:offset, :integer, default_value: 0)
 
       resolve(&Resolvers.Stock.list_aggregates/3)
     end
@@ -59,23 +62,14 @@ defmodule NeonServer.Schemas.Stock do
 
   object :stock_subscriptions do
     @desc "Subscribe to changes in stock aggregate data"
-    field :stock_aggregates, :stock_aggregate do
+    field :stock_new_aggregate, :stock_aggregate do
       arg(:symbol_id, non_null(:id))
 
-      arg(:width, non_null(:string), default_value: "5 minutes")
+      arg(:width, :string, default_value: "5 minutes")
 
-      config(fn args, _ ->
+      config fn args, _ ->
         {:ok, topic: args.symbol_id}
-      end)
-
-      trigger(:stock_backfill,
-        topic: fn res ->
-          case res do
-            [%{symbol_id: symbol_id} | _] -> symbol_id
-            _ -> nil
-          end
-        end
-      )
+      end
 
       resolve(&Resolvers.Stock.last_aggregate/3)
     end

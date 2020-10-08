@@ -112,6 +112,7 @@ export default {
     display: inline-flex;
     font-size: 0.9rem;
     justify-content: center;
+    line-height: 1;
     padding: 0.5rem 0.75rem;
     text-align: center;
     text-decoration: none;

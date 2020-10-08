@@ -14,7 +14,7 @@ defmodule NeonServer.Types.Stock do
     field :name, :string
 
     field :symbols, list_of(:stock_symbol) do
-      arg(:limit, non_null(:integer), default_value: 100)
+      arg(:limit, :integer, default_value: 100)
 
       resolve(dataloader(Stock))
     end
@@ -33,9 +33,9 @@ defmodule NeonServer.Types.Stock do
     field :aggregates, list_of(:stock_aggregate) do
       arg(:from, :datetime)
       arg(:to, :datetime)
-      arg(:width, non_null(:string), default_value: "5 minutes")
+      arg(:width, :string, default_value: "5 minutes")
 
-      arg(:limit, non_null(:integer), default_value: 1000)
+      arg(:limit, :integer, default_value: 1000)
 
       resolve(dataloader(Stock))
     end
@@ -50,6 +50,8 @@ defmodule NeonServer.Types.Stock do
     field :close_price, :decimal
 
     field :volume, :integer
+
+    field :records, :integer
 
     field :symbol, :stock_symbol, resolve: dataloader(Stock)
 

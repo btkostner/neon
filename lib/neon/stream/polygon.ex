@@ -1,6 +1,6 @@
-defmodule Neon.Stream.Alpaca do
+defmodule Neon.Stream.Polygon do
   @moduledoc """
-  Socket interface for streaming Alpaca stock data.
+  Socket interface for streaming Polygon stock data.
   """
 
   use WebSockex
@@ -10,28 +10,28 @@ defmodule Neon.Stream.Alpaca do
   alias Neon.Stock
   alias Neon.Stream.{Cache, Inserter}
 
-  @url "wss://data.alpaca.markets/stream"
-  @markets ["AMEX", "ARCA", "BATS", "NYSE", "NASDAQ", "NYSEARCA"]
+  @url "wss://socket.polygon.io/stocks"
 
   def start_link(_opts \\ []) do
     WebSockex.start_link(@url, __MODULE__, :no_state, name: __MODULE__)
   end
 
   def handle_connect(_conn, state) do
-    Logger.info("Connected to Alpaca")
+    Logger.info("Connected to Polygon")
     authenticate()
     {:ok, state}
   end
 
   def handle_disconnect(_conn, state) do
-    Logger.info("Disconnected from Alpaca")
+    Logger.info("Disconnected from Polygon")
     Cache.clear(__MODULE__)
     {:ok, state}
   end
 
   def handle_frame({:text, message}, state) do
-    body = Jason.decode!(message)
-    handle_stream(body["stream"], body["data"])
+    message
+    |> Jason.decode!()
+    |> Enum.each(&handle_stream(Map.get(&1, "ev"), &1))
 
     {:ok, state}
   rescue
@@ -42,17 +42,13 @@ defmodule Neon.Stream.Alpaca do
     {:reply, {:text, Jason.encode!(msg)}, state}
   end
 
-  def handle_stream("authorization", %{"status" => "authorized"}) do
-    Logger.debug("Authenticated to Alpaca")
+  def handle_stream("status", %{"message" => "authenticated"}) do
+    Logger.debug("Authenticated to Polygon")
     subscribe()
   end
 
-  def handle_stream("listening", %{"streams" => streams}) do
-    Logger.debug("Streaming #{length(streams)} symbols from Alpaca")
-  end
-
   def handle_stream("A" <> _, data) do
-    Logger.debug("New Aggregate from Alpaca #{data["T"]}: #{inspect(data)}")
+    Logger.debug("New Aggregate from Polygon #{data["sym"]}: #{inspect(data)}")
 
     data
     |> cast_bar()
@@ -66,32 +62,28 @@ defmodule Neon.Stream.Alpaca do
       __MODULE__,
       {:json,
        %{
-         action: "authenticate",
-         data: %{
-           key_id: Application.get_env(:neon, :alpaca)[:key_id],
-           secret_key: Application.get_env(:neon, :alpaca)[:secret_key]
-         }
+         action: "auth",
+         params: Application.get_env(:neon, :alpaca)[:key_id]
        }}
     )
   end
 
   def subscribe() do
-    symbols = Stock.list_symbols(market_abbreviation: @markets)
+    symbols = Stock.list_symbols()
 
-    Cachex.put_many(Neon.Stream.AlpacaCache, Enum.map(symbols, &({&1.symbol, &1.id})))
+    Cachex.put_many(Neon.Stream.PolygonCache, Enum.map(symbols, &({&1.symbol, &1.id})))
 
     symbols
-    |> Enum.map(fn s -> "AM.#{s.symbol}" end)
+    |> Enum.map(&("A.#{&1.symbol}"))
     |> Enum.chunk_every(1000)
+    |> Enum.map(&Enum.join(&1, ","))
     |> Enum.each(fn symbols ->
       WebSockex.cast(
         __MODULE__,
         {:json,
          %{
-           action: "listen",
-           data: %{
-             streams: symbols
-           }
+           action: "subscribe",
+           params: symbols
          }}
       )
     end)
@@ -99,18 +91,18 @@ defmodule Neon.Stream.Alpaca do
 
   defp cast_bar(data) do
     %{
-      symbol_id: get_symbol_id(data["T"]),
+      symbol_id: get_symbol_id(data["sym"]),
       open_price: data["o"],
       high_price: data["h"],
       low_price: data["l"],
       close_price: data["c"],
-      volume: data["v"],
+      volume: data["av"],
       inserted_at: DateTime.from_unix!(data["s"], :millisecond)
     }
   end
 
   defp get_symbol_id(symbol) do
-    case Cachex.get(Neon.Stream.AlpacaCache, symbol) do
+    case Cachex.get(Neon.Stream.PolygonCache, symbol) do
       {:ok, value} -> value
       _ -> nil
     end

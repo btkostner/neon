@@ -18,6 +18,8 @@ defmodule Neon.Stock.Aggregate do
 
     field :volume, :integer
 
+    field :records, :integer, virtual: true, default: 1
+
     belongs_to :symbol, Symbol
     has_one :market, through: [:symbol, :market]
 

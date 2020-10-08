@@ -34,7 +34,7 @@ defmodule NeonServer.Router do
       socket_url: "/graphql",
       schema: NeonServer.Schema,
       socket: NeonServer.UserSocket,
-      interface: :advanced
+      interface: :playground
   end
 
   scope "/", as: :frontend, log: false do

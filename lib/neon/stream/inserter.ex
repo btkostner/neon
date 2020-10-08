@@ -12,7 +12,7 @@ defmodule Neon.Stream.Inserter do
 
   alias Neon.Stock
 
-  @timeout 5 * 1000
+  @timeout 10 * 1000
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)

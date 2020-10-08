@@ -1,21 +1,15 @@
 <template>
   <div class="page">
-    <div class="stocks">
-      <div
-        v-for="market in markets"
-        :key="market.id"
+    <ol>
+      <li
+        v-for="symbol in symbols"
+        :key="symbol.id"
       >
-        <h1>{{ market.abbreviation }}</h1>
-
-        <nuxt-link
-          v-for="symbol in market.symbols"
-          :key="symbol.id"
-          :to="`/stocks/${market.abbreviation}/${symbol.symbol}`"
-        >
-          {{ symbol.symbol }}
-        </nuxt-link>
-      </div>
-    </div>
+        <stock-symbol-list-item
+          :symbol-id="symbol.id"
+        />
+      </li>
+    </ol>
   </div>
 </template>
 
@@ -24,17 +18,10 @@
     padding: 1rem;
   }
 
-  h1 {
+  ol {
+    list-style: none;
     margin: 0;
-  }
-
-  .stocks {
-    display: block;
-    margin: 2rem 0;
-  }
-
-  .stocks a {
-    display: block;
+    padding: 0;
   }
 </style>
 
@@ -43,21 +30,20 @@ import gql from 'graphql-tag'
 
 export default {
   apollo: {
-    markets: gql`query {
-      markets: stockMarkets{
+    symbols: gql`query {
+      symbols: stockSymbols(limit:25){
         id
-        abbreviation
+        symbol
 
-        symbols(limit:50){
-          id
-          symbol
+        market {
+          abbreviation
         }
       }
     }`
   },
 
   data: () => ({
-    markets: []
+    symbols: []
   })
 }
 </script>
