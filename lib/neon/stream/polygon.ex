@@ -25,8 +25,10 @@ defmodule Neon.Stream.Polygon do
 
   def handle_disconnect(_conn, state) do
     Logger.info("Disconnected from Polygon")
-    Cache.clear(__MODULE__)
-    {:ok, state}
+    Cachex.clear(Neon.Stream.PolygonCache)
+    Process.sleep(5000)
+
+    {:reconnect, state}
   end
 
   def handle_frame({:text, message}, state) do

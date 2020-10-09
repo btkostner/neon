@@ -26,8 +26,10 @@ defmodule Neon.Stream.Alpaca do
 
   def handle_disconnect(_conn, state) do
     Logger.info("Disconnected from Alpaca")
-    Cache.clear(__MODULE__)
-    {:ok, state}
+    Cachex.clear(Neon.Stream.AlpacaCache)
+    Process.sleep(5000)
+
+    {:reconnect, state}
   end
 
   def handle_frame({:text, message}, state) do
