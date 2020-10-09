@@ -3,6 +3,24 @@
 version: "3"
 
 services:
+  neon:
+    build:
+      context: .
+      dockerfile: Dockerfile-development
+    volumes:
+      - ./config:/opt/app/config
+      - ./lib:/opt/app/lib
+      - ./priv:/opt/app/priv
+      - ./test:/opt/app/test
+    environment:
+      - MIX_ENV
+    command: mix do ecto.create, phx.server
+    working_dir: /opt/app
+    network_mode: host
+    depends_on:
+      - postgres
+      - chrome
+
   postgres:
     image: timescale/timescaledb:latest-pg11
     volumes:
