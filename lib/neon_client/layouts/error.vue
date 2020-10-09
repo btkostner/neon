@@ -8,7 +8,9 @@
     <div class="error">
       <h1>{{ code }}</h1>
 
-      <h2 v-if="message">{{ message }}</h2>
+      <h2 v-if="message">
+        {{ message }}
+      </h2>
 
       <pre v-if="details">
         <code>
@@ -80,12 +82,6 @@ import anime from 'animejs'
 export default {
   layout: 'blank',
 
-  head () {
-    return {
-      title: this.message
-    }
-  },
-
   props: {
     error: {
       type: [Error, Object],
@@ -120,12 +116,12 @@ export default {
           })
           .add({
             targets: el,
-            backgroundColor: ["rgba(45, 21, 21, 0)", "rgba(45, 21, 21, 1)"],
+            backgroundColor: ['rgba(45, 21, 21, 0)', 'rgba(45, 21, 21, 1)'],
             duration: 1500
           }, '500')
           .add({
             targets: el,
-            color: ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"],
+            color: ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)'],
             duration: 1000
           }, '1000')
           .add({
@@ -142,6 +138,12 @@ export default {
 
     refresh () {
       window.location.reload(true)
+    }
+  },
+
+  head () {
+    return {
+      title: this.message
     }
   }
 }

@@ -3,8 +3,12 @@
     :class="['box', style]"
     :to="href"
   >
-    <h1 v-if="$apollo.queries.symbol.loading">Loading...</h1>
-    <h1 v-else>{{ symbol.name }}</h1>
+    <h1 v-if="$apollo.queries.symbol.loading">
+      Loading...
+    </h1>
+    <h1 v-else>
+      {{ symbol.name }}
+    </h1>
 
     <h2 v-if="!$apollo.queries.symbol.loading">
       {{ symbol.symbol }} on {{ symbol.market.abbreviation }}
@@ -38,9 +42,10 @@
     grid-gap: 1ch;
     grid-template-columns: auto 1fr auto;
     grid-template-rows: auto auto 1fr;
-    grid-template-areas: "title . price"
-                         "info . diff"
-                         ". . .";
+    grid-template-areas:
+      "title . price"
+      "info . diff"
+      ". . .";
     margin: 1rem 0;
     padding: 1rem;
     position: relative;
@@ -203,6 +208,8 @@ export default {
   },
 
   data: () => ({
+    faAngleUp,
+
     aggregates: [],
     symbol: {},
 
