@@ -1,4 +1,4 @@
-defmodule Neon.AccountTest do
+defmodule Neon.UtilTest do
   use ExUnit.Case
 
   describe "modulo_date/3" do
