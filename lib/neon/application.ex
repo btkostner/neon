@@ -17,6 +17,8 @@ defmodule Neon.Application do
       NeonServer.Endpoint,
       # Start Absinthe subscriptions
       {Absinthe.Subscription, NeonServer.Endpoint},
+      # Start our live processing processes,
+      Neon.Live,
       # Start websocket intake streams
       Neon.Stream
     ]

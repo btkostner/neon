@@ -15,11 +15,8 @@ defmodule Neon.Stream do
     children = [
       Neon.Stream.Alpaca,
       Neon.Stream.Polygon,
-
-      Neon.Stream.Inserter,
-
       Supervisor.child_spec({Cachex, name: Neon.Stream.AlpacaCache}, id: Neon.Stream.AlpacaCache),
-      Supervisor.child_spec({Cachex, name: Neon.Stream.PolygonCache}, id: Neon.Stream.PolygonCache),
+      Supervisor.child_spec({Cachex, name: Neon.Stream.PolygonCache}, id: Neon.Stream.PolygonCache)
     ]
 
     opts = [strategy: :one_for_one, name: __MODULE__]

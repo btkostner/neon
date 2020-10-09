@@ -25,7 +25,7 @@ defmodule Neon.MixProject do
   def application do
     [
       extra_applications: [:cachex, :logger, :runtime_tools],
-      mod: {Neon.Application, []},
+      mod: {Neon.Application, []}
     ]
   end
 
@@ -46,6 +46,7 @@ defmodule Neon.MixProject do
       {:dataloader, "~> 1.0.0"},
       {:ecto_enum, "~> 1.4"},
       {:ecto_sql, "~> 3.4"},
+      {:gen_registry, "~> 1.0"},
       {:gettext, "~> 0.11"},
       {:hackney, "~> 1.16.0"},
       {:jason, "~> 1.0"},
@@ -59,12 +60,10 @@ defmodule Neon.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:tesla, "~> 1.3.0"},
       {:websockex, "~> 0.4.2"},
-
       {:credo, "~> 1.4", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:reverse_proxy_plug, "~> 1.3.0", only: :dev},
-
       {:bypass, "~> 1.0", only: :test},
       {:ex_machina, "~> 2.4", only: :test},
       {:wallaby, "~> 0.26.0", runtime: false, only: :test}
@@ -76,7 +75,6 @@ defmodule Neon.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "ecto.seed"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "ecto.seed": ["run priv/repo/seeds.exs"],
-
       "test.unit": ["ecto.create --quiet", "ecto.migrate", "test test/neon test/neon_server"],
       "test.browser": ["ecto.create --quiet", "ecto.migrate", "test test/neon_client"]
     ]

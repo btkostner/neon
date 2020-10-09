@@ -7,6 +7,7 @@ defmodule Neon.Stream.Alpaca do
 
   require Logger
 
+  alias Neon.Live.Symbol
   alias Neon.Stock
   alias Neon.Stream.{Cache, Inserter}
 
@@ -52,11 +53,9 @@ defmodule Neon.Stream.Alpaca do
   end
 
   def handle_stream("A" <> _, data) do
-    Logger.debug("New Aggregate from Alpaca #{data["T"]}: #{inspect(data)}")
-
     data
     |> cast_bar()
-    |> Inserter.insert()
+    |> Symbol.push()
   end
 
   def handle_stream(_, _), do: :ok
@@ -78,7 +77,7 @@ defmodule Neon.Stream.Alpaca do
   def subscribe() do
     symbols = Stock.list_symbols(market_abbreviation: @markets)
 
-    Cachex.put_many(Neon.Stream.AlpacaCache, Enum.map(symbols, &({&1.symbol, &1.id})))
+    Cachex.put_many(Neon.Stream.AlpacaCache, Enum.map(symbols, &{&1.symbol, &1.id}))
 
     symbols
     |> Enum.map(fn s -> "AM.#{s.symbol}" end)

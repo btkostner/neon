@@ -76,7 +76,7 @@ defmodule Neon.Stock.Query do
         close_price: min(a.close_price),
         volume: max(a.volume),
         records: count(a.id),
-        inserted_at: fragment("time_bucket(?, inserted_at) AS t", ^interval(width)),
+        inserted_at: fragment("time_bucket(?, inserted_at) AS t", ^interval(width))
       },
       group_by: [fragment("t"), :symbol_id],
       order_by: fragment("t DESC")

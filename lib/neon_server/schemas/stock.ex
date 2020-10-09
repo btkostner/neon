@@ -67,9 +67,9 @@ defmodule NeonServer.Schemas.Stock do
 
       arg(:width, :string, default_value: "5 minutes")
 
-      config fn args, _ ->
+      config(fn args, _ ->
         {:ok, topic: args.symbol_id}
-      end
+      end)
 
       resolve(&Resolvers.Stock.last_aggregate/3)
     end

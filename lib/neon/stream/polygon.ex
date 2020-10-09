@@ -7,6 +7,7 @@ defmodule Neon.Stream.Polygon do
 
   require Logger
 
+  alias Neon.Live.Symbol
   alias Neon.Stock
   alias Neon.Stream.{Cache, Inserter}
 
@@ -48,11 +49,9 @@ defmodule Neon.Stream.Polygon do
   end
 
   def handle_stream("A" <> _, data) do
-    Logger.debug("New Aggregate from Polygon #{data["sym"]}: #{inspect(data)}")
-
     data
     |> cast_bar()
-    |> Inserter.insert()
+    |> Symbol.push()
   end
 
   def handle_stream(_, _), do: :ok
@@ -71,10 +70,10 @@ defmodule Neon.Stream.Polygon do
   def subscribe() do
     symbols = Stock.list_symbols()
 
-    Cachex.put_many(Neon.Stream.PolygonCache, Enum.map(symbols, &({&1.symbol, &1.id})))
+    Cachex.put_many(Neon.Stream.PolygonCache, Enum.map(symbols, &{&1.symbol, &1.id}))
 
     symbols
-    |> Enum.map(&("A.#{&1.symbol}"))
+    |> Enum.map(&"A.#{&1.symbol}")
     |> Enum.chunk_every(1000)
     |> Enum.map(&Enum.join(&1, ","))
     |> Enum.each(fn symbols ->
