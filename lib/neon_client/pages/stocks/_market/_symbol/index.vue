@@ -23,8 +23,15 @@
       </dl>
     </header>
 
-    <div class="graph">
-      <svg ref="chart" />
+    <div
+      class="graph"
+      @mousemove="graphMouseMove"
+      @mouseleave="graphMouseOut"
+    >
+      <svg
+        ref="chart"
+        class="chart"
+      />
     </div>
 
     <div>
@@ -107,19 +114,69 @@
     color: var(--accent);
   }
 
+  .tooltip {
+    background-color: black;
+    border: 1px solid blue;
+    padding: 1rem;
+    position: absolute;
+    top: 0;
+    transform: translate(-50%, 0);
+  }
+
   .graph {
     height: 60vh;
     margin: 1rem 0;
+    position: relative;
     width: 100%;
+  }
+
+  .graph >>> .open-close-line {
+    fill: none;
+    stroke-dasharray: 6;
+    stroke-width: 1px;
+    stroke: var(--silver-900);
+  }
+
+  .graph >>> .open-close-text {
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: 200;
+    stroke: var(--silver-700);
+  }
+
+  .graph >>> .line {
+    fill: none;
+    stroke-width: 1.5;
+    stroke: var(--accent);
+  }
+
+  .graph >>> .tooltip-line {
+    fill: none;
+    stroke-dasharray: 6 12;
+    stroke-width: 2px;
+    stroke: var(--blueberry-500);
+  }
+
+  .graph >>> .tooltip-dot {
+    fill: var(--blueberry-300);
+  }
+
+  .graph >>> .tooltip-axis {
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: 200;
+    stroke: var(--blueberry-500);
   }
 </style>
 
 <script>
 import anime from 'animejs'
 import * as d3 from 'd3'
+import throttle from 'lodash/throttle'
+import debounce from 'lodash/debounce'
 import gql from 'graphql-tag'
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons'
-import { startOfDay, startOfWeek, startOfMonth, startOfYear } from 'date-fns'
+import { set, startOfDay } from 'date-fns'
 
 import * as formatting from '~/filters/formatting'
 
@@ -141,8 +198,8 @@ export default {
       variables () {
         return {
           symbol: this.symbol.id,
-          from: this.fromDate,
-          width: this.width
+          from: startOfDay(new Date()),
+          width: '5 minutes'
         }
       },
       skip () {
@@ -164,7 +221,7 @@ export default {
         variables () {
           return {
             symbol: this.symbol.id,
-            width: this.width
+            width: '5 minutes'
           }
         },
         updateQuery: ({ aggregates }, { subscriptionData: { data: { aggregate } } }) => {
@@ -212,10 +269,33 @@ export default {
     timeframe: 'day',
     days: 30,
 
+    graph: {
+      x: null,
+      xMin: null,
+      xMax: null,
+
+      y: null,
+      yMin: null,
+      yMax: null,
+      yPad: null,
+
+      openLine: null,
+      closeLine: null,
+      currentLine: null
+    },
+
+    tooltip: {
+      minX: null,
+      maxX: null,
+
+      showingX: null
+    },
+
     animation: {
       diffPrice: 0,
       percentage: 0,
       price: 0,
+      tooltipPrice: 0,
       volume: 0
     }
   }),
@@ -235,6 +315,10 @@ export default {
         .sort((a, b) => (a.insertedAt - b.insertedAt))
     },
 
+    dayTime: () => (hours, minutes = 0) => {
+      return set(new Date(), { hours, minutes, seconds: 0, milliseconds: 0 })
+    },
+
     diffPrice () {
       if (this.firstData != null && this.lastData != null) {
         return this.lastData.openPrice - this.firstData.openPrice
@@ -245,22 +329,6 @@ export default {
 
     firstData () {
       return this.aggregateData[0]
-    },
-
-    fromDate () {
-      switch (this.timeframe) {
-        case 'week':
-          return startOfWeek(new Date())
-
-        case 'month':
-          return startOfMonth(new Date())
-
-        case 'year':
-          return startOfYear(new Date())
-
-        default:
-          return startOfDay(new Date())
-      }
     },
 
     lastData () {
@@ -299,22 +367,6 @@ export default {
       } else {
         return 0
       }
-    },
-
-    width () {
-      switch (this.timeframe) {
-        case 'week':
-          return '1 hour'
-
-        case 'month':
-          return '12 hours'
-
-        case 'year':
-          return '5 day'
-
-        default:
-          return '5 minutes'
-      }
     }
   },
 
@@ -323,6 +375,8 @@ export default {
       deep: true,
       handler () {
         this.drawGraph()
+        this.drawGraphLine()
+        this.updateGraphTooltip()
       }
     },
 
@@ -334,6 +388,10 @@ export default {
         easing: 'easeOutExpo',
         duration: 1000
       })
+    },
+
+    'graph.x' () {
+      this.drawGraphMarketLines()
     },
 
     percentage (percentage) {
@@ -354,6 +412,14 @@ export default {
         easing: 'easeOutExpo',
         duration: 1000
       })
+    },
+
+    'tooltip.maxX' () {
+      this.drawGraphTooltip()
+    },
+
+    'tooltip.showingX' () {
+      this.drawGraphTooltip()
     },
 
     volume (volume) {
@@ -384,42 +450,169 @@ export default {
 
     drawGraph () {
       const { height, width } = this.$refs.chart.getBoundingClientRect()
+
+      this.graph.xMin = this.dayTime(2)
+      this.graph.xMax = this.dayTime(22)
+
+      this.graph.x = d3.scaleTime()
+        .domain([
+          this.graph.xMin,
+          this.graph.xMax
+        ])
+        .range([0, width])
+
+      this.graph.yMin = d3.min(this.aggregateData, d => d.openPrice)
+      this.graph.yMax = d3.max(this.aggregateData, d => d.closePrice)
+      this.graph.yPad = (this.graph.yMax - this.graph.yMin) * 0.1
+
+      this.graph.y = d3.scaleLinear()
+        .domain([
+          this.graph.yMin - this.graph.yPad,
+          this.graph.yMax + this.graph.yPad
+        ])
+        .range([height - this.remToPx(4), 0])
+    },
+
+    drawGraphLine () {
       const svg = d3.select(this.$refs.chart)
 
-      const marginLeft = 60
-      const marginBottom = 30
+      const line = (!svg.select('#data-line').empty())
+        ? svg.select('#data-line')
+        : svg.append('path').attr('id', 'data-line').attr('class', 'line')
 
-      svg.selectAll('*').remove()
-
-      const x = d3.scaleTime()
-        .domain(d3.extent(this.aggregateData, d => d.insertedAt))
-        .range([0, width - marginLeft])
-
-      svg.append('g')
-        .attr('transform', `translate(${marginLeft}, ${height - marginBottom})`)
-        .call(d3.axisBottom(x))
-
-      const y = d3.scaleLinear()
-        .domain([
-          d3.min(this.aggregateData, d => d.openPrice) - 10,
-          d3.max(this.aggregateData, d => d.openPrice) + 10
-        ])
-        .range([height - marginBottom, 0])
-
-      svg.append('g')
-        .attr('transform', `translate(${marginLeft}, 0)`)
-        .call(d3.axisLeft(y))
-
-      svg.append('path')
+      line
         .datum(this.aggregateData)
-        .attr('transform', `translate(${marginLeft}, 0)`)
-        .attr('fill', 'none')
-        .attr('stroke', 'var(--accent)')
-        .attr('stroke-width', 1.5)
         .attr('d', d3.line()
-          .x(d => x(d.insertedAt))
-          .y(d => y(d.openPrice))
+          .x(d => this.graph.x(d.insertedAt))
+          .y(d => this.graph.y(d.openPrice))
         )
+    },
+
+    drawGraphMarketLines () {
+      const { height } = this.$refs.chart.getBoundingClientRect()
+      const svg = d3.select(this.$refs.chart)
+
+      // TODO: Update these values with market open and close
+      this.graph.openLine = this.graph.x(this.dayTime(7))
+      this.graph.closeLine = this.graph.x(this.dayTime(15))
+
+      svg.select('#open-line').remove()
+      svg.append('line')
+        .attr('id', 'open-line')
+        .attr('x1', this.graph.openLine)
+        .attr('y1', 0)
+        .attr('x2', this.graph.openLine)
+        .attr('y2', height - this.remToPx(3) - 6)
+        .attr('class', 'open-close-line')
+
+      svg.select('#open-text').remove()
+      svg.append('text')
+        .attr('id', 'open-text')
+        .attr('x', this.graph.openLine)
+        .attr('y', height - this.remToPx(2.8))
+        .attr('text-anchor', 'middle')
+        .attr('class', 'open-close-text')
+        .text('open')
+
+      svg.select('#close-line').remove()
+      svg.append('line')
+        .attr('id', 'close-line')
+        .attr('x1', this.graph.closeLine)
+        .attr('y1', 0)
+        .attr('x2', this.graph.closeLine)
+        .attr('y2', height - this.remToPx(3) - 6)
+        .attr('class', 'open-close-line')
+
+      svg.select('#close-text').remove()
+      svg.append('text')
+        .attr('id', 'close-text')
+        .attr('x', this.graph.closeLine)
+        .attr('y', height - this.remToPx(2.8))
+        .attr('text-anchor', 'middle')
+        .attr('class', 'open-close-text')
+        .text('close')
+    },
+
+    drawGraphTooltip () {
+      const { height } = this.$refs.chart.getBoundingClientRect()
+      const svg = d3.select(this.$refs.chart)
+
+      const currentX = (this.tooltip.showingX || this.tooltip.maxX)
+      const [currentXDate, currentYValue] = this.graphCords(currentX)
+
+      const [xDate, yValue] = (currentYValue != null)
+        ? [currentXDate, currentYValue]
+        : this.graphCords(this.tooltip.maxX)
+
+      const x = this.graph.x(xDate)
+
+      const line = (!svg.select('.tooltip-line').empty())
+        ? svg.select('.tooltip-line')
+        : svg.append('line').attr('class', 'tooltip-line')
+
+      line
+        .datum(this.aggregateData)
+        .attr('x1', x)
+        .attr('y1', 6)
+        .attr('x2', x)
+        .attr('y2', height - this.remToPx() - 12)
+
+      const text = (!svg.select('.tooltip-axis').empty())
+        ? svg.select('.tooltip-axis')
+        : svg.append('text').attr('class', 'tooltip-axis')
+
+      text
+        .attr('x', x)
+        .attr('y', height - this.remToPx(0.8))
+        .attr('text-anchor', 'middle')
+        .text(xDate.toLocaleTimeString())
+
+      const circle = (!svg.select('.tooltip-dot').empty())
+        ? svg.select('.tooltip-dot')
+        : svg.append('circle').attr('class', 'tooltip-dot')
+
+      circle
+        .datum(this.aggregateData)
+        .attr('r', 6)
+        .attr('class', 'tooltip-dot')
+        .attr('cx', x)
+        .attr('cy', this.graph.y(yValue))
+    },
+
+    graphCords (x) {
+      const coeff = 1000 * 60 * 5
+
+      const xDate = this.graph.x.invert(x)
+      const roundedDate = new Date(Math.round(xDate.getTime() / coeff) * coeff)
+      const roundedTime = roundedDate.getTime()
+
+      const matchingData = this.aggregateData.find(v => (v.insertedAt.getTime() === roundedTime))
+      const yValue = (matchingData) ? matchingData.openPrice : null
+
+      return [roundedDate, yValue]
+    },
+
+    graphMouseMove: throttle(function (e) {
+      if (e.offsetX < this.tooltip.minX) {
+        this.tooltip.showingX = this.tooltip.minX
+      } else if (e.offsetX > this.tooltip.maxX) {
+        this.tooltip.showingX = this.tooltip.maxX
+      } else {
+        this.tooltip.showingX = e.offsetX
+      }
+    }, 100),
+
+    graphMouseOut: debounce(function (e) {
+      this.tooltip.showingX = null
+    }, 1000),
+
+    remToPx (rems = 1) {
+      return rems * parseFloat(getComputedStyle(document.documentElement).fontSize)
+    },
+
+    updateGraphTooltip () {
+      this.tooltip.minX = this.graph.x(d3.min(this.aggregateData, d => d.insertedAt))
+      this.tooltip.maxX = this.graph.x(d3.max(this.aggregateData, d => d.insertedAt))
     }
   }
 }
