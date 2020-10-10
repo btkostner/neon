@@ -1,4 +1,4 @@
-defmodule NeonServer.UserSocket do
+defmodule NeonServer.AbsintheSocket do
   use Phoenix.Socket
   use Absinthe.Phoenix.Socket, schema: NeonServer.Schema
 
@@ -9,15 +9,10 @@ defmodule NeonServer.UserSocket do
     case get_session(token) do
       {:ok, session} ->
         updated_socket =
-          socket
-          |> assign(:session_id, session.id)
-          |> assign(:user_role, session.user.role)
-          |> Absinthe.Phoenix.Socket.put_options(
-            context: %{
-              session_id: session.id,
-              user_role: session.user.role
-            }
-          )
+          Absinthe.Phoenix.Socket.put_options(socket, context: %{
+            session_id: session.id,
+            user_role: session.user.role
+          })
 
         {:ok, updated_socket}
 

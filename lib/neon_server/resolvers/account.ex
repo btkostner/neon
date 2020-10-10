@@ -14,15 +14,20 @@ defmodule NeonServer.Resolvers.Account do
 
   def show_profile(_parent, _args, _resolution), do: {:error, :unauthenticated}
 
-  def list_users(_parent, _args, _resolution) do
+  def list_users(_parent, _args, %{context: %{user_role: :admin}}) do
     {:ok, Account.list_users()}
   end
+
+  def list_users(_parent, _args, _resolution), do: {:error, :unauthenticated}
 
   def login(_parent, args, _resolution) do
     Account.login_user(args)
   end
 
   def register(_parent, args, _resolution) do
-    Account.register_user(args)
+    case Application.get_env(:neon, Account)[:allow_registration] do
+      true -> Account.register_user(args)
+      false -> {:error, "Registration is disabled"}
+    end
   end
 end
