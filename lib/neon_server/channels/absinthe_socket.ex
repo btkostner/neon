@@ -9,10 +9,12 @@ defmodule NeonServer.AbsintheSocket do
     case get_session(token) do
       {:ok, session} ->
         updated_socket =
-          Absinthe.Phoenix.Socket.put_options(socket, context: %{
-            session_id: session.id,
-            user_role: session.user.role
-          })
+          Absinthe.Phoenix.Socket.put_options(socket,
+            context: %{
+              session_id: session.id,
+              user_role: session.user.role
+            }
+          )
 
         {:ok, updated_socket}
 

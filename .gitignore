@@ -41,6 +41,10 @@ npm-debug.log
 # to include them in git.
 /priv/plts/
 
+# Ignore compiled Rust code
+/priv/native
+/target
+
 # We also ignore the docker-compose persistent storage folder.
 /priv/persistent
 

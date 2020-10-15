@@ -10,6 +10,7 @@ WORKDIR /opt/app
 
 RUN apk --no-cache --update add \
   bash \
+  cargo \
   g++ \
   gcc \
   git \
@@ -18,16 +19,18 @@ RUN apk --no-cache --update add \
   make \
   nodejs \
   nodejs-npm \
-  python
+  python \
+  rust
 
+RUN mix local.hex --force && mix local.rebar --force
 RUN npm install npm -g --no-progress
 
 RUN cd /opt/app && \
-  mix local.hex --force && \
-  mix local.rebar --force && \
   mix deps.get --all && \
   MIX_ENV=dev mix deps.compile --all && \
-  MIX_ENV=test mix deps.compile --all && \
+  MIX_ENV=test mix deps.compile --all
+
+RUN cd /opt/app && \
   npm ci
 
 VOLUME /opt/app

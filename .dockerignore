@@ -1,6 +1,8 @@
-/_build/*
-/.nuxt/*
-/node_modules/*
-/deps/*
-/doc/*
-/priv/persistent/*
+/_build
+/.nuxt
+/deps
+/doc
+/node_modules
+/priv/native
+/priv/persistent
+/target

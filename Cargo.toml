@@ -1,0 +1,14 @@
+[package]
+name = "neon_predict"
+version = "1.0.0"
+authors = []
+edition = "2018"
+
+[lib]
+name = "neon_predict"
+path = "lib/neon_predict/lib.rs"
+crate-type = ["dylib"]
+
+[dependencies]
+rustler = "0.22.0-rc.0"
+serde = "1.0.116"

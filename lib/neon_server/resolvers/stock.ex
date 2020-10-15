@@ -37,7 +37,9 @@ defmodule NeonServer.Resolvers.Stock do
     {:ok, aggregate}
   end
 
-  def backfill_symbol(_parent, %{symbol_id: symbol_id, days: days}, %{context: %{user_role: :admin}}) do
+  def backfill_symbol(_parent, %{symbol_id: symbol_id, days: days}, %{
+        context: %{user_role: :admin}
+      }) do
     symbol = Stock.get_symbol(id: symbol_id)
     Stock.backfill_aggregate(symbol, days)
   end

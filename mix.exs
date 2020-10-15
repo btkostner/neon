@@ -7,8 +7,9 @@ defmodule Neon.MixProject do
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext, :rustler] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
+      rustler_crates: crates(),
       aliases: aliases(),
       preferred_cli_env: preferred_cli_env(),
       deps: deps(),
@@ -26,6 +27,16 @@ defmodule Neon.MixProject do
     [
       extra_applications: [:cachex, :logger, :runtime_tools],
       mod: {Neon.Application, []}
+    ]
+  end
+
+  # Specifies the Rust nifs to build
+  def crates do
+    [
+      neon_predict: [
+        mode: if(Mix.env() == :prod, do: :release, else: :debug),
+        path: __DIR__
+      ]
     ]
   end
 
@@ -56,6 +67,7 @@ defmodule Neon.MixProject do
       {:phoenix, "~> 1.5.1"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, "~> 0.15.5"},
+      {:rustler, "~> 0.22.0-rc.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:tesla, "~> 1.3.0"},

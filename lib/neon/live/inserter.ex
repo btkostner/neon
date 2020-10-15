@@ -43,6 +43,7 @@ defmodule Neon.Live.Inserter do
   end
 
   defp insert_aggregates([]), do: :ok
+
   defp insert_aggregates(aggregates) do
     deduped_aggregates = Enum.uniq_by(aggregates, & &1.symbol_id)
 

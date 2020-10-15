@@ -21,8 +21,7 @@ config :neon, NeonServer.Endpoint,
   pubsub_server: Neon.PubSub,
   live_view: [signing_salt: "njdqhjV1"]
 
-config :neon, Neon.Account,
-  allow_registration: true
+config :neon, Neon.Account, allow_registration: true
 
 # Configures Elixir's Logger
 config :logger, :console,
