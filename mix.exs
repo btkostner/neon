@@ -62,7 +62,7 @@ defmodule Neon.MixProject do
       {:hackney, "~> 1.16.0"},
       {:jason, "~> 1.0"},
       {:phoenix_ecto, "~> 4.1"},
-      {:phoenix_live_dashboard, "~> 0.2.6"},
+      {:phoenix_live_dashboard, "~> 0.3.6"},
       {:phoenix_live_view, "~> 0.14.2"},
       {:phoenix, "~> 1.5.1"},
       {:plug_cowboy, "~> 2.0"},
