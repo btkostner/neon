@@ -33,7 +33,7 @@
     "phoenix": "file:./deps/phoenix",
     "postcss-color-mod-function": "^3.0.3",
     "secure-ls": "^1.2.6",
-    "vee-validate": "^3.4.0",
+    "vee-validate": "^3.4.5",
     "vue-apollo": "^3.0.4",
     "vuex-persistedstate": "^3.1.0"
   },
