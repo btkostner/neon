@@ -1,0 +1,143 @@
+---
+
+name: CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  Lint_Mix:
+    name: Lint (Mix)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: '22.2'
+          elixir-version: '1.9.4'
+
+      - name: Lint
+        run: mix format --check-formatted
+
+  Lint_Credo:
+    name: Lint (Credo)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: '22.2'
+          elixir-version: '1.9.4'
+
+      - name: Install
+        run: mix deps.get
+
+      - name: Lint
+        run: mix credo --all
+
+  Lint_Eslint:
+    name: Lint (ESLint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup (Elixir)
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: '22.2'
+          elixir-version: '1.9.4'
+
+      - name: Setup (Node)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Install (Mix)
+        run: mix deps.get
+
+      - name: Install (Npm)
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint:js
+
+  Lint_Stylelint:
+    name: Lint (Stylelint)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup (Elixir)
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: '22.2'
+          elixir-version: '1.9.4'
+
+      - name: Setup (Node)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Install (Mix)
+        run: mix deps.get
+
+      - name: Install (Npm)
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint:css
+
+  Test_Mix:
+    name: Test (Mix)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup (Elixir)
+        uses: actions/setup-elixir@v1
+        with:
+          otp-version: '22.2'
+          elixir-version: '1.9.4'
+
+      - name: Setup (Node)
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Install (Mix)
+        run: mix deps.get
+
+      - name: Install (Npm)
+        run: npm ci
+
+      - name: Build (Npm)
+        run: npm run build
+
+      - name: Test
+        run: mix test
+
+  Build_Dockerfile:
+    name: Build (Dockerfile)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: docker build -f Dockerfile .

@@ -1,0 +1,37 @@
+---
+
+version: "3"
+
+services:
+  neon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/opt/app
+    environment:
+      - MIX_ENV
+    command: mix do ecto.create, phx.server
+    working_dir: /opt/app
+    network_mode: host
+    depends_on:
+      - postgres
+      - chrome
+
+  postgres:
+    image: timescale/timescaledb:latest-pg11
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USERNAME: postgres
+    network_mode: host
+
+  chrome:
+    image: selenium/standalone-chrome:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    network_mode: host
+
+volumes:
+  database:
