@@ -9,7 +9,7 @@ module.exports = (env, options) => {
 
   return {
     entry: {
-      app: ['./lib/neon_client/script/main.js']
+      main: ['./lib/neon_client/script/main.js']
     },
 
     output: {
@@ -45,7 +45,7 @@ module.exports = (env, options) => {
     },
 
     plugins: [
-      new MiniCssExtractPlugin({ filename: '../style/app.css' }),
+      new MiniCssExtractPlugin({ filename: '../style/main.css' }),
       new CopyWebpackPlugin({
         patterns: [{ from: './lib/neon_client/static/', to: '../' }]
       })

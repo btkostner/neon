@@ -58,11 +58,11 @@ defmodule Neon.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "setup": ["ecto.setup", "npm ci"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "ecto.seed"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "ecto.seed": ["run priv/repo/seeds.exs"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      setup: ["ecto.setup", "npm ci"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end
