@@ -9,7 +9,7 @@ on:
 jobs:
   Lint_Mix:
     name: Lint (Mix)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
 
   Lint_Credo:
     name: Lint (Credo)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
@@ -46,7 +46,7 @@ jobs:
 
   Lint_Eslint:
     name: Lint (ESLint)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
@@ -74,7 +74,7 @@ jobs:
 
   Lint_Stylelint:
     name: Lint (Stylelint)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
@@ -102,7 +102,7 @@ jobs:
 
   Test_Mix:
     name: Test (Mix)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
@@ -133,7 +133,7 @@ jobs:
 
   Build_Dockerfile:
     name: Build (Dockerfile)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
