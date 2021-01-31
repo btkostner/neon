@@ -18,8 +18,8 @@ jobs:
       - name: Setup
         uses: actions/setup-elixir@v1
         with:
-          otp-version: '22.2'
-          elixir-version: '1.9.4'
+          otp-version: '23.2'
+          elixir-version: '1.11.3'
 
       - name: Lint
         run: mix format --check-formatted
@@ -35,8 +35,8 @@ jobs:
       - name: Setup
         uses: actions/setup-elixir@v1
         with:
-          otp-version: '22.2'
-          elixir-version: '1.9.4'
+          otp-version: '23.2'
+          elixir-version: '1.11.3'
 
       - name: Install
         run: mix deps.get
@@ -55,8 +55,8 @@ jobs:
       - name: Setup (Elixir)
         uses: actions/setup-elixir@v1
         with:
-          otp-version: '22.2'
-          elixir-version: '1.9.4'
+          otp-version: '23.2'
+          elixir-version: '1.11.3'
 
       - name: Setup (Node)
         uses: actions/setup-node@v2
@@ -83,8 +83,8 @@ jobs:
       - name: Setup (Elixir)
         uses: actions/setup-elixir@v1
         with:
-          otp-version: '22.2'
-          elixir-version: '1.9.4'
+          otp-version: '23.2'
+          elixir-version: '1.11.3'
 
       - name: Setup (Node)
         uses: actions/setup-node@v2
@@ -111,8 +111,8 @@ jobs:
       - name: Setup (Elixir)
         uses: actions/setup-elixir@v1
         with:
-          otp-version: '22.2'
-          elixir-version: '1.9.4'
+          otp-version: '23.2'
+          elixir-version: '1.11.3'
 
       - name: Setup (Node)
         uses: actions/setup-node@v2
