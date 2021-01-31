@@ -1,9 +1,14 @@
-defmodule NeonWeb.PageLive do
+defmodule NeonWeb.DashboardLive do
   use NeonWeb, :live_view
 
   @impl true
   def mount(_params, _session, socket) do
     {:ok, assign(socket, query: "", results: %{})}
+  end
+
+  @impl true
+  def handle_params(_params, _session, socket) do
+    {:noreply, socket}
   end
 
   @impl true
@@ -35,5 +40,9 @@ defmodule NeonWeb.PageLive do
         String.starts_with?(app, query) and not List.starts_with?(desc, ~c"ERTS"),
         into: %{},
         do: {app, vsn}
+  end
+
+  def render(assigns) do
+    NeonWeb.DashboardView.render("index.html", assigns)
   end
 end

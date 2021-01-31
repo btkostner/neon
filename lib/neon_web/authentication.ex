@@ -81,7 +81,7 @@ defmodule NeonWeb.Authentication do
     conn
     |> renew_session()
     |> delete_resp_cookie(@remember_me_cookie)
-    |> redirect(to: "/")
+    |> redirect(to: Routes.user_session_path(conn, :new))
   end
 
   @doc """
@@ -145,5 +145,5 @@ defmodule NeonWeb.Authentication do
 
   defp maybe_store_return_to(conn), do: conn
 
-  defp signed_in_path(_conn), do: "/"
+  defp signed_in_path(conn), do: Routes.dashboard_path(conn, :index)
 end

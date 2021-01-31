@@ -6,7 +6,8 @@ defmodule Neon.Accounts do
   import Ecto.Query, warn: false
 
   alias Neon.Repo
-  alias Neon.Accounts.{User, UserToken, UserNotifier}
+  alias Neon.Accounts.{User, UserToken}
+  alias NeonNotifier.Accounts.UserNotifier
 
   ## Database getters
 

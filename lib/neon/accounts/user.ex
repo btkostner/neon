@@ -5,10 +5,13 @@ defmodule Neon.Accounts.User do
 
   schema "users" do
     field :email, :string
+
     field :password, :string, virtual: true
     field :hashed_password, :string
-    field :confirmed_at, :naive_datetime
 
+    field :role, Ecto.Enum, values: [:user, :admin], default: :user
+
+    field :confirmed_at, :naive_datetime
     timestamps()
   end
 

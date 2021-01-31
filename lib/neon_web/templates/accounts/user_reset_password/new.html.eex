@@ -1,15 +1,23 @@
-<h1>Forgot your password?</h1>
+<main role="main" class="bg-gray-800 text-white w-full max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
+    <section>
+        <h3 class="font-bold text-2xl">Welcome to Neon</h3>
+        <p class="text-gray-400 pt-2">Reset your password</p>
+    </section>
 
-<%= form_for :user, Routes.user_reset_password_path(@conn, :create), fn f -> %>
-  <%= label f, :email %>
-  <%= email_input f, :email, required: true %>
+    <section class="mt-6">
+        <%= form_for :user, Routes.user_reset_password_path(@conn, :create), [class: "flex flex-col", as: :user], fn f -> %>
+            <div class="mb-6 pt-4">
+                <%= label f, :email, class: "block text-gray-200 text-sm font-bold mb-2 ml-3" %>
+                <%= email_input f, :email, required: true, class: "bg-gray-800 w-full text-gray-200 focus:outline-none border-b-2 border-gray-700 focus:border-blue-700 transition duration-500 px-3 pb-1" %>
+            </div>
 
-  <div>
-    <%= submit "Send instructions to reset password" %>
-  </div>
-<% end %>
+            <%= submit "Send", class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200" %>
+        <% end %>
+    </section>
+</main>
 
-<p>
-  <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
-  <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
-</p>
+<div class="max-w-lg mx-auto flex justify-center text-white mb-10">
+    <%= link "Log In", to: Routes.user_session_path(@conn, :new), class: "hover:underline" %>
+    <span class="mx-3">•</span>
+    <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "hover:underline" %>
+</div>

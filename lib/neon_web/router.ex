@@ -19,23 +19,29 @@ defmodule NeonWeb.Router do
   end
 
   scope "/", NeonWeb do
-    pipe_through :browser
+    pipe_through [:browser]
 
-    live "/", PageLive, :index
-    live_dashboard "/dashboard", metrics: NeonWeb.Telemetry
+    get "/", HomepageController, :index
+  end
+
+  scope "/", NeonWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/dashboard", DashboardLive, :index
+    live_dashboard "/admin/dashboard", metrics: NeonWeb.Telemetry
   end
 
   scope "/", NeonWeb.Accounts do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-    get "/users/register", UserRegistrationController, :new
-    post "/users/register", UserRegistrationController, :create
-    get "/users/log_in", UserSessionController, :new
-    post "/users/log_in", UserSessionController, :create
-    get "/users/reset_password", UserResetPasswordController, :new
-    post "/users/reset_password", UserResetPasswordController, :create
-    get "/users/reset_password/:token", UserResetPasswordController, :edit
-    put "/users/reset_password/:token", UserResetPasswordController, :update
+    get "/register", UserRegistrationController, :new
+    post "/register", UserRegistrationController, :create
+    get "/log-in", UserSessionController, :new
+    post "/log-in", UserSessionController, :create
+    get "/reset-password", UserResetPasswordController, :new
+    post "/reset-password", UserResetPasswordController, :create
+    get "/reset-password/:token", UserResetPasswordController, :edit
+    put "/reset-password/:token", UserResetPasswordController, :update
   end
 
   scope "/", NeonWeb.Accounts do
@@ -43,13 +49,13 @@ defmodule NeonWeb.Router do
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    get "/confirm-email/:token", UserSettingsController, :confirm_email
   end
 
   scope "/", NeonWeb.Accounts do
     pipe_through [:browser]
 
-    delete "/users/log_out", UserSessionController, :delete
+    delete "/log-out", UserSessionController, :delete
     get "/users/confirm", UserConfirmationController, :new
     post "/users/confirm", UserConfirmationController, :create
     get "/users/confirm/:token", UserConfirmationController, :confirm

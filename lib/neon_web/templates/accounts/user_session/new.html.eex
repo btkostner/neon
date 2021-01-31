@@ -1,27 +1,39 @@
-<h1>Log in</h1>
+<main role="main" class="bg-gray-800 text-white w-full max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
+    <section>
+        <h3 class="font-bold text-2xl">Welcome to Neon</h3>
+        <p class="text-gray-400 pt-2">Sign in to your account</p>
+    </section>
 
-<%= form_for @conn, Routes.user_session_path(@conn, :create), [as: :user], fn f -> %>
-  <%= if @error_message do %>
-    <div class="alert alert-danger">
-      <p><%= @error_message %></p>
-    </div>
-  <% end %>
+    <section class="mt-6">
+        <%= form_for @conn, Routes.user_session_path(@conn, :create), [class: "flex flex-col", as: :user], fn f -> %>
+            <%= if @error_message do %>
+                <div class="mb-4 py-2 font-bold text-sm border-l-4 px-4 border-red-600 text-red-600">
+                    <p><%= @error_message %></p>
+                </div>
+            <% end %>
 
-  <%= label f, :email %>
-  <%= email_input f, :email, required: true %>
+            <div class="mb-6 pt-4">
+                <%= label f, :email, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                <%= email_input f, :email, required: true, class: "bg-gray-800 w-full rounded-t text-gray-200 focus:outline-none border-b-2 border-gray-700 focus:border-blue-700 transition duration-500 px-3 py-1" %>
+            </div>
 
-  <%= label f, :password %>
-  <%= password_input f, :password, required: true %>
+            <div class="mb-6 pt-3">
+                <%= label f, :password, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                <%= password_input f, :password, required: true, class: "bg-gray-800 w-full rounded-t text-gray-200 focus:outline-none border-b-2 border-gray-700 focus:border-blue-700 transition duration-500 px-3 py-1" %>
+            </div>
 
-  <%= label f, :remember_me, "Keep me logged in for 60 days" %>
-  <%= checkbox f, :remember_me %>
+            <div class="mb-6 pt-3 flex items-center">
+                <%= checkbox f, :remember_me %>
+                <%= label f, :remember_me, "Keep me logged in for 60 days", class: "text-gray-200 text-sm font-bold ml-2" %>
+            </div>
 
-  <div>
-    <%= submit "Log in" %>
-  </div>
-<% end %>
+            <%= submit "Sign in", class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200" %>
+        <% end %>
+    </section>
+</main>
 
-<p>
-  <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
-  <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new) %>
-</p>
+<div class="max-w-lg mx-auto flex justify-center text-white mb-10">
+    <%= link "Register", to: Routes.user_registration_path(@conn, :new), class: "hover:underline" %>
+    <span class="mx-3">•</span>
+    <%= link "Reset Password", to: Routes.user_reset_password_path(@conn, :new), class: "hover:underline" %>
+</div>
