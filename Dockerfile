@@ -22,7 +22,7 @@ RUN apk --no-cache --update add \
   make \
   nodejs \
   nodejs-npm \
-  python \
+  python3 \
   rust
 
 RUN mix local.hex --force && mix local.rebar --force
