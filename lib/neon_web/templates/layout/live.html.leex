@@ -15,6 +15,16 @@
   </div>
 
   <div class="w-full">
+    <%= if update_available?(@socket) do %>
+      <div
+        class="w-full p-4 bg-green-800 text-gray-100"
+        role="alert"
+      >
+        A new update is available. Please <a href="javascript:window.location.href=window.location.href" class="underline">refresh your browser</a>
+        to get the latest and greatest!
+      </div>
+    <% end %>
+
     <%= if message = live_flash(@flash, :info) do %>
       <div
         class="w-full p-4 bg-green-800 text-gray-100"
