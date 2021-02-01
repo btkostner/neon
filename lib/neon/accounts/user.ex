@@ -8,6 +8,7 @@ defmodule Neon.Accounts.User do
   @derive {Inspect, except: [:password]}
 
   schema "users" do
+    field :name, :string
     field :email, :string
 
     field :password, :string, virtual: true
@@ -17,6 +18,17 @@ defmodule Neon.Accounts.User do
 
     field :confirmed_at, :naive_datetime
     timestamps()
+  end
+
+  @doc """
+  A user changeset for profile fields.
+
+  This only allows changing of basic user data. No passwords or emails because
+  those require other actions on top of it.
+  """
+  def profile_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:name])
   end
 
   @doc """

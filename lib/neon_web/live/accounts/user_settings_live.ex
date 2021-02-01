@@ -15,9 +15,34 @@ defmodule NeonWeb.Accounts.UserSettingsLive do
     {:ok,
      assign(socket,
        page_title: "Account Settings",
+       profile_changeset: Accounts.change_user_profile(socket.assigns.current_user),
        email_changeset: Accounts.change_user_email(socket.assigns.current_user),
        password_changeset: Accounts.change_user_password(socket.assigns.current_user)
      )}
+  end
+
+  @impl true
+  def handle_event(
+        "update_profile",
+        %{"user" => user_params},
+        socket
+      ) do
+    case Accounts.update_user_profile(socket.assigns.current_user, user_params) do
+      {:ok, user} ->
+        {:noreply,
+         socket
+         |> assign(
+           current_user: user,
+           profile_changeset: Accounts.change_user_profile(user)
+         )
+         |> put_flash(
+           :info,
+           "Profile updated successfully."
+         )}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, :profile_changeset, changeset)}
+    end
   end
 
   @impl true

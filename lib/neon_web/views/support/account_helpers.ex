@@ -8,6 +8,14 @@ defmodule NeonWeb.AccountHelpers do
   @gravatar_domain "gravatar.com"
 
   @doc """
+  Returns a friendly, human name for a user based on their set name field, or
+  their email field as a fallback.
+  """
+  def friendly_name(user) do
+    if user.name, do: user.name, else: user.email
+  end
+
+  @doc """
   Generates a gravatar url for a user's email address.
   """
   def gravatar(user, opts \\ []) do

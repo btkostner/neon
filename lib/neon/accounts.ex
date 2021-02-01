@@ -97,6 +97,38 @@ defmodule Neon.Accounts do
   ## Settings
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user profile fields.
+
+  ## Examples
+
+      iex> change_user_profile(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_profile(user, attrs \\ %{}) do
+    User.profile_changeset(user, attrs)
+  end
+
+  @doc """
+  Updates user profile fields.
+
+  ## Examples
+
+      iex> update_user_profile(user, %{name: ...})
+      {:ok, %User{}}
+
+      iex> update_user_profile(user, %{name: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_profile(user, attrs) do
+    user
+    |> User.profile_changeset(attrs)
+    |> Repo.update()
+    |> broadcast_changes()
+  end
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for changing the user email.
 
   ## Examples
@@ -140,7 +172,8 @@ defmodule Neon.Accounts do
 
     with {:ok, query} <- UserToken.verify_change_email_token_query(token, context),
          %UserToken{sent_to: email} <- Repo.one(query),
-         {:ok, _} <- Repo.transaction(user_email_multi(user, email, context)) do
+         {:ok, user} <- Repo.transaction(user_email_multi(user, email, context)),
+         {:ok, _} <- broadcast_changes({:ok, user}) do
       :ok
     else
       _ -> :error
@@ -153,6 +186,11 @@ defmodule Neon.Accounts do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+      {:error, _, _, _} -> {:error, "Unable to delete user tokens"}
+    end
   end
 
   @doc """
@@ -208,7 +246,7 @@ defmodule Neon.Accounts do
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
     |> Repo.transaction()
     |> case do
-      {:ok, %{user: user}} -> {:ok, user}
+      {:ok, %{user: user}} -> broadcast_changes({:ok, user})
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
@@ -274,7 +312,8 @@ defmodule Neon.Accounts do
   def confirm_user(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "confirm"),
          %User{} = user <- Repo.one(query),
-         {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user)) do
+         {:ok, %{user: user}} <- Repo.transaction(confirm_user_multi(user)),
+         {:ok, _} <- broadcast_changes({:ok, user}) do
       {:ok, user}
     else
       _ -> :error
@@ -347,5 +386,14 @@ defmodule Neon.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  defp broadcast_changes({:ok, user}) do
+    NeonWeb.Endpoint.broadcast("user:" <> user.id, "update", user)
+    {:ok, user}
+  end
+
+  defp broadcast_changes(res) do
+    res
   end
 end
