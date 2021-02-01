@@ -1,6 +1,6 @@
 <ul class="list-reset w-full" x-data="{ open: false }" x-on:click.away="open = false">
   <li x-show.transition="open">
-    <%= link to: Routes.user_settings_path(@socket, :edit),
+    <%= live_patch to: Routes.user_settings_path(@socket, :index),
       class: "block px-4 py-2 align-middle text-gray-200 no-underline hover:text-blue-500" do %>
       <span class="w-full inline-block">Settings</span>
     <% end %>

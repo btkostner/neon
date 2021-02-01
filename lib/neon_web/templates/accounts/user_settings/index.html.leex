@@ -1,0 +1,137 @@
+<main role="main" class="p-4 py-10 w-full">
+  <h1 class="text-5xl">User Settings</h1>
+
+  <div class="mt-10 max-w-5xl">
+    <div class="md:grid md:grid-cols-10 md:gap-12">
+      <div class="md:col-span-4">
+        <div class="px-4 sm:px-0">
+          <h3 class="text-lg font-medium leading-6">Profile</h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Update your basic profile.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5 md:mt-0 md:col-span-6">
+        <div class="shadow sm:rounded-md sm:overflow-hidden">
+          <div class="px-4 py-5 bg-gray-800 space-y-6 sm:p-6">
+            <div>
+              <div class="flex items-center">
+                <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100">
+                  <img
+                    class="rounded row-span-2"
+                    src="<%= gravatar(@user, size: 48) %>"
+                    alt="<%= @user.email %>"
+                    height="48"
+                    width="48"
+                  >
+                </span>
+
+                <span class="ml-5 py-2 px-3 text-sm">
+                  We use Gravatar to manage avatars. You can change your avatar
+                  <a href="https://en.gravatar.com/connect/" class="underline">there</a>.
+                </span>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hidden sm:block" aria-hidden="true">
+    <div class="py-10">
+      <div class="border-t border-gray-600"></div>
+    </div>
+  </div>
+
+  <div class="mt-10 sm:mt-0 max-w-5xl">
+    <div class="md:grid md:grid-cols-10 md:gap-12">
+      <div class="md:col-span-4">
+        <div class="px-4 sm:px-0">
+          <h3 class="text-lg font-medium leading-6">Change Email</h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Use a permanent address where you can receive mail. This will be
+            used for notifications, and your login.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5 md:mt-0 md:col-span-6">
+        <%= form_for @email_changeset, "#", [phx_submit: :update_email], fn f -> %>
+          <div class="shadow overflow-hidden sm:rounded-md">
+            <div class="px-4 py-5 bg-gray-800 sm:p-6">
+              <div class="flex flex-col">
+                <div class="mb-6 pt-4">
+                  <%= label f, :email, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                  <%= email_input f, :email, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                  <%= error_tag f, :email, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                </div>
+
+                <div class="mb-6 pt-4">
+                  <%= label f, :current_password, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                  <%= password_input f, :current_password, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                  <%= error_tag f, :current_password, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="px-4 py-3 bg-gray-700 text-right sm:px-6">
+              <%= submit "Change email", class: "inline-flex justify-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded shadow-lg hover:shadow-xl transition duration-200" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="hidden sm:block" aria-hidden="true">
+    <div class="py-10">
+      <div class="border-t border-gray-600"></div>
+    </div>
+  </div>
+
+  <div class="mt-10 sm:mt-0 max-w-5xl">
+    <div class="md:grid md:grid-cols-10 md:gap-12">
+      <div class="md:col-span-4">
+        <div class="px-4 sm:px-0">
+          <h3 class="text-lg font-medium leading-6">Change Password</h3>
+          <p class="mt-1 text-sm text-gray-500">
+            Keep this secure and private.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5 md:mt-0 md:col-span-6">
+        <%= form_for @password_changeset, "#", [phx_submit: :update_password], fn f -> %>
+          <div class="shadow overflow-hidden sm:rounded-md">
+            <div class="px-4 py-5 bg-gray-800 sm:p-6">
+              <div class="flex flex-col">
+                <div class="mb-6 pt-4">
+                  <%= label f, :password, "New password", class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                  <%= password_input f, :password, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                  <%= error_tag f, :password, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                </div>
+
+                <div class="mb-6 pt-4">
+                  <%= label f, :password_confirmation, "Confirm new password", class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                  <%= password_input f, :password_confirmation, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                  <%= error_tag f, :password_confirmation, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                </div>
+
+                <div class="mb-6 pt-4">
+                  <%= label f, :current_password, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                  <%= password_input f, :current_password, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                  <%= error_tag f, :current_password, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                </div>
+              </div>
+            </div>
+
+            <div class="px-4 py-3 bg-gray-700 text-right sm:px-6">
+              <%= submit "Change password", class: "inline-flex justify-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded shadow-lg hover:shadow-xl transition duration-200" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</main>
