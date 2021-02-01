@@ -8,6 +8,25 @@
     <%= live_title_tag assigns[:page_title] || "Neon", suffix: " · Neon" %>
     <meta name="description" content="A stock market analytic platform"/>
 
+    <link rel="manifest" href="<%= Routes.static_path(@conn, "/manifest.json") %>">
+    <link rel="apple-touch-icon" sizes="57x57" href="<%= Routes.static_path(@conn, "/icon-57.png") %>"/>
+    <link rel="apple-touch-icon" sizes="60x60" href="<%= Routes.static_path(@conn, "/icon-60.png") %>"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="<%= Routes.static_path(@conn, "/icon-72.png") %>"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="<%= Routes.static_path(@conn, "/icon-76.png") %>"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="<%= Routes.static_path(@conn, "/icon-114.png") %>"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="<%= Routes.static_path(@conn, "/icon-120.png") %>"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="<%= Routes.static_path(@conn, "/icon-144.png") %>"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="<%= Routes.static_path(@conn, "/icon-152.png") %>"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="<%= Routes.static_path(@conn, "/icon-180.png") %>"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="<%= Routes.static_path(@conn, "/icon-16.png") %>"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="<%= Routes.static_path(@conn, "/icon-32.png") %>"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="<%= Routes.static_path(@conn, "/icon-96.png") %>"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="<%= Routes.static_path(@conn, "/icon-192.png") %>"/>
+    <meta name="msapplication-TileImage" content="<%= Routes.static_path(@conn, "/icon-144.png") %>">
+    <meta name="msapplication-config" content="<%= Routes.static_path(@conn, "/browserconfig.xml") %>"/>
+    <meta name="msapplication-TileColor" content="#111827"/>
+    <meta name="theme-color" content="#111827"/>
+
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/style/main.css") %>"/>
 
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/script/main.js") %>"></script>
