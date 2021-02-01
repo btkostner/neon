@@ -1,9 +1,11 @@
 defmodule NeonWeb.DashboardLive do
+  @moduledoc false
+
   use NeonWeb, :live_view
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, query: "", results: %{})}
+    {:ok, assign(socket, page_title: "Dashboard")}
   end
 
   @impl true

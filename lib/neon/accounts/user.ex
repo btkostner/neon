@@ -1,4 +1,8 @@
 defmodule Neon.Accounts.User do
+  @moduledoc """
+  Persistance of a user record.
+  """
+
   use Neon, :schema
 
   @derive {Inspect, except: [:password]}
@@ -54,7 +58,9 @@ defmodule Neon.Accounts.User do
     |> validate_length(:password, min: 12, max: 80)
     |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
+    |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/,
+      message: "at least one digit or punctuation character"
+    )
     |> maybe_hash_password(opts)
   end
 

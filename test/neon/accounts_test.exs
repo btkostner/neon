@@ -62,7 +62,11 @@ defmodule Neon.AccountsTest do
 
       assert %{
                email: ["must have the @ sign and no spaces"],
-               password: ["at least one digit or punctuation character", "at least one upper case character", "should be at least 12 character(s)"]
+               password: [
+                 "at least one digit or punctuation character",
+                 "at least one upper case character",
+                 "should be at least 12 character(s)"
+               ]
              } = errors_on(changeset)
     end
 
@@ -263,7 +267,11 @@ defmodule Neon.AccountsTest do
         })
 
       assert %{
-               password: ["at least one digit or punctuation character", "at least one upper case character", "should be at least 12 character(s)"],
+               password: [
+                 "at least one digit or punctuation character",
+                 "at least one upper case character",
+                 "should be at least 12 character(s)"
+               ],
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end
@@ -472,7 +480,11 @@ defmodule Neon.AccountsTest do
         })
 
       assert %{
-               password: ["at least one digit or punctuation character", "at least one upper case character", "should be at least 12 character(s)"],
+               password: [
+                 "at least one digit or punctuation character",
+                 "at least one upper case character",
+                 "should be at least 12 character(s)"
+               ],
                password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end

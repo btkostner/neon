@@ -1,4 +1,8 @@
 defmodule NeonWeb.Authentication do
+  @moduledoc """
+  Handles all web server user authentication logic.
+  """
+
   import Plug.Conn
   import Phoenix.Controller
 

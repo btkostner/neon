@@ -26,7 +26,9 @@ defmodule NeonWeb.AccountHelpers do
   defp gravatar_options(uri, []), do: %URI{uri | query: nil}
   defp gravatar_options(uri, opts), do: %URI{uri | query: URI.encode_query(opts)}
 
-  defp gravatar_host(uri, true), do: %URI{uri | scheme: "https", host: "secure.#{@gravatar_domain}"}
+  defp gravatar_host(uri, true),
+    do: %URI{uri | scheme: "https", host: "secure.#{@gravatar_domain}"}
+
   defp gravatar_host(uri, false), do: %URI{uri | scheme: "http", host: @gravatar_domain}
 
   defp gravatar_hash_email(uri, email) do

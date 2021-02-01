@@ -1,4 +1,9 @@
 defmodule Neon.Accounts.UserToken do
+  @moduledoc """
+  Handles persistance of user tokens. These tokens can be used for sessions,
+  password reset, email confirmation, etc.
+  """
+
   use Neon, :schema
 
   @hash_algorithm :sha256

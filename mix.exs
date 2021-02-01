@@ -34,7 +34,9 @@ defmodule Neon.MixProject do
   defp deps do
     [
       {:argon2_elixir, "~> 2.0"},
+      {:credo, "~> 1.5", only: :dev},
       {:ecto_sql, "~> 3.4"},
+      {:ecto_psql_extras, "~> 0.2"},
       {:floki, ">= 0.27.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},

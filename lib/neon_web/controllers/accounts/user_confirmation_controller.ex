@@ -4,7 +4,9 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
   alias Neon.Accounts
 
   def new(conn, _params) do
-    render(conn, "new.html")
+    conn
+    |> assign(:page_title, "Confirm Email")
+    |> render("new.html")
   end
 
   def create(conn, %{"user" => %{"email" => email}}) do
@@ -22,7 +24,7 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
       "If your email is in our system and it has not been confirmed yet, " <>
         "you will receive an email with instructions shortly."
     )
-    |> redirect(to: "/")
+    |> redirect(to: Routes.user_session_path(conn, :new))
   end
 
   # Do not log in the user after confirmation to avoid a
@@ -32,7 +34,7 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Account confirmed successfully.")
-        |> redirect(to: "/")
+        |> redirect(to: Routes.user_session_path(conn, :new))
 
       :error ->
         # If there is a current user and the account was already confirmed,
@@ -41,12 +43,12 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
         # a warning message.
         case conn.assigns do
           %{current_user: %{confirmed_at: confirmed_at}} when not is_nil(confirmed_at) ->
-            redirect(conn, to: "/")
+            redirect(conn, to: Routes.user_session_path(conn, :new))
 
           %{} ->
             conn
             |> put_flash(:error, "Account confirmation link is invalid or it has expired.")
-            |> redirect(to: "/")
+            |> redirect(to: Routes.user_session_path(conn, :new))
         end
     end
   end

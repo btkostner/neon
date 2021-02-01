@@ -6,7 +6,9 @@ defmodule NeonWeb.Accounts.UserResetPasswordController do
   plug :get_user_by_reset_password_token when action in [:edit, :update]
 
   def new(conn, _params) do
-    render(conn, "new.html")
+    conn
+    |> assign(:page_title, "Reset Password")
+    |> render("new.html")
   end
 
   def create(conn, %{"user" => %{"email" => email}}) do
@@ -23,11 +25,13 @@ defmodule NeonWeb.Accounts.UserResetPasswordController do
       :info,
       "If your email is in our system, you will receive instructions to reset your password shortly."
     )
-    |> redirect(to: "/")
+    |> redirect(to: Routes.user_session_path(conn, :new))
   end
 
   def edit(conn, _params) do
-    render(conn, "edit.html", changeset: Accounts.change_user_password(conn.assigns.user))
+    conn
+    |> assign(:page_title, "Update Password")
+    |> render("edit.html", changeset: Accounts.change_user_password(conn.assigns.user))
   end
 
   # Do not log in the user after reset password to avoid a
@@ -40,7 +44,9 @@ defmodule NeonWeb.Accounts.UserResetPasswordController do
         |> redirect(to: Routes.user_session_path(conn, :new))
 
       {:error, changeset} ->
-        render(conn, "edit.html", changeset: changeset)
+        conn
+        |> assign(:page_title, "Update Password")
+        |> render("edit.html", changeset: changeset)
     end
   end
 
@@ -52,7 +58,7 @@ defmodule NeonWeb.Accounts.UserResetPasswordController do
     else
       conn
       |> put_flash(:error, "Reset password link is invalid or it has expired.")
-      |> redirect(to: "/")
+      |> redirect(to: Routes.user_session_path(conn, :new))
       |> halt()
     end
   end

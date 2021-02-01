@@ -28,7 +28,10 @@ defmodule NeonWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live "/dashboard", DashboardLive, :index
-    live_dashboard "/admin/dashboard", metrics: NeonWeb.Telemetry
+
+    live_dashboard "/admin/dashboard",
+      ecto_repos: [Neon.Repo],
+      metrics: NeonWeb.Telemetry
   end
 
   scope "/", NeonWeb.Accounts do

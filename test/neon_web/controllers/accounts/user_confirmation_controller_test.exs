@@ -14,7 +14,7 @@ defmodule NeonWeb.Accounts.UserConfirmationControllerTest do
     test "renders the confirmation page", %{conn: conn} do
       conn = get(conn, Routes.user_confirmation_path(conn, :new))
       response = html_response(conn, 200)
-      assert response =~ "<h1>Resend confirmation instructions</h1>"
+      assert response =~ "Resend confirmation instructions"
     end
   end
 
@@ -26,7 +26,7 @@ defmodule NeonWeb.Accounts.UserConfirmationControllerTest do
           "user" => %{"email" => user.email}
         })
 
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       assert get_flash(conn, :info) =~ "If your email is in our system"
       assert Repo.get_by!(Accounts.UserToken, user_id: user.id).context == "confirm"
     end
@@ -39,7 +39,7 @@ defmodule NeonWeb.Accounts.UserConfirmationControllerTest do
           "user" => %{"email" => user.email}
         })
 
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       assert get_flash(conn, :info) =~ "If your email is in our system"
       refute Repo.get_by(Accounts.UserToken, user_id: user.id)
     end
@@ -50,7 +50,7 @@ defmodule NeonWeb.Accounts.UserConfirmationControllerTest do
           "user" => %{"email" => "unknown@example.com"}
         })
 
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       assert get_flash(conn, :info) =~ "If your email is in our system"
       assert Repo.all(Accounts.UserToken) == []
     end
@@ -64,7 +64,7 @@ defmodule NeonWeb.Accounts.UserConfirmationControllerTest do
         end)
 
       conn = get(conn, Routes.user_confirmation_path(conn, :confirm, token))
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       assert get_flash(conn, :info) =~ "Account confirmed successfully"
       assert Accounts.get_user!(user.id).confirmed_at
       refute get_session(conn, :user_token)
@@ -72,7 +72,7 @@ defmodule NeonWeb.Accounts.UserConfirmationControllerTest do
 
       # When not logged in
       conn = get(conn, Routes.user_confirmation_path(conn, :confirm, token))
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       assert get_flash(conn, :error) =~ "Account confirmation link is invalid or it has expired"
 
       # When logged in
@@ -81,13 +81,13 @@ defmodule NeonWeb.Accounts.UserConfirmationControllerTest do
         |> log_in_user(user)
         |> get(Routes.user_confirmation_path(conn, :confirm, token))
 
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       refute get_flash(conn, :error)
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_confirmation_path(conn, :confirm, "oops"))
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       assert get_flash(conn, :error) =~ "Account confirmation link is invalid or it has expired"
       refute Accounts.get_user!(user.id).confirmed_at
     end

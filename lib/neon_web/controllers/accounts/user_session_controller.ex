@@ -5,7 +5,9 @@ defmodule NeonWeb.Accounts.UserSessionController do
   alias NeonWeb.Authentication
 
   def new(conn, _params) do
-    render(conn, "new.html", error_message: nil)
+    conn
+    |> assign(:page_title, "Log In")
+    |> render("new.html", error_message: nil)
   end
 
   def create(conn, %{"user" => user_params}) do

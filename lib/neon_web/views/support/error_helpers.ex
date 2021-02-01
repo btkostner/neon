@@ -10,10 +10,17 @@ defmodule NeonWeb.ErrorHelpers do
   """
   def error_tag(form, field, opts \\ []) do
     Enum.map(Keyword.get_values(form.errors, field), fn error ->
-      content_tag(:span, translate_error(error), Keyword.merge([
-        class: "invalid-feedback",
-        phx_feedback_for: input_id(form, field)
-      ], opts))
+      content_tag(
+        :span,
+        translate_error(error),
+        Keyword.merge(
+          [
+            class: "invalid-feedback",
+            phx_feedback_for: input_id(form, field)
+          ],
+          opts
+        )
+      )
     end)
   end
 

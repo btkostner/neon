@@ -1,4 +1,4 @@
-defmodule NeonWeb.Accounts.AuthenticationTest do
+defmodule NeonWeb.AuthenticationTest do
   use NeonWeb.ConnCase, async: true
 
   import Neon.AccountsFixtures
@@ -22,7 +22,7 @@ defmodule NeonWeb.Accounts.AuthenticationTest do
       conn = Authentication.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
       assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/dashboard"
       assert Accounts.get_user_by_session_token(token)
     end
 
@@ -37,7 +37,9 @@ defmodule NeonWeb.Accounts.AuthenticationTest do
     end
 
     test "writes a cookie if remember_me is configured", %{conn: conn, user: user} do
-      conn = conn |> fetch_cookies() |> Authentication.log_in_user(user, %{"remember_me" => "true"})
+      conn =
+        conn |> fetch_cookies() |> Authentication.log_in_user(user, %{"remember_me" => "true"})
+
       assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
 
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
@@ -60,7 +62,7 @@ defmodule NeonWeb.Accounts.AuthenticationTest do
       refute get_session(conn, :user_token)
       refute conn.cookies[@remember_me_cookie]
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
       refute Accounts.get_user_by_session_token(user_token)
     end
 
@@ -82,7 +84,7 @@ defmodule NeonWeb.Accounts.AuthenticationTest do
       conn = conn |> fetch_cookies() |> Authentication.log_out_user()
       refute get_session(conn, :user_token)
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/log-in"
     end
   end
 
@@ -119,9 +121,13 @@ defmodule NeonWeb.Accounts.AuthenticationTest do
 
   describe "redirect_if_user_is_authenticated/2" do
     test "redirects if user is authenticated", %{conn: conn, user: user} do
-      conn = conn |> assign(:current_user, user) |> Authentication.redirect_if_user_is_authenticated([])
+      conn =
+        conn
+        |> assign(:current_user, user)
+        |> Authentication.redirect_if_user_is_authenticated([])
+
       assert conn.halted
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/dashboard"
     end
 
     test "does not redirect if user is not authenticated", %{conn: conn} do

@@ -1,4 +1,6 @@
 defmodule NeonWeb.Layout.UserMenuLive do
+  @moduledoc false
+
   use Phoenix.LiveView,
     container: {:div, class: "w-full"}
 
@@ -6,8 +8,12 @@ defmodule NeonWeb.Layout.UserMenuLive do
 
   @impl true
   def mount(_params, %{"user_token" => user_token}, socket) do
-    user = Accounts.get_user_by_session_token(user_token)
-    {:ok, assign(socket, :user, user)}
+    socket =
+      assign_new(socket, :current_user, fn ->
+        Accounts.get_user_by_session_token(user_token)
+      end)
+
+    {:ok, socket}
   end
 
   def render(assigns) do
