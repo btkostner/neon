@@ -107,6 +107,15 @@ jobs:
     name: Test (Mix)
     runs-on: ubuntu-18.04
 
+    services:
+      postgres:
+        image: timescale/timescaledb:latest-pg11
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USERNAME: postgres
+        ports:
+          - 5432
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -133,6 +142,8 @@ jobs:
 
       - name: Test
         run: mix test
+        env:
+          DATABASE_HOST: postgres
 
   Build_Dockerfile:
     name: Build (Dockerfile)
