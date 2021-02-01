@@ -5,6 +5,7 @@ config :neon, Neon.Repo,
   password: "postgres",
   database: "neon_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: System.get_env("DATABASE_HOST", "localhost"),
+  port: String.to_integer(System.get_env("DATABASE_PORT") || "5432"),
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :neon, NeonWeb.Endpoint,
