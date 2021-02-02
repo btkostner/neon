@@ -172,7 +172,7 @@ defmodule Neon.Accounts do
 
     with {:ok, query} <- UserToken.verify_change_email_token_query(token, context),
          %UserToken{sent_to: email} <- Repo.one(query),
-         {:ok, user} <- Repo.transaction(user_email_multi(user, email, context)),
+         {:ok, _} <- Repo.transaction(user_email_multi(user, email, context)),
          {:ok, _} <- broadcast_changes({:ok, user}) do
       :ok
     else
@@ -186,11 +186,6 @@ defmodule Neon.Accounts do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
-    |> case do
-      {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _} -> {:error, changeset}
-      {:error, _, _, _} -> {:error, "Unable to delete user tokens"}
-    end
   end
 
   @doc """
