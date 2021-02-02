@@ -25,17 +25,21 @@ defmodule NeonWeb.Router do
   end
 
   scope "/", NeonWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :user]
 
     live "/dashboard", DashboardLive, :index
+  end
 
-    live_dashboard "/admin/dashboard",
+  scope "/admin", NeonWeb, as: :admin do
+    pipe_through [:browser, :admin]
+
+    live_dashboard "/dashboard",
       ecto_repos: [Neon.Repo],
       metrics: NeonWeb.Telemetry
   end
 
   scope "/", NeonWeb.Accounts do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :guest]
 
     get "/register", UserRegistrationController, :new
     post "/register", UserRegistrationController, :create
@@ -48,7 +52,7 @@ defmodule NeonWeb.Router do
   end
 
   scope "/", NeonWeb.Accounts do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :user]
 
     live "/users/settings", UserSettingsLive, :index
     get "/users/confirm-email/:token", UserSettingsController, :confirm_email

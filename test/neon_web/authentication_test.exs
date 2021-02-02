@@ -119,27 +119,27 @@ defmodule NeonWeb.AuthenticationTest do
     end
   end
 
-  describe "redirect_if_user_is_authenticated/2" do
+  describe "guest/2" do
     test "redirects if user is authenticated", %{conn: conn, user: user} do
       conn =
         conn
         |> assign(:current_user, user)
-        |> Authentication.redirect_if_user_is_authenticated([])
+        |> Authentication.guest([])
 
       assert conn.halted
       assert redirected_to(conn) == "/dashboard"
     end
 
     test "does not redirect if user is not authenticated", %{conn: conn} do
-      conn = Authentication.redirect_if_user_is_authenticated(conn, [])
+      conn = Authentication.guest(conn, [])
       refute conn.halted
       refute conn.status
     end
   end
 
-  describe "require_authenticated_user/2" do
+  describe "user/2" do
     test "redirects if user is not authenticated", %{conn: conn} do
-      conn = conn |> fetch_flash() |> Authentication.require_authenticated_user([])
+      conn = conn |> fetch_flash() |> Authentication.user([])
       assert conn.halted
       assert redirected_to(conn) == Routes.user_session_path(conn, :new)
       assert get_flash(conn, :error) == "You must log in to access this page."
@@ -149,7 +149,7 @@ defmodule NeonWeb.AuthenticationTest do
       halted_conn =
         %{conn | request_path: "/foo", query_string: ""}
         |> fetch_flash()
-        |> Authentication.require_authenticated_user([])
+        |> Authentication.user([])
 
       assert halted_conn.halted
       assert get_session(halted_conn, :user_return_to) == "/foo"
@@ -157,7 +157,7 @@ defmodule NeonWeb.AuthenticationTest do
       halted_conn =
         %{conn | request_path: "/foo", query_string: "bar=baz"}
         |> fetch_flash()
-        |> Authentication.require_authenticated_user([])
+        |> Authentication.user([])
 
       assert halted_conn.halted
       assert get_session(halted_conn, :user_return_to) == "/foo?bar=baz"
@@ -165,14 +165,56 @@ defmodule NeonWeb.AuthenticationTest do
       halted_conn =
         %{conn | request_path: "/foo?bar", method: "POST"}
         |> fetch_flash()
-        |> Authentication.require_authenticated_user([])
+        |> Authentication.user([])
 
       assert halted_conn.halted
       refute get_session(halted_conn, :user_return_to)
     end
 
     test "does not redirect if user is authenticated", %{conn: conn, user: user} do
-      conn = conn |> assign(:current_user, user) |> Authentication.require_authenticated_user([])
+      conn = conn |> assign(:current_user, user) |> Authentication.user([])
+      refute conn.halted
+      refute conn.status
+    end
+  end
+
+  describe "admin/2" do
+    test "redirects if user is not authenticated", %{conn: conn} do
+      conn = conn |> fetch_flash() |> Authentication.admin([])
+      assert conn.halted
+      assert redirected_to(conn) == Routes.user_session_path(conn, :new)
+      assert get_flash(conn, :error) == "You must log in to access this page."
+    end
+
+    test "stores the path to redirect to on GET", %{conn: conn} do
+      halted_conn =
+        %{conn | request_path: "/foo", query_string: ""}
+        |> fetch_flash()
+        |> Authentication.admin([])
+
+      assert halted_conn.halted
+      assert get_session(halted_conn, :user_return_to) == "/foo"
+
+      halted_conn =
+        %{conn | request_path: "/foo", query_string: "bar=baz"}
+        |> fetch_flash()
+        |> Authentication.admin([])
+
+      assert halted_conn.halted
+      assert get_session(halted_conn, :user_return_to) == "/foo?bar=baz"
+
+      halted_conn =
+        %{conn | request_path: "/foo?bar", method: "POST"}
+        |> fetch_flash()
+        |> Authentication.admin([])
+
+      assert halted_conn.halted
+      refute get_session(halted_conn, :user_return_to)
+    end
+
+    test "does not redirect if user is authenticated", %{conn: conn, user: user} do
+      user = %{user | role: :admin}
+      conn = conn |> assign(:current_user, user) |> Authentication.admin([])
       refute conn.halted
       refute conn.status
     end
