@@ -246,6 +246,59 @@ defmodule Neon.Accounts do
     end
   end
 
+  @doc """
+  Generates a list of new backup codes for a user.
+  """
+  def generate_backup_codes(num \\ 8) do
+    1..8
+    |> Enum.map(fn _ -> :crypto.strong_rand_bytes(16) end)
+    |> Enum.map(&Base.encode16/1)
+    |> Enum.map(fn v -> binary_part(v, 0, 16) end)
+  end
+
+  @doc """
+  Generates a new two factor seed.
+  """
+  def generate_two_factor_seed() do
+    5
+    |> :crypto.strong_rand_bytes()
+    |> Base.encode32()
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user's two factor settings.
+
+  ## Examples
+
+      iex> change_user_two_factor(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_two_factor(user, attrs \\ %{}) do
+    User.two_factor_changeset(user, attrs)
+  end
+
+  @doc """
+  Updates the user's two factor settings.
+
+  ## Examples
+
+      iex> update_user_two_factor(user, "valid password", "12345", %{seed: ...})
+      {:ok, %User{}}
+
+      iex> update_user_two_factor(user, "invalid password", "nope", %{seed: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_two_factor(user, password, code, attrs) do
+    user
+    |> User.two_factor_changeset(attrs)
+    |> User.validate_current_password(password)
+    |> User.validate_two_factor_code(code)
+    |> Repo.update()
+    |> broadcast_changes()
+  end
+
   ## Session
 
   @doc """

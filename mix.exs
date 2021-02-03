@@ -35,8 +35,9 @@ defmodule Neon.MixProject do
     [
       {:argon2_elixir, "~> 2.0"},
       {:credo, "~> 1.5", only: :dev},
-      {:ecto_sql, "~> 3.4"},
       {:ecto_psql_extras, "~> 0.2"},
+      {:ecto_sql, "~> 3.4"},
+      {:eqrcode, "~> 0.1.7"},
       {:floki, ">= 0.27.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
@@ -48,6 +49,7 @@ defmodule Neon.MixProject do
       {:phoenix, "~> 1.5.7"},
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
+      {:pot, "~> 1.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"}
     ]

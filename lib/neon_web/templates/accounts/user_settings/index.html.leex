@@ -61,7 +61,7 @@
     <div class="md:grid md:grid-cols-10 md:gap-12">
       <div class="md:col-span-4">
         <div class="px-4 sm:px-0">
-          <h3 class="text-lg font-medium leading-6">Update Email</h3>
+          <h3 class="text-lg font-medium leading-6">Email</h3>
           <p class="mt-1 text-sm text-gray-500">
             Use a permanent address where you can receive mail. This will be
             used for notifications, and your login.
@@ -110,7 +110,7 @@
     <div class="md:grid md:grid-cols-10 md:gap-12">
       <div class="md:col-span-4">
         <div class="px-4 sm:px-0">
-          <h3 class="text-lg font-medium leading-6">Update Password</h3>
+          <h3 class="text-lg font-medium leading-6">Password</h3>
           <p class="mt-1 text-sm text-gray-500">
             Keep this secure and private. After you update your password,
             everything will be logged out of your account.
@@ -152,6 +152,151 @@
           </div>
         <% end %>
       </div>
+    </div>
+  </div>
+
+  <div class="hidden sm:block" aria-hidden="true">
+    <div class="py-10">
+      <div class="border-t border-gray-600"></div>
+    </div>
+  </div>
+
+  <div class="mt-10 sm:mt-0 max-w-5xl">
+    <div class="md:grid md:grid-cols-10 md:gap-12">
+      <div class="md:col-span-4">
+        <div class="px-4 sm:px-0">
+          <h3 class="text-lg font-medium leading-6">Two Factor</h3>
+          <p class="mt-1 text-sm text-gray-500">
+            <%= if two_factor_enabled?(@current_user) do %>
+              Edit your two factor authentication settings.
+            <% else %>
+              Enable two factor authentication for your account.
+            <% end %>
+          </p>
+        </div>
+      </div>
+
+      <%= if two_factor_enabled?(@current_user) and @new_two_factor_seed == nil do %>
+        <%= form_for @two_factor_changeset, "#", [id: "two-factor-form", class: "md:col-span-6", phx_submit: :disable_two_factor], fn f -> %>
+          <div class="mt-5 md:mt-0">
+            <div class="shadow overflow-hidden sm:rounded-md">
+              <div class="px-4 py-5 bg-gray-800 sm:p-6">
+                <div class="flex flex-col">
+                  <p class="mb-6 pt-4">
+                    Two factor is currently enabled on your account. You will be
+                    asked to enter it every time you log in.
+                  </p>
+
+                  <p class="mb-6 pt-4">
+                    You currently have
+                    <strong>
+                      <%= length(@current_user.backup_codes) %>
+                      backup codes
+                    </strong>
+                    left.
+                  </p>
+
+                  <div class="mb-6 pt-4">
+                    <%= label f, :current_password, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                    <%= password_input f, :current_password, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                    <%= error_tag f, :current_password, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-4 py-3 bg-gray-700 text-right sm:px-6">
+                <%= submit "Disable Two Factor",
+                  phx_disable_with: "Disabling Two Factor Settings",
+                  class: "inline-flex justify-center py-2 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded shadow-lg hover:shadow-xl transition duration-200"
+                %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <%= if not two_factor_enabled?(@current_user) and @new_two_factor_seed == nil do %>
+        <%= form_for @two_factor_changeset, "#", [id: "two-factor-form", class: "md:col-span-6", phx_submit: :enable_two_factor], fn f -> %>
+          <div class="mt-5 md:mt-0 md:col-span-6">
+            <div class="shadow overflow-hidden sm:rounded-md">
+              <div class="px-4 py-5 bg-gray-800 sm:p-6">
+                <div class="flex flex-col">
+                  <p class="mb-6 pt-4">
+                    Enabling two factor authentication will add an extra layer of
+                    protection to your account by requiring you to enter a temporary
+                    during login. We recommend using
+                    <a href="https://1password.com/" target="_blank" rel="noreferrer">1password</a>
+                    to store your two factor key, but most password managers will
+                    work.
+                  </p>
+                </div>
+              </div>
+
+              <div class="px-4 py-3 bg-gray-700 text-right sm:px-6">
+                <%= submit "Enable Two Factor",
+                  phx_disable_with: "Generating Two Factor Settings",
+                  class: "inline-flex justify-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded shadow-lg hover:shadow-xl transition duration-200"
+                %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <%= if not two_factor_enabled?(@current_user) and @new_two_factor_seed != nil do %>
+        <%= form_for @two_factor_changeset, "#", [id: "two-factor-form", class: "md:col-span-6", phx_submit: :enable_two_factor], fn f -> %>
+          <div class="mt-5 md:mt-0 md:col-span-6">
+            <div class="shadow overflow-hidden sm:rounded-md">
+              <div class="px-4 py-5 bg-gray-800 sm:p-6">
+                <div class="mx-auto w-48 h-48 bg-white">
+                  <%= raw two_factor_qr_code(@current_user, @new_two_factor_seed) %>
+                </div>
+
+                <div class="mb-6 pt-4" x-data="{ open: false }">
+                  <div class="text-center text-sm underline" @click="open = !open">View raw URL</div>
+
+                  <span class="block text-gray-200 text-sm font-bold mb-1 ml-3" x-show="open">
+                    Url
+                  </span>
+
+                  <code class="block p-2 my-4 bg-gray-900 rounded" x-show="open">
+                    <%= two_factor_url(@current_user, @new_two_factor_seed) %>
+                  </code>
+                </div>
+
+                <div class="mb-6 pt-4">
+                  <span class="block text-gray-200 text-sm font-bold mb-1 ml-3">
+                    Backup codes
+                  </span>
+
+                  <code class="block p-2 my-4 bg-gray-900 rounded">
+                    <%= Enum.join(@new_backup_codes, "\n") %>
+                  </code>
+                </div>
+
+                <div class="mb-6 pt-4">
+                  <%= label f, :current_password, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                  <%= password_input f, :current_password, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                  <%= error_tag f, :current_password, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                </div>
+
+                <div class="mb-6 pt-4">
+                  <%= label f, :two_factor_code, class: "block text-gray-200 text-sm font-bold mb-1 ml-3" %>
+                  <%= number_input f, :two_factor_code, required: true, class: "bg-transparent mt-0 block w-full px-3 border-0 border-b-2 border-gray-600 focus:ring-0 focus:border-blue-500" %>
+                  <%= error_tag f, :two_factor_code, class: "block text-red-600 text-sm font-bold mt-2 ml-3" %>
+                </div>
+              </div>
+
+              <div class="px-4 py-3 bg-gray-700 text-right sm:px-6">
+                <%= submit "Enable Two Factor",
+                  phx_disable_with: "Enabling Two Factor Settings",
+                  class: "inline-flex justify-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded shadow-lg hover:shadow-xl transition duration-200"
+                %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
     </div>
   </div>
 </main>

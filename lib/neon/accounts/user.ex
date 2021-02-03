@@ -14,6 +14,9 @@ defmodule Neon.Accounts.User do
     field :password, :string, virtual: true
     field :hashed_password, :string
 
+    field :backup_codes, {:array, :string}
+    field :two_factor_seed, :string
+
     field :role, Ecto.Enum, values: [:user, :admin], default: :user
 
     field :confirmed_at, :naive_datetime
@@ -124,6 +127,14 @@ defmodule Neon.Accounts.User do
   end
 
   @doc """
+  A user changeset for changing the two factor authentication settings.
+  """
+  def two_factor_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:backup_codes, :two_factor_seed])
+  end
+
+  @doc """
   Confirms the account by setting `confirmed_at`.
   """
   def confirm_changeset(user) do
@@ -156,5 +167,39 @@ defmodule Neon.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  @doc """
+  Validates a two factor code for a user. You can either give:
+
+  - A `Neon.Accounts.User` schema, where we will validate the code against the
+    current saved seed.
+
+  - A `Ecto.Changeset`, where we will validate the code against the new seed
+    and fall back to the old seed.
+
+  - A seed string.
+  """
+  def validate_two_factor_code(%__MODULE__{two_factor_seed: seed}, code) do
+    validate_two_factor_code(seed, code)
+  end
+
+  def validate_two_factor_code(%Ecto.Changeset{} = changeset, code) do
+    seed = get_change(changeset, :two_factor_seed)
+
+    if seed == nil do
+      changeset
+    else
+      case validate_two_factor_code(seed, code) do
+        true -> changeset
+        false -> add_error(changeset, :two_factor_code, "is not valid")
+      end
+    end
+  end
+
+  def validate_two_factor_code(nil, code), do: false
+
+  def validate_two_factor_code(seed, code) do
+    :pot.valid_totp(code, seed, window: 1, addwindow: 1)
   end
 end

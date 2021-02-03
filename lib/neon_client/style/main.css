@@ -10,3 +10,7 @@
 .phx-no-feedback .invalid-feedback {
   display: none;
 }
+
+.phx-submit-loading {
+  pointer-events: none;
+}
