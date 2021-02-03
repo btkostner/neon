@@ -10,16 +10,3 @@
 .phx-no-feedback .invalid-feedback {
   display: none;
 }
-
-.phx-click-loading {
-  opacity: 0.5;
-  transition: opacity 1s ease-out;
-}
-
-.phx-disconnected {
-  cursor: wait;
-}
-
-.phx-disconnected * {
-  pointer-events: none;
-}
