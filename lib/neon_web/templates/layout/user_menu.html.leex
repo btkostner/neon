@@ -24,19 +24,23 @@
   <li>
     <a
       href="#"
-      class="block p-4 grid grid-rows-2 grid-flow-col gap-x-3 gap-y-1 justify-start items-center no-underline"
+      class="block p-4 grid grid-rows-2 grid-flow-col gap-x-3 gap-y-1 justify-start items-center no-underline group"
       x-on:click="open = !open"
     >
-      <img
-        class="rounded row-span-2"
-        src="<%= gravatar(@current_user, size: 48) %>"
-        alt="<%= @current_user.email %>"
-        height="48"
-        width="48"
-      >
+      <div class="row-span-2 relative">
+        <span class="absolute rounded-full w-3 h-3 -top-1 -right-1 bg-gray-200 ring-2 ring-gray-800 phx-connected:bg-green-500 phx-disconnected:bg-red-500"></span>
+
+        <img
+          class="rounded"
+          src="<%= gravatar(@current_user, size: 48) %>"
+          alt="<%= @current_user.email %>"
+          height="48"
+          width="48"
+        >
+      </div>
 
       <span class="text-gray-200"><%= friendly_name(@current_user) %></span>
-      <span class="text-gray-400 text-xs">Settings</span>
+      <span class="text-gray-400 text-xs group-hover:underline group-focus:underline">Settings</span>
     </a>
   </li>
 </ul>
