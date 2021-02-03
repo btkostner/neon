@@ -257,12 +257,42 @@ defmodule Neon.Accounts do
   end
 
   @doc """
+  Validates the user of a backup code.
+  """
+  def valid_backup_code?(%{backup_codes: backup_codes} = user, code) do
+    new_backup_codes =
+      Enum.reject(backup_codes, fn backup_code ->
+        backup_code === code
+      end)
+
+    if length(new_backup_codes) == length(backup_codes) do
+      false
+    else
+      user
+      |> User.two_factor_changeset(%{backup_codes: new_backup_codes})
+      |> Repo.update()
+      |> broadcast_changes()
+      |> case do
+        {:ok, user} -> true
+        {:error, changeset} -> false
+      end
+    end
+  end
+
+  @doc """
   Generates a new two factor seed.
   """
   def generate_two_factor_seed() do
     5
     |> :crypto.strong_rand_bytes()
     |> Base.encode32()
+  end
+
+  @doc """
+  Validates a given two factor code against the user's seed.
+  """
+  def valid_two_factor_code?(user, code) do
+    User.validate_two_factor_code(user, code)
   end
 
   @doc """

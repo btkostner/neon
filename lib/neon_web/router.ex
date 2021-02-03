@@ -43,10 +43,18 @@ defmodule NeonWeb.Router do
 
     get "/register", UserRegistrationController, :new
     post "/register", UserRegistrationController, :create
+
     get "/log-in", UserSessionController, :new
     post "/log-in", UserSessionController, :create
+
+    get "/log-in/two-factor", UserSessionController, :new_two_factor
+    post "/log-in/two-factor", UserSessionController, :create_two_factor
+    get "/log-in/backup-code", UserSessionController, :new_backup_codes
+    post "/log-in/backup-code", UserSessionController, :create_backup_codes
+
     get "/reset-password", UserResetPasswordController, :new
     post "/reset-password", UserResetPasswordController, :create
+
     get "/reset-password/:token", UserResetPasswordController, :edit
     put "/reset-password/:token", UserResetPasswordController, :update
   end
