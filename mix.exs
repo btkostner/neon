@@ -38,7 +38,8 @@ defmodule Neon.MixProject do
       {:ecto_psql_extras, "~> 0.2"},
       {:ecto_sql, "~> 3.4"},
       {:eqrcode, "~> 0.1.7"},
-      {:floki, ">= 0.27.0", only: :test},
+      {:finch, "~> 0.5"},
+      {:floki, "~> 0.30.0", only: :test},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:phoenix_ecto, "~> 4.1"},
@@ -51,7 +52,8 @@ defmodule Neon.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:pot, "~> 1.0"},
       {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"}
+      {:telemetry_poller, "~> 0.4"},
+      {:tesla, "~> 1.4.0"}
     ]
   end
 

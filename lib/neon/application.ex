@@ -7,6 +7,8 @@ defmodule Neon.Application do
 
   def start(_type, _args) do
     children = [
+      # Start our HTTP client for third party services
+      {Finch, finch_config()},
       # Start the Ecto repository
       Neon.Repo,
       # Start the Telemetry supervisor
@@ -23,6 +25,18 @@ defmodule Neon.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Neon.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp finch_config() do
+    [
+      name: FinchService,
+      pools: %{
+        :default => [size: 10],
+        "https://api.alpaca.markets" => [size: 10],
+        "https://api.polygon.io" => [size: 10],
+        "https://paper-api.alpaca.markets" => [size: 10]
+      }
+    ]
   end
 
   # Tell Phoenix to update the endpoint configuration

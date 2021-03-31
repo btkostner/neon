@@ -19,4 +19,21 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
+config :neon, :services,
+  alpaca: %{
+    enabled: false,
+    paper: false,
+    api_key_id: "",
+    api_secret_key: ""
+  },
+  polygon: %{
+    enabled: false
+  }
+
 import_config "#{Mix.env()}.exs"
+
+try do
+  import_config "#{Mix.env()}.secret.exs"
+rescue
+  Code.LoadError -> :no_op
+end
