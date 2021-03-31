@@ -6,7 +6,7 @@ module.exports = (options) => {
 
   return {
     plugins: [
-      'tailwindcss',
+      '@tailwindcss/jit',
       'autoprefixer',
 
       ...(devMode ? [] : [purgecss({

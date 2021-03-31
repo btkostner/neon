@@ -50,25 +50,5 @@ module.exports = {
   purge: [
     'lib/neon_web/**/*.html.eex',
     'lib/neon_web/**/*.html.leex'
-  ],
-
-  variants: {
-    extend: {
-      backgroundColor: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      backgroundOpacity: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      borderColor: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      borderOpacity: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      boxShadow: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      gradientColorStops: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      opacity: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      ringColor: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      ringOffsetColor: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      ringOffsetWidth: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      ringOpacity: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      ringWidth: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      textColor: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading'],
-      textDecoration: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading', 'group-hover', 'group-focus', 'focus-within', 'hover', 'focus'],
-      textOpacity: ['phx-connected', 'phx-disconnected', 'phx-error', 'phx-click-loading']
-    }
-  }
+  ]
 }
