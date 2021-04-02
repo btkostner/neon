@@ -6,8 +6,6 @@ defmodule Neon.Market.Bar do
 
   use Neon, :schema
 
-  alias Neon.Market.Ticker
-
   @timestamps_opts [type: :utc_datetime_usec]
 
   schema "market_bar" do
@@ -18,8 +16,8 @@ defmodule Neon.Market.Bar do
 
     field :volume, :integer
 
-    belongs_to :ticker, Ticker
-    has_one :exchange, through: [:ticker, :exchange]
+    field :ticker_symbol, :string
+    field :exchange_abbreviation, :string
 
     timestamps(updated_at: false)
   end
@@ -36,27 +34,19 @@ defmodule Neon.Market.Bar do
   @doc false
   def changeset(aggregate, attrs) do
     aggregate
-    |> cast(attrs, @fields ++ [:ticker_id, :inserted_at])
-    |> validate_required(@fields)
-    |> modulo_inserted_at()
+    |> cast(attrs, @fields ++ [:ticker_symbol, :exchange_abbreviation, :inserted_at])
+    |> validate_required(@fields ++ [:ticker_symbol, :exchange_abbreviation])
+    |> update_change(:inserted_at, &Neon.Time.modulo_date(&1, :before, 5))
     |> validate_number(:open_price, greater_than_or_equal_to: 0)
     |> validate_number(:high_price, greater_than_or_equal_to: 0)
     |> validate_number(:low_price, greater_than_or_equal_to: 0)
     |> validate_number(:close_price, greater_than_or_equal_to: 0)
     |> validate_number(:volume, greater_than_or_equal_to: 0)
-    |> foreign_key_constraint(:ticker_id)
-    |> unique_constraint([:ticker_id, :inserted_at],
-      name: "_hyper_2_1_chunk_market_bar_ticker_id_inserted_at_index"
+    |> unique_constraint([:ticker_symbol, :exchange_abbreviation, :inserted_at],
+      name: "market_bar_ticker_symbol_exchange_abbreviation_inserted_at_inde"
     )
-  end
-
-  defp modulo_inserted_at(changeset) do
-    case get_change(changeset, :inserted_at) do
-      nil ->
-        changeset
-
-      inserted_at ->
-        put_change(changeset, :inserted_at, Neon.Time.modulo_date(inserted_at, :before, 5))
-    end
+    |> foreign_key_constraint([:ticker_symbol, :exchange_abbreviation],
+      name: "market_bar_ticker_symbol_fkey"
+    )
   end
 end

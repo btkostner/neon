@@ -1,4 +1,4 @@
-defmodule Neon.AccountsTest do
+defmodule Neon.TimeTest do
   use Neon.DataCase
 
   doctest Neon.Time

@@ -5,17 +5,14 @@ defmodule Neon.Market.Ticker do
 
   use Neon, :schema
 
-  alias Neon.Market.{Bar, Exchange}
-
-  @derive {Phoenix.Param, key: :name}
+  @primary_key false
+  @derive {Phoenix.Param, key: :symbol}
 
   schema "market_ticker" do
-    field :symbol, :string
+    field :symbol, :string, primary_key: true
     field :name, :string
 
-    belongs_to :exchange, Exchange
-
-    has_many :bars, Bar
+    field :exchange_abbreviation, :string
 
     timestamps()
   end
@@ -23,17 +20,13 @@ defmodule Neon.Market.Ticker do
   @doc false
   def changeset(symbol, attrs) do
     symbol
-    |> cast(attrs, [:symbol, :name, :exchange_id])
-    |> uppercase(:symbol)
-    |> validate_required([:symbol])
-    |> validate_format(:symbol, ~r/^[A-Z]{1,6}$/)
-    |> foreign_key_constraint(:exchange_id)
-  end
-
-  defp uppercase(changeset, field) do
-    case get_change(changeset, field) do
-      nil -> changeset
-      value -> put_change(changeset, field, String.upcase(value))
-    end
+    |> cast(attrs, [:symbol, :name, :exchange_abbreviation])
+    |> validate_required([:symbol, :exchange_abbreviation])
+    |> validate_format(:symbol, ~r/^[A-Z\-\.]{1,7}$/)
+    |> update_change(:symbol, &String.upcase/1)
+    |> unique_constraint([:symbol, :exchange_abbreviation], name: "market_ticker_pkey")
+    |> foreign_key_constraint(:exchange_abbreviation,
+      name: "market_ticker_exchange_abbreviation_fkey"
+    )
   end
 end

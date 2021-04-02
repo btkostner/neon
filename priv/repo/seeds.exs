@@ -1,11 +1,32 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     Neon.Repo.insert!(%Neon.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+alias Neon.Market.Exchange
+alias Neon.Repo
+
+Repo.insert!(%Exchange{
+  abbreviation: "AMEX",
+  name: "American Stock Exchange"
+})
+
+Repo.insert!(%Exchange{
+  abbreviation: "ARCA",
+  name: "Archipelago Exchange"
+})
+
+Repo.insert!(%Exchange{
+  abbreviation: "BATS",
+  name: "Bats Global Markets"
+})
+
+Repo.insert!(%Exchange{
+  abbreviation: "NYSE",
+  name: "New York Stock Exchange"
+})
+
+Repo.insert!(%Exchange{
+  abbreviation: "NASDAQ",
+  name: "Nasdaq Stock Market"
+})
+
+Repo.insert!(%Exchange{
+  abbreviation: "NYSEARCA",
+  name: "NYSE Arca"
+})

@@ -5,11 +5,10 @@ defmodule Neon.Service.Alpaca.Data do
   """
 
   def map_to_ticker(data) do
-    %{
-      symbol: data.symbol,
-      name: data.name,
-      exchange: data.exchange,
-      alpaca_id: data.id
+    %Neon.Market.Ticker{
+      symbol: data["symbol"],
+      name: data["name"],
+      exchange_abbreviation: data["exchange"]
     }
   end
 end

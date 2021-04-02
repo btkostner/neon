@@ -11,5 +11,5 @@ defmodule Neon.Service.Api do
   @doc """
   Grabs a list of all stock tickers available to the API.
   """
-  @callback stock_tickers() :: {:ok, [String.t()]}
+  @callback stock_tickers() :: {:ok, [Neon.Market.Ticker.t()]}
 end

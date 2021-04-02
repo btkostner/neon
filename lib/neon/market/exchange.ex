@@ -5,13 +5,12 @@ defmodule Neon.Market.Exchange do
 
   use Neon, :schema
 
-  alias Neon.Market.Ticker
+  @primary_key false
+  @derive {Phoenix.Param, key: :abbreviation}
 
   schema "market_exchange" do
-    field :abbreviation, :string
+    field :abbreviation, :string, primary_key: true
     field :name, :string
-
-    has_many :tickers, Ticker
 
     timestamps()
   end
@@ -20,14 +19,8 @@ defmodule Neon.Market.Exchange do
   def changeset(market, attrs) do
     market
     |> cast(attrs, [:abbreviation, :name])
-    |> uppercase(:abbreviation)
     |> validate_required([:abbreviation])
-  end
-
-  defp uppercase(changeset, field) do
-    case get_change(changeset, field) do
-      nil -> changeset
-      value -> put_change(changeset, field, String.upcase(value))
-    end
+    |> update_change(:abbreviation, &String.upcase/1)
+    |> unique_constraint(:abbreviation, name: "market_exchange_pkey")
   end
 end

@@ -3,27 +3,24 @@ defmodule Neon.Repo.Migrations.CreateMarketTables do
 
   def change do
     create table(:market_exchange, primary_key: false) do
-      add :id, :uuid, primary_key: true
-
-      add :abbreviation, :string, null: false
+      add :abbreviation, :string, primary_key: true
       add :name, :string
 
       timestamps()
     end
 
     create table(:market_ticker, primary_key: false) do
-      add :id, :uuid, primary_key: true
-
-      add :symbol, :string
+      add :symbol, :string, primary_key: true
       add :name, :string
 
-      add :exchange_id,
+      add :exchange_abbreviation,
           references(
             :market_exchange,
-            type: :uuid,
+            column: :abbreviation,
+            type: :string,
             on_delete: :delete_all
           ),
-          null: false
+          primary_key: true
 
       timestamps()
     end
@@ -38,13 +35,16 @@ defmodule Neon.Repo.Migrations.CreateMarketTables do
 
       add :volume, :integer
 
-      add :ticker_id,
+      add :ticker_symbol,
           references(
             :market_ticker,
-            type: :uuid,
+            column: :symbol,
+            type: :string,
+            with: [exchange_abbreviation: :exchange_abbreviation],
             on_delete: :delete_all
-          ),
-          null: false
+          )
+
+      add :exchange_abbreviation, :string
 
       timestamps(
         updated_at: false,
@@ -55,6 +55,6 @@ defmodule Neon.Repo.Migrations.CreateMarketTables do
 
     execute("SELECT create_hypertable('market_bar', 'inserted_at')")
 
-    create unique_index(:market_bar, [:ticker_id, :inserted_at])
+    create unique_index(:market_bar, [:ticker_symbol, :exchange_abbreviation, :inserted_at])
   end
 end
