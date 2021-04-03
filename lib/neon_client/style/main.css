@@ -2,8 +2,9 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-[hidden] {
-  display: none;
+[hidden],
+[x-cloak] {
+  display: none !important;
 }
 
 .phx-no-feedback.invalid-feedback,

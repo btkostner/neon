@@ -38,6 +38,10 @@ defmodule NeonWeb.Router do
       metrics: NeonWeb.Telemetry
   end
 
+  scope "/market", NeonWeb.Market, as: :market do
+    pipe_through [:browser, :user]
+  end
+
   scope "/", NeonWeb.Accounts do
     pipe_through [:browser, :guest]
 

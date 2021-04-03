@@ -25,6 +25,11 @@ defmodule NeonWeb.Accounts.UserSettingsLive do
   end
 
   @impl true
+  def handle_params(_params, _session, socket) do
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event(
         "update_profile",
         %{"user" => user_params},

@@ -1,4 +1,4 @@
-<div class="min-h-screen flex flex-col justify-center">
+<div class="min-h-screen flex flex-col justify-center bg-gray-900 text-gray-100">
   <%= if get_flash(@conn, :info) do %>
     <div class="w-full max-w-lg mx-auto">
       <p class="bg-green-800 text-gray-100 p-4 rounded" role="alert">

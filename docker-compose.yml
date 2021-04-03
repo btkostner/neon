@@ -7,6 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    user: $UID
     volumes:
       - .:/opt/app
     environment:
@@ -20,6 +21,7 @@ services:
 
   postgres:
     image: timescale/timescaledb:latest-pg11
+    user: $UID
     volumes:
       - database:/var/lib/postgresql/data
     environment:

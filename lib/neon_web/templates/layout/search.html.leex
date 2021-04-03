@@ -1,0 +1,59 @@
+<div class="min-w-0 flex-1" x-data="{open: false}" x-on:click.away="open = false" x-on:focus.away="open = false">
+  <form class="w-full relative text-gray-400 focus-within:text-gray-200" phx-change="search" phx-submit="search">
+    <label for="search" class="sr-only">Search Tickers</label>
+    <input
+      id="search"
+      type="search"
+      name="search"
+      placeholder="Search Tickers"
+      class="block w-full bg-transparent border-transparent pl-12 placeholder-gray-400 focus:border-transparent sm:text-sm focus:ring-0"
+      phx-debounce="500"
+      value="<%= @search %>"
+      x-on:focus="open = true"
+    >
+
+    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-4">
+      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+      </svg>
+    </div>
+  </form>
+
+  <ul
+    class="absolute mt-1 ml-8 w-auto bg-gray-700 shadow-md max-h-64 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto z-20 focus:outline-none sm:text-sm"
+    tabindex="-1"
+    role="listbox"
+    aria-labelledby="listbox-label"
+    x-show="open"
+    x-transition:leave="transition ease-in duration-100"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+  >
+    <%= for ticker <- @tickers do %>
+      <li class="text-gray-300 cursor-default select-none relative py-3 px-4 hover:bg-gray-800 hover:text-gray-200" id="search-<%= ticker.exchange_abbreviation %>-<%= ticker.symbol %>" role="option">
+        <div class="flex">
+          <span class="font-normal truncate max-w-lg">
+            <%= ticker.name %>
+          </span>
+          <span class="text-gray-400 ml-2 truncate">
+            <%= ticker.symbol %>
+          </span>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+
+  <div
+    class="sm:block sm:mt-16 sm:fixed sm:inset-0 sm:bg-gray-900 sm:bg-opacity-75 sm:z-10"
+    aria-hidden="true"
+    x-cloak
+    x-show="open"
+    x-on:click="open = false"
+    x-transition:enter="transition-opacity ease-linear duration-100"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity ease-linear duration-100"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+  />
+</div>
