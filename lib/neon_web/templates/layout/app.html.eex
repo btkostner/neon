@@ -1,19 +1,25 @@
 <div class="min-h-screen flex flex-col justify-center bg-gray-900 text-gray-100">
-  <%= if get_flash(@conn, :info) do %>
-    <div class="w-full max-w-lg mx-auto">
-      <p class="bg-green-800 text-gray-100 p-4 rounded" role="alert">
-        <%= get_flash(@conn, :info) %>
-      </p>
-    </div>
-  <% end %>
+  <div class="fixed h-screen w-screen">
+    <canvas class="neon-logo w-full h-full"></canvas>
+  </div>
 
-  <%= if get_flash(@conn, :error) do %>
-    <div class="w-full max-w-lg mx-auto">
-      <p class="bg-red-800 text-gray-100 p-4 rounded" role="alert">
-        <%= get_flash(@conn, :error) %>
-      </p>
-    </div>
-  <% end %>
+  <div class="z-10">
+    <%= if get_flash(@conn, :info) do %>
+      <div class="w-full max-w-lg mx-auto">
+        <p class="bg-green-800 text-gray-100 p-4 rounded" role="alert">
+          <%= get_flash(@conn, :info) %>
+        </p>
+      </div>
+    <% end %>
 
-  <%= @inner_content %>
+    <%= if get_flash(@conn, :error) do %>
+      <div class="w-full max-w-lg mx-auto">
+        <p class="bg-red-800 text-gray-100 p-4 rounded" role="alert">
+          <%= get_flash(@conn, :error) %>
+        </p>
+      </div>
+    <% end %>
+
+    <%= @inner_content %>
+  </div>
 </div>

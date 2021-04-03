@@ -2,7 +2,7 @@
   <header class="flex-shrink-0 relative h-16 flex items-center">
     <div class="absolute inset-y-0 left-0 lg:static lg:bg-gray-900 lg:w-20 lg:flex-shrink-0 xl:w-56">
       <span class="flex items-center justify-center h-16 px-6 lg:px-0 w-full">
-        Neon
+        <canvas class="neon-logo h-14 w-14"></canvas>
       </span>
     </div>
 
@@ -71,7 +71,7 @@
         x-transition:leave-end="transform opacity-0 scale-110 sm:translate-x-full sm:scale-100 sm:opacity-100"
       >
         <div class="h-16 flex items-center justify-between px-4 sm:px-6">
-          <img class="block h-8 w-auto" src="<%= Routes.static_path(@socket, "/icon-36.png") %>" alt="Neon">
+          <canvas class="block neon-logo h-16 w-16"></canvas>
 
           <button type="button" class="-mr-2 inline-flex items-center justify-center p-2 rounded-md text-gray-200 hover:text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-600" x-on:click="menuOpen = !menuOpen">
             <span class="sr-only">Close main menu</span>
