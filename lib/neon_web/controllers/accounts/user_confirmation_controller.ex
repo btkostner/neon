@@ -21,8 +21,8 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
     conn
     |> put_flash(
       :info,
-      "If your email is in our system and it has not been confirmed yet, " <>
-        "you will receive an email with instructions shortly."
+      "Email Confirmation",
+      "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
     )
     |> redirect(to: Routes.user_session_path(conn, :new))
   end
@@ -33,7 +33,7 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
     case Accounts.confirm_user(token) do
       {:ok, _} ->
         conn
-        |> put_flash(:info, "Account confirmed successfully.")
+        |> put_flash(:sucess, "Accout Confirmed", "Your accoutn has been confirmed successfully.")
         |> redirect(to: Routes.user_session_path(conn, :new))
 
       :error ->
@@ -47,7 +47,7 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
 
           %{} ->
             conn
-            |> put_flash(:error, "Account confirmation link is invalid or it has expired.")
+            |> put_flash(:error, "Link Invalid", "Your account confirmation link is invalid or it has expired.")
             |> redirect(to: Routes.user_session_path(conn, :new))
         end
     end

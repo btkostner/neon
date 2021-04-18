@@ -2,6 +2,8 @@ const colors = require('tailwindcss/colors')
 const plugin = require('tailwindcss/plugin')
 
 module.exports = {
+  mode: 'jit',
+
   theme: {
     colors: {
       transparent: 'transparent',
@@ -48,6 +50,7 @@ module.exports = {
   ],
 
   purge: [
+    'lib/neon_web/**/*.ex',
     'lib/neon_web/**/*.html.eex',
     'lib/neon_web/**/*.html.leex'
   ]

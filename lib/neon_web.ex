@@ -23,6 +23,7 @@ defmodule NeonWeb do
 
       import Plug.Conn
       import NeonWeb.Gettext
+      import NeonWeb.FlashMessage, only: [put_flash: 4]
 
       alias NeonWeb.Router.Helpers, as: Routes
     end
@@ -47,6 +48,8 @@ defmodule NeonWeb do
     quote do
       use Phoenix.LiveView,
         layout: {NeonWeb.LayoutView, "live.html"}
+
+      import NeonWeb.FlashMessage, only: [put_flash: 4]
 
       unquote(view_helpers())
     end

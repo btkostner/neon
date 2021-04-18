@@ -7,12 +7,12 @@ defmodule NeonWeb.Accounts.UserSettingsController do
     case Accounts.update_user_email(conn.assigns.current_user, token) do
       :ok ->
         conn
-        |> put_flash(:info, "Email changed successfully.")
+        |> put_flash(:success, "Email Changed", "Your account email address has been changed successfully.")
         |> redirect(to: Routes.user_settings_path(conn, :index))
 
       :error ->
         conn
-        |> put_flash(:error, "Email change link is invalid or it has expired.")
+        |> put_flash(:error, "Link Invalid", "Email change link is invalid or it has expired.")
         |> redirect(to: Routes.user_settings_path(conn, :index))
     end
   end

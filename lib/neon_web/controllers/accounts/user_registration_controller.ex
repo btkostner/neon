@@ -23,7 +23,7 @@ defmodule NeonWeb.Accounts.UserRegistrationController do
           )
 
         conn
-        |> put_flash(:info, "User created successfully.")
+        |> put_flash(:success, "User Created", "Your user account has been created successfully.")
         |> Authentication.log_in_user(user)
 
       {:error, %Ecto.Changeset{} = changeset} ->
