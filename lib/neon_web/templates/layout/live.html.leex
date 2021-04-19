@@ -120,50 +120,51 @@
       <%= @inner_content %>
     </div>
 
-    <div class="fixed inset-0 flex flex-col items-end justify-end space-y-6 px-4 py-6 pointer-events-none sm:p-6 lg:justify-start">
+    <div class="fixed inset-0 flex flex-col items-end justify-end space-y-6 px-4 py-6 pointer-events-none sm:p-6 lg:justify-start lg:mt-16">
       <%= if update_available?(@socket) do %>
         <div
-          class="max-w-sm w-full bg-gray-700 shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
-          x-data="{ open: true }"
-          x-show="open"
-          x-transition:enter="transform ease-out duration-300 transition"
-          x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-          x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-          x-transition:leave="transition ease-in duration-100"
-          x-transition:leave-start="opacity-100"
-          x-transition:leave-end="opacity-0"
+          id="flash-message-update"
+          class="max-w-sm w-full bg-green-700 shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+          phx-hook="FlashMessageHook"
+          data-flash-message-id="update"
+          x-data="FlashMessageComponent()"
+          x-spread="messageEl"
+          x-init="open"
         >
           <div class="p-4">
             <div class="flex items-start">
               <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <svg class="h-16 w-16 text-green-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </div>
               <div class="ml-3 w-0 flex-1 pt-0.5">
-                <p class="text-sm font-medium text-gray-100">
+                <p class="text-sm font-bold text-gray-100">
                   New Update
                 </p>
-                <p class="mt-1 text-sm text-gray-300">
+                <p class="mt-1 text-sm font-semibold text-gray-200">
                   A new update of Neon is available. Please refresh your browser to get the latest and greatest!
                 </p>
                 <div class="mt-3 flex space-x-7">
                   <a
                     href="javascript:window.location.href=window.location.href"
-                    class="rounded-md text-sm font-medium text-green-400 hover:text-green-500"
+                    class="rounded-md text-sm font-medium text-green-100 hover:text-green-200"
                   >
                     Refresh
                   </a>
                   <button
-                    class="rounded-md text-sm font-medium text-gray-400 hover:text-gray-500"
-                    x-on:click="open = false"
+                    class="rounded-md text-sm font-medium text-gray-300 hover:text-gray-400"
+                    x-on:click="close"
                   >
                     Dismiss
                   </button>
                 </div>
               </div>
               <div class="ml-4 flex-shrink-0 flex">
-                <button class="rounded-md inline-flex text-gray-400 hover:text-gray-500" x-on:click="open = false">
+                <button
+                  class="rounded-md inline-flex text-green-400 hover:text-green-500"
+                  x-on:click="close"
+                >
                   <span class="sr-only">Close</span>
                   <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -175,41 +176,50 @@
         </div>
       <% end %>
 
-      <%= for {key, flash} <- @flash do %>
-        <!-- TODO: https://elixirforum.com/t/animate-closing-a-flash-message-with-liveview/33866/15 -->
+      <%= for {key, flash} <- list_flash(@flash) do %>
+        <%
+          color = case flash.type do
+            :error -> "red"
+            :success -> "green"
+            _ -> "gray"
+          end
+        %>
+
         <div
-          id="<%= key %>"
-          class="max-w-sm w-full bg-gray-700 shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
-          x-data="{ open: true }"
-          x-show="open"
-          x-transition:enter="transform ease-out duration-300 transition"
-          x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-          x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-          x-transition:leave="transition ease-in duration-100"
-          x-transition:leave-start="opacity-100"
-          x-transition:leave-end="opacity-0"
+          id="flash-message-<%= key %>"
+          class="max-w-sm w-full bg-<%= color %>-700 shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+          phx-hook="FlashMessageHook"
+          data-flash-message-id="<%= key %>"
+          x-data="FlashMessageComponent()"
+          x-spread="messageEl"
+          x-init="open"
         >
           <div class="p-4">
             <div class="flex items-start">
               <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                <svg class="h-16 w-16 text-<%= color %>-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <%= case flash.type do %>
+                    <% :error -> %>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <% :success -> %>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <% _ -> %>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  <% end %>
                 </svg>
               </div>
-              <div class="ml-3 w-0 flex-1 pt-0.5">
-                <p class="text-sm font-medium text-gray-100">
+              <div class="ml-3 w-0 flex-1">
+                <p class="text-sm font-bold text-gray-100">
                   <%= flash.title %>
                 </p>
-                <p class="mt-1 text-sm text-gray-300">
+                <p class="mt-1 text-sm font-semibold text-gray-200">
                   <%= flash.message %>
                 </p>
               </div>
               <div class="ml-4 flex-shrink-0 flex">
                 <button
-                  class="rounded-md inline-flex text-gray-400 hover:text-gray-500"
-                  x-on:click="open = false"
-                  phx-click="lv:clear-flash"
-                  phx-value-key="<%= key %>"
+                  class="rounded-md inline-flex text-<%= color %>-400 hover:text-<%= color %>-500"
+                  x-on:click="close"
                 >
                   <span class="sr-only">Close</span>
                   <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

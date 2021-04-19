@@ -4,7 +4,7 @@
   </div>
 
   <div class="z-10">
-    <%= for {key, flash} <- @flash do %>
+    <%= for {key, flash} <- list_flash(@conn) do %>
       <div id="<%= key %>" class="w-full max-w-lg mx-auto">
         <div class="bg-green-800 text-gray-100 p-4 rounded" role="alert">
           <p class="font-medium"><%= flash.title %></p>

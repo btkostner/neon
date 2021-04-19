@@ -44,7 +44,7 @@ defmodule NeonWeb.Accounts.UserSettingsLive do
            profile_changeset: Accounts.change_user_profile(user)
          )
          |> put_flash(
-           :info,
+           :success,
            "Profile Update",
            "Your profile details have been updated successfully."
          )}

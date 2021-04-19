@@ -12,4 +12,9 @@ defmodule NeonWeb.DashboardLive do
   def handle_params(_params, _session, socket) do
     {:noreply, socket}
   end
+
+  @impl true
+  def render(assigns) do
+    NeonWeb.DashboardView.render("index.html", assigns)
+  end
 end

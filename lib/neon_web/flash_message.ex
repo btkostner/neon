@@ -41,7 +41,24 @@ defmodule NeonWeb.FlashMessage do
     {Ecto.UUID.generate(), %{
       type: type,
       title: title,
-      message: message
+      message: message,
+      timestamp: DateTime.utc_now() |> DateTime.to_unix()
     }}
+  end
+
+  @doc """
+  Grabs all of the flash messages currently available. This will automatically sort
+  them so they appear in the right order to the user.
+  """
+  def list_flash(%Plug.Conn{} = conn) do
+    Enum.sort_by(conn.private.phoenix_flash, fn {_k, v} -> v.timestamp end)
+  end
+
+  def list_flash(%Phoenix.LiveView.Socket{} = socket) do
+    Enum.sort_by(socket.assigns.flash, fn {_k, v} -> v.timestamp end)
+  end
+
+  def list_flash(flash) do
+    Enum.sort_by(flash, fn {_k, v} -> v.timestamp end)
   end
 end

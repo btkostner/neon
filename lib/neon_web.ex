@@ -35,11 +35,9 @@ defmodule NeonWeb do
         root: "lib/neon_web/templates",
         namespace: NeonWeb
 
-      # Import convenience functions from controllers
       import Phoenix.Controller,
         only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
-      # Include shared imports and aliases for views
       unquote(view_helpers())
     end
   end
@@ -48,8 +46,6 @@ defmodule NeonWeb do
     quote do
       use Phoenix.LiveView,
         layout: {NeonWeb.LayoutView, "live.html"}
-
-      import NeonWeb.FlashMessage, only: [put_flash: 4]
 
       unquote(view_helpers())
     end
@@ -94,6 +90,7 @@ defmodule NeonWeb do
 
       import NeonWeb.AccountHelpers
       import NeonWeb.ErrorHelpers
+      import NeonWeb.FlashMessage
       import NeonWeb.Gettext
 
       alias NeonWeb.Router.Helpers, as: Routes
