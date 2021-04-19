@@ -50,8 +50,8 @@ defmodule NeonWeb.ConnCase do
   def includes_flash?(conn, title) do
     Enum.any?(conn.private.phoenix_flash, fn {_key, message} ->
       case message do
-        %{title: messageTitle} -> messageTitle == title
-        messageTitle -> messageTitle == title
+        %{title: message_title} -> message_title == title
+        message_title -> message_title == title
       end
     end)
   end
