@@ -76,7 +76,7 @@ defmodule NeonWeb.Accounts.UserSessionController do
 
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, "Logged out successfully.")
+    |> put_flash(:success, "Logged Out", "You have been logged out successfully.")
     |> Authentication.log_out_user()
   end
 
@@ -104,7 +104,7 @@ defmodule NeonWeb.Accounts.UserSessionController do
       ) == :gt ->
         conn
         |> reset_two_factor_data()
-        |> put_flash(:error, "You took too long to login. Please try again.")
+        |> put_flash(:error, "Expired Code", "You took too long to login. Please try again.")
         |> redirect(to: Routes.user_session_path(conn, :new))
         |> halt()
 

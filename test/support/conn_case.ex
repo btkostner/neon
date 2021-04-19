@@ -42,6 +42,21 @@ defmodule NeonWeb.ConnCase do
   end
 
   @doc """
+  Checks all flash messages to assert one includes the title given.
+
+      assert includes_flash?("Login Successful")
+
+  """
+  def includes_flash?(conn, title) do
+    Enum.any?(conn.private.phoenix_flash, fn {_key, message} ->
+      case message do
+        %{title: message_title} -> message_title == title
+        message_title -> message_title == title
+      end
+    end)
+  end
+
+  @doc """
   Setup helper that registers and logs in users.
 
       setup :register_and_log_in_user

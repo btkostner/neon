@@ -4,19 +4,12 @@
   </div>
 
   <div class="z-10">
-    <%= if get_flash(@conn, :info) do %>
-      <div class="w-full max-w-lg mx-auto">
-        <p class="bg-green-800 text-gray-100 p-4 rounded" role="alert">
-          <%= get_flash(@conn, :info) %>
-        </p>
-      </div>
-    <% end %>
-
-    <%= if get_flash(@conn, :error) do %>
-      <div class="w-full max-w-lg mx-auto">
-        <p class="bg-red-800 text-gray-100 p-4 rounded" role="alert">
-          <%= get_flash(@conn, :error) %>
-        </p>
+    <%= for {key, flash} <- list_flash(@conn) do %>
+      <div id="<%= key %>" class="w-full max-w-lg mx-auto">
+        <div class="bg-green-800 text-gray-100 p-4 rounded" role="alert">
+          <p class="font-medium"><%= flash.title %></p>
+          <p><%= flash.message %></p>
+        </div>
       </div>
     <% end %>
 
