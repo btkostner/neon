@@ -44,7 +44,7 @@ defmodule NeonWeb.Accounts.UserResetPasswordController do
         |> put_flash(
           :success,
           "Password Reset",
-          "Your accout password has been reset successfully."
+          "Your account password has been reset successfully."
         )
         |> redirect(to: Routes.user_session_path(conn, :new))
 

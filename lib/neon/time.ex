@@ -8,10 +8,10 @@ defmodule Neon.Time do
 
   ## Examples
 
-      iex> modulo_date(~U[2010-10-10 10:12:16Z], :before, 5)
+      iex> Neon.Time.modulo_date(~U[2010-10-10 10:12:16Z], :before, 5)
       ~U[2010-10-10 10:10:00Z]
 
-      iex> modulo_date(~U[2010-10-10 10:12:16Z], :after, 10)
+      iex> Neon.Time.modulo_date(~U[2010-10-10 10:12:16Z], :after, 10)
       ~U[2010-10-10 10:20:00Z]
 
   """

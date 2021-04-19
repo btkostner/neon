@@ -22,19 +22,19 @@ defmodule NeonWeb.Accounts.UserSettingsControllerTest do
     test "updates the user email once", %{conn: conn, user: user, token: token, email: email} do
       conn = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
       assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
-      assert get_flash(conn, :info) =~ "Email changed successfully"
+      assert includes_flash?(conn, "Email Changed")
       refute Accounts.get_user_by_email(user.email)
       assert Accounts.get_user_by_email(email)
 
       conn = get(conn, Routes.user_settings_path(conn, :confirm_email, token))
       assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
-      assert get_flash(conn, :error) =~ "Email change link is invalid or it has expired"
+      assert includes_flash?(conn, "Link Invalid")
     end
 
     test "does not update email with invalid token", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_settings_path(conn, :confirm_email, "oops"))
       assert redirected_to(conn) == Routes.user_settings_path(conn, :index)
-      assert get_flash(conn, :error) =~ "Email change link is invalid or it has expired"
+      assert includes_flash?(conn, "Link Invalid")
       assert Accounts.get_user_by_email(user.email)
     end
 

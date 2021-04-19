@@ -33,7 +33,11 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
     case Accounts.confirm_user(token) do
       {:ok, _} ->
         conn
-        |> put_flash(:sucess, "Accout Confirmed", "Your accoutn has been confirmed successfully.")
+        |> put_flash(
+          :sucess,
+          "Account Confirmed",
+          "Your account has been confirmed successfully."
+        )
         |> redirect(to: Routes.user_session_path(conn, :new))
 
       :error ->
