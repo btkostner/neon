@@ -9,10 +9,10 @@ defmodule NeonWeb.FlashMessage do
 
   @type type :: :info | :error | :success
   @type flash :: %{
-    type: type,
-    title: String.t(),
-    message: String.t()
-  }
+          type: type,
+          title: String.t(),
+          message: String.t()
+        }
 
   @doc """
   Adds a flash message. This is usable for regular conn connections, and socket
@@ -38,12 +38,13 @@ defmodule NeonWeb.FlashMessage do
   end
 
   defp native_flash(type, title, message) do
-    {Ecto.UUID.generate(), %{
-      type: type,
-      title: title,
-      message: message,
-      timestamp: DateTime.utc_now() |> DateTime.to_unix()
-    }}
+    {Ecto.UUID.generate(),
+     %{
+       type: type,
+       title: title,
+       message: message,
+       timestamp: DateTime.utc_now() |> DateTime.to_unix()
+     }}
   end
 
   @doc """

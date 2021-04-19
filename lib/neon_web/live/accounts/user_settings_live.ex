@@ -95,7 +95,11 @@ defmodule NeonWeb.Accounts.UserSettingsLive do
       {:ok, user} ->
         {:noreply,
          socket
-         |> put_flash(:success, "Password Updated", "Your password has been updated successfully.")
+         |> put_flash(
+           :success,
+           "Password Updated",
+           "Your password has been updated successfully."
+         )
          |> redirect(to: Routes.user_settings_path(socket, :index))}
 
       {:error, changeset} ->
@@ -118,7 +122,11 @@ defmodule NeonWeb.Accounts.UserSettingsLive do
       {:ok, user} ->
         {:noreply,
          socket
-         |> put_flash(:success, "Two Factor Disabled", "Two factor authentication is now disabled on your account.")
+         |> put_flash(
+           :success,
+           "Two Factor Disabled",
+           "Two factor authentication is now disabled on your account."
+         )
          |> reset_two_factor_fields(user)}
 
       {:error, changeset} ->
@@ -141,7 +149,11 @@ defmodule NeonWeb.Accounts.UserSettingsLive do
       {:ok, user} ->
         {:noreply,
          socket
-         |> put_flash(:success, "Two Factor Enabled", "Two factor authentication is now enabled on your account. This will take effect next time you login.")
+         |> put_flash(
+           :success,
+           "Two Factor Enabled",
+           "Two factor authentication is now enabled on your account. This will take effect next time you login."
+         )
          |> reset_two_factor_fields(user)}
 
       {:error, changeset} ->

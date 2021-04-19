@@ -47,7 +47,11 @@ defmodule NeonWeb.Accounts.UserConfirmationController do
 
           %{} ->
             conn
-            |> put_flash(:error, "Link Invalid", "Your account confirmation link is invalid or it has expired.")
+            |> put_flash(
+              :error,
+              "Link Invalid",
+              "Your account confirmation link is invalid or it has expired."
+            )
             |> redirect(to: Routes.user_session_path(conn, :new))
         end
     end
